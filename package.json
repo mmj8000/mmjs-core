@@ -1,0 +1,42 @@
+{
+  "name": "mmjs-core",
+  "version": "0.2.0",
+  "description": "mmjs-core hooks component vue",
+  "main": "dist/es/index.js",
+  "types": "dist/types/index.d.ts",
+  "scripts": {
+    "build": "vite build"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/es/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "keywords": [
+    "mmjs-core",
+    "hooks",
+    "component",
+    "vue"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "",
+  "license": "ISC",
+  "peerDependencies": {
+     "axios": "^0.27.2",
+     "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "vite": "^5.4.17",
+    "@types/node": "^22.14.0",
+    "typescript": "^5.8.3",
+    "vite-plugin-dts": "^4.5.3"
+  }
+}
