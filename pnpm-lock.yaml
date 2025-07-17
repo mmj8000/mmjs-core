@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@enhances/with-resolvers':
+        specifier: ^0.0.5
+        version: 0.0.5
       axios:
         specifier: ^0.27.2
         version: 0.27.2
@@ -46,6 +49,9 @@ packages:
   '@babel/types@7.28.1':
     resolution: {integrity: sha512-x0LvFTekgSX+83TI28Y9wYPUfzrnl2aT5+5QLnO6v7mSJYtEEevuDRN0F0uSHRk1G1IWZC43o00Y0xDDrpBGPQ==}
     engines: {node: '>=6.9.0'}
+
+  '@enhances/with-resolvers@0.0.5':
+    resolution: {integrity: sha512-buJ33mixZb60qp8EGQhCccZ/rU8Lcb4BVHK8QOs7tLkzqwuT3fimPT9wuxL631teNxx1DwDGkgen9KsjjHW0xQ==}
 
   '@esbuild/aix-ppc64@0.21.5':
     resolution: {integrity: sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==}
@@ -812,6 +818,8 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.27.1
+
+  '@enhances/with-resolvers@0.0.5': {}
 
   '@esbuild/aix-ppc64@0.21.5':
     optional: true
