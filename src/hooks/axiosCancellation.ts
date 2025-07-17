@@ -26,11 +26,16 @@ export interface UseAxiosCancellationOptions {
  * @param options 
  * @returns 
  * @example 
- * const { useService } = useAxiosCancellation({
- * shouldAllowDuplicate: (config) => {
- * // 默认策略：POST请求不允许重复
- * return config.method?.toLowerCase() !== 'post'
- * }
+    const { useService, cancelAllPendingRequests } = useAxiosCancellation({
+            shouldAllowDuplicate: (config) => {
+                    // 默认策略：POST请求不允许重复
+                    return config.method?.toLowerCase() !== 'post'
+                },
+            });
+        useService(axiso);
+        router.beforeEach(() => {
+            cancelAllPendingRequests();
+        });
  */
 export function useAxiosCancellation(options?: UseAxiosCancellationOptions) {
     const pendingRequests = new Map<string, PendingRequest>()
