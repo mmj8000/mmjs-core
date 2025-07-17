@@ -41,7 +41,8 @@ export default defineConfig({
             },
             external: [
                 'vue',
-                'axios'
+                'axios',
+                '@enhances/with-resolvers'
             ]
         }
     }
