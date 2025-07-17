@@ -1,5 +1,4 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios'
-import { onUnmounted } from 'vue'
 
 declare module 'axios' {
     interface AxiosRequestConfig {
@@ -164,11 +163,6 @@ export function useAxiosCancellation(options?: UseAxiosCancellationOptions) {
             }
         })
     }
-    // 组件卸载时自动清理
-    onUnmounted(() => {
-        cancelAllPendingRequests('组件卸载取消请求')
-        clearInterceptors()
-    })
 
     return {
         pendingRequests,

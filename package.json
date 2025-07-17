@@ -1,6 +1,6 @@
 {
   "name": "mmjs-core",
-  "version": "0.3.0-alpha.1",
+  "version": "0.3.0-alpha.2",
   "description": "mmjs-core hooks component vue",
   "main": "dist/es/index.js",
   "types": "dist/types/index.d.ts",
@@ -31,7 +31,6 @@
   "license": "ISC",
   "dependencies": {
      "axios": "^0.27.2",
-     "vue": "^3.5.13",
      "@enhances/with-resolvers": "^0.0.5"
   },
   "devDependencies": {
