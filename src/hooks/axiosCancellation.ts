@@ -102,7 +102,7 @@ export function useAxiosCancellation(options?: UseAxiosCancellationOptions) {
 
         // 添加响应拦截器
         responseInterceptor = service.interceptors.response.use(function (response: AxiosResponse) {
-            if (response.config) {
+            if (typeof response === 'object' && response?.hasOwnProperty('config')) {
                 const requestKey = getRequestKey(response.config)
                 pendingRequests.delete(requestKey)
             }
@@ -114,12 +114,13 @@ export function useAxiosCancellation(options?: UseAxiosCancellationOptions) {
                     console.log('请求被取消:', error.message)
                     return Promise.reject({
                         isCancelled: true,
-                        message: error.message
+                        message: error.message,
+                        error,
                     })
                 }
 
                 // 请求失败时也清除记录
-                if (error.config) {
+                if (typeof error === 'object' && error?.hasOwnProperty('config')) {
                     const requestKey = getRequestKey(error.config)
                     pendingRequests.delete(requestKey)
                 }
