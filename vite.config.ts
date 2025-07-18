@@ -1,8 +1,12 @@
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
+import vue from '@vitejs/plugin-vue';
+import { libInjectCss } from 'vite-plugin-lib-inject-css';
 
 export default defineConfig({
     plugins: [
+        vue(),
+        libInjectCss(),
         dts({
             entryRoot: './src',
             root: './',
@@ -42,6 +46,9 @@ export default defineConfig({
             external: [
                 'vue',
                 'axios',
+                'video.js',
+                'video.js/dist/video-js.css',
+                'lodash-es',
                 '@enhances/with-resolvers'
             ]
         }
