@@ -1,5 +1,11 @@
 #  mmjs-core hooks component vue
 
+- **支持按需导入版本目前是（^0.7.0-alpha.1以上）**
+- Install
+    ```shell
+    pnpm add mmjs-core@^0.7.0-alpha.1
+    ```
+
 ## hooks
 1. useAxiosCancellation
     - 管理请求，
