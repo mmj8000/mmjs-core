@@ -35,13 +35,12 @@ export default defineConfig({
             },
         },
         rollupOptions: {
+            treeshake: false,
             output: {
                 inlineDynamicImports: false,
                 preserveModules: true,
                 preserveModulesRoot: 'src',
                 assetFileNames: '[ext]/[name].[ext]',
-                globals: {
-                },
             },
             external: [
                 'vue',

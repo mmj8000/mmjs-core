@@ -1,6 +1,6 @@
 {
   "name": "mmjs-core",
-  "version": "0.6.0",
+  "version": "0.7.0-alpha.1",
   "description": "mmjs-core hooks component vue",
   "main": "dist/es/index.js",
   "types": "dist/types/index.d.ts",
@@ -12,6 +12,31 @@
       "types": "./dist/types/index.d.ts",
       "import": "./dist/es/index.js",
       "require": "./dist/cjs/index.js"
+    },
+    "./hooks/*": {
+      "types": "./dist/types/hooks/*.d.ts",
+      "import": "./dist/es/hooks/*.js",
+      "require": "./dist/cjs/hooks/*.js"
+    },
+    "./utils/*": {
+      "types": "./dist/types/utils/*.d.ts",
+      "import": "./dist/es/utils/*.js",
+      "require": "./dist/cjs/utils/*.js"
+    },
+    "./client/*": {
+      "types": "./dist/types/client/*.d.ts",
+      "import": "./dist/es/client/*.js",
+      "require": "./dist/cjs/client/*.js"
+    },
+    "./components/*": {
+      "types": "./dist/types/components/*/index.d.ts",
+      "import": "./dist/es/components/*/index.js",
+      "require": "./dist/cjs/components/*/index.js"
+    },
+    "./*": {
+      "types": "./dist/types/*/index.d.ts",
+      "import": "./dist/es/*/index.js",
+      "require": "./dist/cjs/*/index.js"
     }
   },
   "files": [

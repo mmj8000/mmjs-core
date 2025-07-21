@@ -1,8 +1,6 @@
 import OptimizedVideoPlayer from './optimizedVideoPlayer.vue';
 export type OptimizedVideoPlayerInstanceType = InstanceType<typeof OptimizedVideoPlayer>;
-export {
-    OptimizedVideoPlayer,
-};
+export default OptimizedVideoPlayer;
 export { BANDWIDTH_PRESETS } from './const';
 export type {
     BandwidthPreset,
