@@ -46,3 +46,11 @@
     ```vue
     <OptimizedVideoPlayer src="" />
     ```
+2. IntersectionDraw (`^0.5.0-alpha.1`)
+    - Intersection Render Slot
+    - Example
+    ```vue
+    <IntersectionDraw>
+        <div>content ....</div>
+    </IntersectionDraw>
+    ```
