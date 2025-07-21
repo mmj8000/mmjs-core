@@ -59,6 +59,13 @@
     </script>
     ```
 
+6. useAsyncIntervalFn (`^0.6.0-alpha.2`)
+    - Interval Request、callback
+    - Example
+    ```ts
+    useAsyncIntervalFn(() => fetch(''), 1000 * 10);
+    ```
+
 ## Components
 
 1. OptimizedVideoPlayer (`^0.4.0-alpha.3`)

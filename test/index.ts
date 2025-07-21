@@ -8,4 +8,5 @@ import {
     useDef,
     useVShallowRef,
     keepDecimals,
+    useAsyncIntervalFn,
 } from 'mmjs-core';
