@@ -49,6 +49,7 @@ export default defineConfig({
                 'video.js',
                 'video.js/dist/video-js.css',
                 'lodash-es',
+                'raf-polyfill-es',
                 '@enhances/with-resolvers'
             ]
         }

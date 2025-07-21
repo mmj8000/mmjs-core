@@ -1,3 +1,4 @@
 export * from './hooks';
 export * from './client';
 export * from './components';
+export * from './utils';

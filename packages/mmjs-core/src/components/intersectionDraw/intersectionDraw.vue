@@ -13,6 +13,7 @@
 <script lang="ts" setup>
 import { useIntersectionObserver, type UseIntersectionObserverOptions } from '@vueuse/core';
 import { ref, shallowRef, watch } from 'vue';
+import { requestAnimationFrame } from 'raf-polyfill-es';
 const {
   timeoutTime = 100,
   noSupportTime = 500,

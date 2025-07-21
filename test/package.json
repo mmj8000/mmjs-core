@@ -1,0 +1,19 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mmjs-core": "workspace:^"
+  },
+  "devDependencies": {
+    "@vitest/ui": "3.2.4",
+    "vitest": "^3.2.4"
+  }
+}

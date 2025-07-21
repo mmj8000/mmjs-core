@@ -38,6 +38,27 @@
     wsClient.onMessage = () => {};
     ```
 
+4. useDef (`^0.6.0-alpha.1`)
+    - 重组件 def
+    - Example
+    ```vue
+    <script setup>
+     const def = useDef(3);
+    </script>
+    <template v-if="def(1)"></template>
+    <template v-if="def(2)"></template>
+    <template v-if="def(3)"></template>
+    ```
+    
+5. useVShallowRef (`^0.6.0-alpha.1`)
+    - InstanceType、 推导InstanceType
+    - Example
+    ```vue
+    <script setup>
+        const compInstance = useVShallowRef(CompA);
+    </script>
+    ```
+
 ## Components
 
 1. OptimizedVideoPlayer (`^0.4.0-alpha.3`)
@@ -53,4 +74,14 @@
     <IntersectionDraw>
         <div>content ....</div>
     </IntersectionDraw>
+    ```
+
+## Utils
+
+1. keepDecimals (`^0.6.0-alpha.1`)
+    - Format Number Fixed
+    - Example
+    ```ts
+    keepDecimals(100.322, 2) // 100.32
+    keepDecimals(100.388888888, 2, true) // 100.39
     ```
