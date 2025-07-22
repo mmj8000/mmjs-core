@@ -1,5 +1,9 @@
 #  mmjs-core hooks component vue
-
+- Install
+    ```shell
+    pnpm add mmjs-core
+    ```
+    
 - **支持按需导入版本（^0.7.0-alpha.1以上）**
 - Example
     ```ts
@@ -11,16 +15,12 @@
     // ***************************
     ```
 - tsconfig.json
+  - （如果用 Vite/Webpack 等打包工具）
   ```json
   {
-      // 不用我说了吧
-      "moduleResolution": "Bundler",  //（如果用 Vite/Webpack 等打包工具）
+      "moduleResolution": "Bundler",
   }
   ```
-- Install
-    ```shell
-    pnpm add mmjs-core
-    ```
 
 ## hooks
 1. useAxiosCancellation
