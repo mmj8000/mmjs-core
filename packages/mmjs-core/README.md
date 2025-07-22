@@ -1,9 +1,25 @@
 #  mmjs-core hooks component vue
 
-- **支持按需导入版本目前是（^0.7.0-alpha.1以上）**
+- **支持按需导入版本（^0.7.0-alpha.1以上）**
+- Example
+    ```ts
+    import {} from "mmjs-core/components";
+    import {} from "mmjs-core/components/{组件名}";
+    import {} from "mmjs-core/client";
+    import {} from "mmjs-core/hooks";
+    import {} from "mmjs-core/utils";
+    // ***************************
+    ```
+- tsconfig.json
+  ```json
+  {
+      // 不用我说了吧
+      "moduleResolution": "Bundler",  //（如果用 Vite/Webpack 等打包工具）
+  }
+  ```
 - Install
     ```shell
-    pnpm add mmjs-core@^0.7.0-alpha.1
+    pnpm add mmjs-core
     ```
 
 ## hooks
@@ -60,6 +76,7 @@
     - InstanceType、 推导InstanceType
     - Example
     ```vue
+    <!-- vue -->
     <script setup>
         const compInstance = useVShallowRef(CompA);
     </script>
