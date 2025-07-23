@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,Symbol.toStringTag,{value:"Module"});function l(i,r=2,m=!1){let e=i;if(typeof e!="number"&&(e=Number(e)),Number.isNaN(e))return 0;if(m)return Number(e.toFixed(r));let[t,u]=`${e}`.split(".");return typeof r=="number"&&u?+`${t}.${u.slice(0,r)}`:Number(t)}exports.keepDecimals=l;

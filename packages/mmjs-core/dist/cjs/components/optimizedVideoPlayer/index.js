@@ -1,0 +1,1 @@
+"use strict";Object.defineProperties(exports,{__esModule:{value:!0},[Symbol.toStringTag]:{value:"Module"}});const e=require("./optimizedVideoPlayer.js"),t=require("./const.js");exports.default=e;exports.BANDWIDTH_PRESETS=t.BANDWIDTH_PRESETS;

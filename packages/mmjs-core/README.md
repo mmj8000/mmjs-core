@@ -40,7 +40,9 @@
         cancelAllPendingRequests();
     });
     ```
+
 2. useMergeRequest
+
     - 合并相同的请求
     - Example
     ```ts
@@ -61,6 +63,7 @@
     ```
 
 4. useDef (`^0.6.0-alpha.1`)
+    - FrameWork (Vue)
     - 重组件 def
     - Example
     ```vue
@@ -71,10 +74,15 @@
     <template v-if="def(2)"></template>
     <template v-if="def(3)"></template>
     ```
-    
+
 5. useVShallowRef (`^0.6.0-alpha.1`)
+
+    - FrameWork (Vue)
+
     - InstanceType、 推导InstanceType
+
     - Example
+
     ```vue
     <!-- vue -->
     <script setup>
@@ -91,13 +99,15 @@
 
 ## Components
 
-1. OptimizedVideoPlayer (`^0.4.0-alpha.3`)
+1. OptimizedVideoPlayer (`^0.4.0-alpha.3`) 
+    - FrameWork (**Vue**)
     - video.js optimeized
     - Example
     ```vue
     <OptimizedVideoPlayer src="" />
     ```
 2. IntersectionDraw (`^0.5.0-alpha.1`)
+    - FrameWork (**Vue**)
     - Intersection Render Slot
     - Example
     ```vue
