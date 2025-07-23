@@ -1,5 +1,5 @@
 import { defineComponent as v, ref as w, shallowRef as h, watch as k, createElementBlock as o, openBlock as i, renderSlot as u, createElementVNode as c, Fragment as I, renderList as T } from "vue";
-import { useIntersectionObserver as g } from "../../node_modules/.pnpm/@vueuse_core@13.5.0_vue@3.5.17_typescript@5.8.3_/node_modules/@vueuse/core/index.js";
+import { useIntersectionObserver as g } from "@vueuse/core";
 import { requestAnimationFrame as O } from "raf-polyfill-es";
 const R = { class: "intersection_draw__loading_content" }, b = { class: "intersection_draw__inner_skeleton" }, V = /* @__PURE__ */ v({
   __name: "intersectionDraw",

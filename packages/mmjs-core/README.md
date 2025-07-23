@@ -125,3 +125,16 @@
     keepDecimals(100.322, 2) // 100.32
     keepDecimals(100.388888888, 2, true) // 100.39
     ```
+
+2. scale (`^0.8.0`)
+    - value * ratio **BigScreen**
+    - Example
+    ```ts
+    console.log(scale(10), scale('10px')); 
+    // 8.13888888888889 '8.13888888888889px'
+    setScaleOption({
+    	clientHeight: 500,
+    });
+    console.log(scale(10), scale('10px')); 
+    // 4.62962962962963 '4.62962962962963px'
+    ```

@@ -1,1 +1,1 @@
-"use strict";Object.defineProperty(exports,Symbol.toStringTag,{value:"Module"});const e=require("./format.js");exports.keepDecimals=e.keepDecimals;
+"use strict";Object.defineProperty(exports,Symbol.toStringTag,{value:"Module"});const t=require("./format.js"),e=require("./scale.js");exports.keepDecimals=t.keepDecimals;exports.getScaleOption=e.getScaleOption;exports.scale=e.scale;exports.setScaleOption=e.setScaleOption;

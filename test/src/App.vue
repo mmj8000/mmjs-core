@@ -21,4 +21,11 @@ import { WebSocketClient } from "mmjs-core/client/ws";
 console.log(WebSocketClient, "ws");
 import { useMergeRequest } from "mmjs-core/hooks/mergeRequest";
 console.log(useAsyncIntervalFn, useMergeRequest);
+import { scale, setScaleOption } from 'mmjs-core/utils';
+
+console.log(scale(10), scale('10px'));
+setScaleOption({
+  clientHeight: 500,
+});
+console.log(scale(10), scale('10px'));
 </script>

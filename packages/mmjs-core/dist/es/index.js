@@ -2,24 +2,28 @@ import "./hooks/index.js";
 import "./client/index.js";
 import "./components/index.js";
 import "./utils/index.js";
-import { useAxiosCancellation as f } from "./hooks/axiosCancellation.js";
-import { useMergeRequest as s } from "./hooks/mergeRequest.js";
+import { useAxiosCancellation as a } from "./hooks/axiosCancellation.js";
+import { useMergeRequest as i } from "./hooks/mergeRequest.js";
 import { useDef as l, useVShallowRef as x } from "./hooks/vue.ref.js";
-import { useAsyncIntervalFn as u } from "./hooks/interval.js";
-import { WebSocketClient as D } from "./client/ws.js";
-import { BANDWIDTH_PRESETS as S } from "./components/optimizedVideoPlayer/const.js";
+import { useAsyncIntervalFn as c } from "./hooks/interval.js";
+import { WebSocketClient as S } from "./client/ws.js";
+import { BANDWIDTH_PRESETS as d } from "./components/optimizedVideoPlayer/const.js";
 import { default as I } from "./components/intersectionDraw/intersectionDraw.js";
-import { default as k } from "./components/optimizedVideoPlayer/optimizedVideoPlayer.js";
-import { keepDecimals as y } from "./utils/format.js";
+import { default as R } from "./components/optimizedVideoPlayer/optimizedVideoPlayer.js";
+import { keepDecimals as k } from "./utils/format.js";
+import { getScaleOption as y, scale as C, setScaleOption as E } from "./utils/scale.js";
 export {
-  S as BANDWIDTH_PRESETS,
+  d as BANDWIDTH_PRESETS,
   I as IntersectionDraw,
-  k as OptimizedVideoPlayer,
-  D as WebSocketClient,
-  y as keepDecimals,
-  u as useAsyncIntervalFn,
-  f as useAxiosCancellation,
+  R as OptimizedVideoPlayer,
+  S as WebSocketClient,
+  y as getScaleOption,
+  k as keepDecimals,
+  C as scale,
+  E as setScaleOption,
+  c as useAsyncIntervalFn,
+  a as useAxiosCancellation,
   l as useDef,
-  s as useMergeRequest,
+  i as useMergeRequest,
   x as useVShallowRef
 };

@@ -20,8 +20,23 @@ export function getScaleOption() {
   return { ..._scaleOptions };
 }
 
+/**
+ * 
+ * @param value 
+* @example
+ * scale(16) // 16 * ratio
+ * @param dir 
+ */
 export function scale(value: number, dir?: "x" | "y"): number;
+/**
+ * 
+ * @param value 
+ * @example
+ * scale('16px') // 16px * ratio
+ * @param dir 
+ */
 export function scale(value: string, dir?: "x" | "y"): string;
+
 export function scale(value: number | string, dir: "x" | "y" = "y") {
   const sizeScale = getRatio()[dir];
 
