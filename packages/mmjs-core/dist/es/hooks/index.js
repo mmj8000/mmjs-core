@@ -1,13 +1,14 @@
 import { useAxiosCancellation as r } from "./axiosCancellation.js";
 import { useMergeRequest as t } from "./mergeRequest.js";
-import { useDef as u, useVShallowRef as l } from "./vue.ref.js";
-import { useAsyncIntervalFn as m } from "./interval.js";
-import { useWheel as p } from "./mouse.js";
+import { useDef as u, useRestRef as l, useVShallowRef as x } from "./vue.ref.js";
+import { useAsyncIntervalFn as n } from "./interval.js";
+import { useWheel as a } from "./mouse.js";
 export {
-  m as useAsyncIntervalFn,
+  n as useAsyncIntervalFn,
   r as useAxiosCancellation,
   u as useDef,
   t as useMergeRequest,
-  l as useVShallowRef,
-  p as useWheel
+  l as useRestRef,
+  x as useVShallowRef,
+  a as useWheel
 };

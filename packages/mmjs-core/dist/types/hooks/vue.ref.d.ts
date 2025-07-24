@@ -1,3 +1,4 @@
+import { Ref } from 'vue';
 /**
  *
  * @param comp
@@ -20,3 +21,20 @@ export declare function useVShallowRef<C extends abstract new (...args: any) => 
  * @returns
  */
 export declare function useDef(frameNum: number, delay?: (frame: number) => number): (frame: number) => boolean;
+/**
+ *
+ * @param initValue
+ * @example
+ * const { state: querys, resetState } = useRestRef({
+        date: [],
+        name: '',
+        index: null
+    });
+ */
+export declare function useRestRef<T extends any>(initValue: T): {
+    state: Ref<T>;
+    resetState: Function;
+};
+export declare namespace useRestRef {
+    var _clone: <T extends unknown>(val: T) => T;
+}

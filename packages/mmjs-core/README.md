@@ -117,6 +117,21 @@
    </script>
    ```
 
+8. useRestRef (`^0.10.0-alpha.1`)
+
+   - FrameWork (Vue)
+   - Example
+
+   ```vue
+   <script>
+   const { state: querys, resetState } = useRestRef({
+     date: [],
+     name: "",
+     index: null,
+   });
+   </script>
+   ```
+
 ## Components
 
 1. OptimizedVideoPlayer (`^0.4.0-alpha.3`)
@@ -161,12 +176,12 @@
    // 4.62962962962963 '4.62962962962963px'
    ```
 3. normalizeURL (`^0.9.0-alpha.1`)
-    - 规范URL
-    - Example
-    ```ts
-    normalizeURL('https://example.com'); // "https://example.com"
-    normalizeURL('http://example.com');  // "http://example.com"
-    normalizeURL('//example.com');      // "http(s)://example.com" (取决于当前页面协议)
-    normalizeURL('/api/data');           // "http(s)://当前域名/api/data"
-    normalizeURL('data.json');           // "http(s)://当前域名/当前路径/data.json"
-    ```
+   - 规范 URL
+   - Example
+   ```ts
+   normalizeURL("https://example.com"); // "https://example.com"
+   normalizeURL("http://example.com"); // "http://example.com"
+   normalizeURL("//example.com"); // "http(s)://example.com" (取决于当前页面协议)
+   normalizeURL("/api/data"); // "http(s)://当前域名/api/data"
+   normalizeURL("data.json"); // "http(s)://当前域名/当前路径/data.json"
+   ```
