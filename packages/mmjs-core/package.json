@@ -1,6 +1,6 @@
 {
   "name": "mmjs-core",
-  "version": "0.9.0-alpha.1",
+  "version": "0.9.0",
   "description": "mmjs-core hooks component vue",
   "main": "dist/es/index.js",
   "types": "dist/types/index.d.ts",
@@ -52,7 +52,12 @@
   "publishConfig": {
     "access": "public"
   },
-  "author": "",
+  "homepage": "https://github.com/com-hooks/mmjs-core/tree/dev",
+  "repository": {
+    "type": "github",
+    "url": "https://github.com/com-hooks/mmjs-core.git"
+  },
+  "author": "mmj",
   "license": "ISC",
   "dependencies": {
     "@enhances/with-resolvers": "^0.0.5",

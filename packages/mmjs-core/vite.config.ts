@@ -27,7 +27,7 @@ export default defineConfig({
         outDir: './dist',
         cssCodeSplit: false,
         lib: {
-            name: "AutoScroll",
+            name: "MmjsCore",
             entry: './src/index.ts',
             formats: ['es', 'cjs'],
             fileName(fromat, entry) {
