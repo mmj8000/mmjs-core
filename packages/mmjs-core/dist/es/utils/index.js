@@ -1,8 +1,10 @@
-import { keepDecimals as t } from "./format.js";
-import { getScaleOption as a, scale as c, setScaleOption as l } from "./scale.js";
+import { keepDecimals as r } from "./format.js";
+import { getScaleOption as p, scale as a, setScaleOption as l } from "./scale.js";
+import { normalizeURL as c } from "./url.js";
 export {
-  a as getScaleOption,
-  t as keepDecimals,
-  c as scale,
+  p as getScaleOption,
+  r as keepDecimals,
+  c as normalizeURL,
+  a as scale,
   l as setScaleOption
 };
