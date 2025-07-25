@@ -1,14 +1,16 @@
 <template>
   <div class="chart" ref="chartDomKey"></div>
-  <CssomLegend :ec-instance="chartInstance" />
-
+  <CssomLegend />
   <button @click="setOption">变化</button>
 </template>
 
 <script lang="ts" setup>
 import * as echarts from "echarts";
-import { onMounted, shallowRef, useTemplateRef } from "vue";
-import { CssomLegend } from "mmjs-core/components/cssomLegend";
+import { computed, onMounted, provide, shallowRef, useTemplateRef } from "vue";
+import {
+  CssomLegend,
+  cssomLegendInjectKey,
+} from "mmjs-core/components/cssomLegend";
 const chartDom = useTemplateRef("chartDomKey");
 
 const option = {
@@ -56,6 +58,15 @@ const option = {
 };
 
 const chartInstance = shallowRef();
+
+provide(
+  cssomLegendInjectKey,
+  computed(() => {
+    return {
+      ec: chartInstance.value,
+    };
+  })
+);
 
 onMounted(() => {
   chartInstance.value = echarts.init(chartDom.value);

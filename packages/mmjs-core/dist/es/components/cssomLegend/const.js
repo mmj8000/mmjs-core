@@ -1,4 +1,4 @@
-const e = Symbol("ecInjectName");
+const e = Symbol("cssomLegendInjectKey");
 export {
-  e as ecInjectName
+  e as cssomLegendInjectKey
 };

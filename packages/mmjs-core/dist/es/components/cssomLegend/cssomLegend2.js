@@ -1,12 +1,12 @@
-import { defineComponent as a, inject as f, shallowRef as r, watchPostEffect as l, onScopeDispose as d, createElementBlock as p, openBlock as m } from "vue";
-import { ecInjectName as u } from "./const.js";
-const _ = { class: "cssom_legend" }, g = /* @__PURE__ */ a({
+import { defineComponent as f, inject as a, shallowRef as r, watchPostEffect as d, onScopeDispose as l, createElementBlock as p, openBlock as m } from "vue";
+import { cssomLegendInjectKey as u } from "./const.js";
+const _ = { class: "cssom_legend" }, E = /* @__PURE__ */ f({
   __name: "cssomLegend",
   props: {
     ecInstance: {}
   },
   setup(s) {
-    const n = f(u, void 0), o = r();
+    const n = a(u, void 0), o = r();
     function c() {
       console.log(this.getOption());
     }
@@ -18,13 +18,14 @@ const _ = { class: "cssom_legend" }, g = /* @__PURE__ */ a({
       var e;
       (e = o.value) == null || e.off("finished", c);
     }
-    return l(() => {
-      o.value = s.ecInstance ?? (n == null ? void 0 : n.value), t(), i();
-    }), d(() => {
+    return d(() => {
+      var e;
+      o.value = s.ecInstance ?? ((e = n == null ? void 0 : n.value) == null ? void 0 : e.ec), t(), i();
+    }), l(() => {
       t();
     }), (e, h) => (m(), p("div", _));
   }
 });
 export {
-  g as default
+  E as default
 };

@@ -1,8 +1,8 @@
 import "./cssomLegend.js";
-import { ecInjectName as n } from "./const.js";
+import { cssomLegendInjectKey as t } from "./const.js";
 import e from "./cssomLegend2.js";
-const s = e;
+const m = e;
 export {
-  s as CssomLegend,
-  n as ecInjectName
+  m as CssomLegend,
+  t as cssomLegendInjectKey
 };

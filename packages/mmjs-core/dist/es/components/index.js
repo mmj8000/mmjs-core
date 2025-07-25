@@ -1,14 +1,14 @@
 import "./intersectionDraw/index.js";
 import "./optimizedVideoPlayer/index.js";
 import { CssomLegend as m } from "./cssomLegend/index.js";
-import { default as a } from "./intersectionDraw/intersectionDraw.js";
-import { default as i } from "./optimizedVideoPlayer/optimizedVideoPlayer.js";
-import { BANDWIDTH_PRESETS as s } from "./optimizedVideoPlayer/const.js";
-import { ecInjectName as n } from "./cssomLegend/const.js";
+import { default as f } from "./intersectionDraw/intersectionDraw.js";
+import { default as a } from "./optimizedVideoPlayer/optimizedVideoPlayer.js";
+import { BANDWIDTH_PRESETS as i } from "./optimizedVideoPlayer/const.js";
+import { cssomLegendInjectKey as x } from "./cssomLegend/const.js";
 export {
-  s as BANDWIDTH_PRESETS,
+  i as BANDWIDTH_PRESETS,
   m as CssomLegend,
-  a as IntersectionDraw,
-  i as OptimizedVideoPlayer,
-  n as ecInjectName
+  f as IntersectionDraw,
+  a as OptimizedVideoPlayer,
+  x as cssomLegendInjectKey
 };

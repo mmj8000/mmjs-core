@@ -4,10 +4,10 @@
 
 <script lang="ts" setup>
 import { inject, onScopeDispose, shallowRef, watchPostEffect } from "vue";
-import { ecInjectName } from "./const";
+import { cssomLegendInjectKey } from "./const";
 import { type ECharts } from "echarts";
 
-const ecInjectInstance = inject(ecInjectName, void 0);
+const ecInjectInstance = inject(cssomLegendInjectKey, void 0);
 const { ecInstance } = defineProps<{
   ecInstance?: ECharts;
 }>();
@@ -26,7 +26,7 @@ function offEc() {
 }
 
 watchPostEffect(() => {
-  proxyEcInstance.value = ecInstance ?? ecInjectInstance?.value;
+  proxyEcInstance.value = ecInstance ?? ecInjectInstance?.value?.ec;
   offEc();
   onEcRendered();
 });
