@@ -1,31 +1,32 @@
-import { defineComponent as f, inject as a, shallowRef as r, watchPostEffect as d, onScopeDispose as l, createElementBlock as p, openBlock as m } from "vue";
-import { cssomLegendInjectKey as u } from "./const.js";
-const _ = { class: "cssom_legend" }, E = /* @__PURE__ */ f({
+import { defineComponent as f, inject as i, shallowRef as l, watchPostEffect as m, onScopeDispose as d, createElementBlock as r, openBlock as u } from "vue";
+import { cssomLegendInjectKey as v } from "./const.js";
+const p = { class: "cssom_legend" }, _ = /* @__PURE__ */ f({
   __name: "cssomLegend",
   props: {
-    ecInstance: {}
+    ecInstance: {},
+    eventName: { default: "finished" }
   },
-  setup(s) {
-    const n = a(u, void 0), o = r();
+  setup(n) {
+    const o = i(v, void 0), t = l();
     function c() {
       console.log(this.getOption());
     }
-    function i() {
+    function a() {
       var e;
-      (e = o.value) == null || e.on("finished", c);
+      (e = t.value) == null || e.on(n.eventName, c);
     }
-    function t() {
+    function s() {
       var e;
-      (e = o.value) == null || e.off("finished", c);
+      (e = t.value) == null || e.off(n.eventName, c);
     }
-    return d(() => {
+    return m(() => {
       var e;
-      o.value = s.ecInstance ?? ((e = n == null ? void 0 : n.value) == null ? void 0 : e.ec), t(), i();
-    }), l(() => {
-      t();
-    }), (e, h) => (m(), p("div", _));
+      t.value = n.ecInstance ?? ((e = o == null ? void 0 : o.value) == null ? void 0 : e.ec), s(), a();
+    }), d(() => {
+      s();
+    }), (e, h) => (u(), r("div", p));
   }
 });
 export {
-  E as default
+  _ as default
 };

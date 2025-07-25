@@ -3,7 +3,9 @@ export * from './const';
 export type CssomLegendInstanceType = InstanceType<typeof CssomLegend>;
 declare const UseCssomLegend: import('vue').DefineComponent<{
     ecInstance?: import('echarts').ECharts;
+    eventName?: "rendered" | "finished";
 }, {}, {}, {}, {}, import('vue').ComponentOptionsMixin, import('vue').ComponentOptionsMixin, {}, string, import('vue').PublicProps, Readonly<{
     ecInstance?: import('echarts').ECharts;
+    eventName?: "rendered" | "finished";
 }> & Readonly<{}>, {}, {}, {}, {}, string, import('vue').ComponentProvideOptions, false, {}, HTMLDivElement>;
 export { UseCssomLegend as CssomLegend };

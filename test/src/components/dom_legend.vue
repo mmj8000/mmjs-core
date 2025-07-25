@@ -1,6 +1,8 @@
 <template>
-  <div class="chart" ref="chartDomKey"></div>
-  <CssomLegend />
+  <div class="chart_wrap">
+    <div class="chart" ref="chartDomKey"></div>
+    <CssomLegend />
+  </div>
   <button @click="setOption">变化</button>
 </template>
 
@@ -10,55 +12,11 @@ import { computed, onMounted, provide, shallowRef, useTemplateRef } from "vue";
 import {
   CssomLegend,
   cssomLegendInjectKey,
-} from "mmjs-core/components/cssomLegend";
+} from "../../../packages/mmjs-core/src/components/cssomLegend";
+import { option } from "./const";
+
 const chartDom = useTemplateRef("chartDomKey");
-
-const option = {
-  tooltip: {
-    trigger: "item",
-  },
-  legend: {
-    top: "5%",
-    left: "center",
-  },
-  series: [
-    {
-      name: "Access From",
-      type: "pie",
-      radius: ["40%", "70%"],
-      avoidLabelOverlap: false,
-      itemStyle: {
-        borderRadius: 10,
-        borderColor: "#fff",
-        borderWidth: 2,
-      },
-      label: {
-        show: false,
-        position: "center",
-      },
-      emphasis: {
-        label: {
-          show: true,
-          fontSize: 40,
-          fontWeight: "bold",
-        },
-      },
-      labelLine: {
-        show: false,
-      },
-      data: [
-        { value: 1048, name: "Search Engine" },
-        { value: 735, name: "Direct" },
-        { value: 580, name: "Email" },
-        { value: 484, name: "Union Ads" },
-        { value: 300, name: "Video Ads" },
-      ],
-    },
-  ],
-};
-
 const chartInstance = shallowRef();
-
 provide(
   cssomLegendInjectKey,
   computed(() => {
@@ -77,10 +35,14 @@ function setOption() {
     series: [
       {
         data: [
-          { value: 1048, name: "2 Engine" },
-          { value: 7352, name: "4" },
-          { value: 5804, name: "3" },
-          { value: 4844, name: "Union Ads" },
+          {
+            value: Math.random() * 1048,
+            name: `2 ${(Math.random() * 100).toFixed(2)}Engine`,
+          },
+          { value: Math.random() * 7352, name: "4" },
+          { value: Math.random() * 5804, name: "3" },
+          { value: Math.random() * 4844, name: "Union Ads" },
+          { value: Math.random() * 4844, name: "Union Ads2" },
         ],
       },
     ],
@@ -88,9 +50,15 @@ function setOption() {
 }
 </script>
 <style lang="less" scoped>
-.chart {
-  width: 40vw;
-  height: 20vw;
+.chart_wrap {
+  width: 50vw;
+  height: 30vw;
   border: 1px dashed #ccc;
+  position: relative;
+  
+  .chart {
+    width: 100%;
+    height: 100%;
+  }
 }
 </style>
