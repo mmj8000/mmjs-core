@@ -1,6 +1,7 @@
 <template>
   <div class="chart" ref="chartDomKey"></div>
   <CssomLegend :ec-instance="chartInstance" />
+
   <button @click="setOption">变化</button>
 </template>
 
@@ -8,7 +9,6 @@
 import * as echarts from "echarts";
 import { onMounted, shallowRef, useTemplateRef } from "vue";
 import { CssomLegend } from "mmjs-core/components/cssomLegend";
-
 const chartDom = useTemplateRef("chartDomKey");
 
 const option = {

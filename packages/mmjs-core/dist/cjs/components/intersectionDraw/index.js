@@ -1,1 +1,1 @@
-"use strict";Object.defineProperty(exports,Symbol.toStringTag,{value:"Module"});const e=require("./intersectionDraw.js");exports.IntersectionDraw=e;
+"use strict";Object.defineProperties(exports,{__esModule:{value:!0},[Symbol.toStringTag]:{value:"Module"}});const e=require("./intersectionDraw.js");console.warn(" ^0.11.0 版本后，IntersectionDraw 将来的某个版本弃用默认导出，使用具名导出 ");exports.IntersectionDraw=e;exports.default=e;

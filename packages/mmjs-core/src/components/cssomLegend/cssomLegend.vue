@@ -7,7 +7,7 @@ import { inject, onScopeDispose, shallowRef, watchPostEffect } from "vue";
 import { ecInjectName } from "./const";
 import { type ECharts } from "echarts";
 
-const ecInjectInstance = inject(ecInjectName);
+const ecInjectInstance = inject(ecInjectName, void 0);
 const { ecInstance } = defineProps<{
   ecInstance?: ECharts;
 }>();

@@ -1,1 +1,1 @@
-"use strict";Object.defineProperty(exports,Symbol.toStringTag,{value:"Module"});const e=require("./optimizedVideoPlayer.js"),i=require("./const.js");exports.OptimizedVideoPlayer=e;exports.BANDWIDTH_PRESETS=i.BANDWIDTH_PRESETS;
+"use strict";Object.defineProperties(exports,{__esModule:{value:!0},[Symbol.toStringTag]:{value:"Module"}});const e=require("./optimizedVideoPlayer.js"),i=require("./const.js");console.warn(" ^0.11.0 版本后，OptimizedVideoPlayer 将来的某个版本弃用默认导出，使用具名导出 ");exports.OptimizedVideoPlayer=e;exports.default=e;exports.BANDWIDTH_PRESETS=i.BANDWIDTH_PRESETS;

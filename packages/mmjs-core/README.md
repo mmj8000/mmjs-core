@@ -5,6 +5,7 @@
   pnpm add mmjs-core
   ```
 - **支持按需导入版本（^0.7.0-alpha.1 以上）**
+- **components 在^0.11.0后已从全局导出去除**
 - Example
   ```ts
   import {} from "mmjs-core/components/{组件名}";
