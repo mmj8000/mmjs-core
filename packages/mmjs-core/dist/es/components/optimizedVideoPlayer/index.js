@@ -1,6 +1,6 @@
-import o from "./optimizedVideoPlayer.js";
-import { BANDWIDTH_PRESETS as i } from "./const.js";
+import { default as r } from "./optimizedVideoPlayer.js";
+import { BANDWIDTH_PRESETS as a } from "./const.js";
 export {
-  i as BANDWIDTH_PRESETS,
-  o as default
+  a as BANDWIDTH_PRESETS,
+  r as OptimizedVideoPlayer
 };

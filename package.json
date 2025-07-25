@@ -8,5 +8,8 @@
   },
   "scripts": {},
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "echarts": "^5.6.0"
+  }
 }

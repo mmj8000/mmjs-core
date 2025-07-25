@@ -1,5 +1,5 @@
 import { default as OptimizedVideoPlayer } from './optimizedVideoPlayer';
+import { BANDWIDTH_PRESETS } from './const';
 export type OptimizedVideoPlayerInstanceType = InstanceType<typeof OptimizedVideoPlayer>;
-export default OptimizedVideoPlayer;
-export { BANDWIDTH_PRESETS } from './const';
+export { OptimizedVideoPlayer, BANDWIDTH_PRESETS };
 export type { BandwidthPreset, BandwidthOption, ControlBarProps, VideoSource, PlayerOptions, BandwidthOptionRecord, } from './types';

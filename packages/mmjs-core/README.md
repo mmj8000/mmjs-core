@@ -7,7 +7,6 @@
 - **支持按需导入版本（^0.7.0-alpha.1 以上）**
 - Example
   ```ts
-  import {} from "mmjs-core/components";
   import {} from "mmjs-core/components/{组件名}";
   import {} from "mmjs-core/client";
   import {} from "mmjs-core/hooks";
@@ -22,7 +21,24 @@
   }
   ```
 
-## hooks
+## Client
+
+1. WebSocketClient
+
+   - ws client
+   - Example
+
+   ```ts
+   const wsClient = new WebSocketClient(wsBaseURL);
+   wsClient.onOpen = () => {
+     console.log("连接已建立，发送欢迎消息");
+     wsClient.send({ message: "xx" });
+     wsClient.close();
+   };
+   wsClient.onMessage = () => {};
+   ```
+
+## Hooks
 
 1. useAxiosCancellation
 
@@ -53,22 +69,7 @@
    const newFn = useMergeRequest(async () => {});
    ```
 
-3. WebSocketClient
-
-   - ws client
-   - Example
-
-   ```ts
-   const wsClient = new WebSocketClient(wsBaseURL);
-   wsClient.onOpen = () => {
-     console.log("连接已建立，发送欢迎消息");
-     wsClient.send({ message: "xx" });
-     wsClient.close();
-   };
-   wsClient.onMessage = () => {};
-   ```
-
-4. useDef (`^0.6.0-alpha.1`)
+3. useDef (`^0.6.0-alpha.1`)
 
    - FrameWork (Vue)
    - 重组件 def
@@ -83,7 +84,7 @@
    <template v-if="def(3)"></template>
    ```
 
-5. useVShallowRef (`^0.6.0-alpha.1`)
+4. useVShallowRef (`^0.6.0-alpha.1`)
 
    - FrameWork (Vue)
    - InstanceType、 推导 InstanceType
@@ -96,7 +97,7 @@
    </script>
    ```
 
-6. useAsyncIntervalFn (`^0.6.0-alpha.2`)
+5. useAsyncIntervalFn (`^0.6.0-alpha.2`)
 
    - Interval Request、callback
    - Example
@@ -105,7 +106,7 @@
    useAsyncIntervalFn(() => fetch(""), 1000 * 10);
    ```
 
-7. useWheel (`^0.9.0-alpha.1`)
+6. useWheel (`^0.9.0-alpha.1`)
 
    - FrameWork (Vue)
    - Example
@@ -117,7 +118,7 @@
    </script>
    ```
 
-8. useRestRef (`^0.10.0-alpha.1`)
+7. useRestRef (`^0.10.0-alpha.1`)
 
    - FrameWork (Vue)
    - Example
@@ -164,7 +165,7 @@
    ```
 
 2. scale (`^0.8.0`)
-   - value \* ratio **BigScreen**
+   - value \* ratio 场景推荐： **BigScreen**  、**Echarts**
    - Example
    ```ts
    console.log(scale(10), scale("10px"));

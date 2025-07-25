@@ -118,7 +118,7 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
     toggleBandwidthDialog: () => void;
     selectBandwidth: (preset: BandwidthPreset | string | number) => void;
     popupBlur: () => void;
-}, {}, {}, {}, import('vue').ComponentOptionsMixin, import('vue').ComponentOptionsMixin, ("ended" | "error" | "pause" | "play" | "ready" | "bandwidth-change")[], "ended" | "error" | "pause" | "play" | "ready" | "bandwidth-change", import('vue').PublicProps, Readonly<import('vue').ExtractPropTypes<{
+}, {}, {}, {}, import('vue').ComponentOptionsMixin, import('vue').ComponentOptionsMixin, ("pause" | "ready" | "play" | "ended" | "error" | "bandwidth-change")[], "pause" | "ready" | "play" | "ended" | "error" | "bandwidth-change", import('vue').PublicProps, Readonly<import('vue').ExtractPropTypes<{
     src: {
         type: PropType<string | VideoSource>;
         required: true;
@@ -224,9 +224,9 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
     onReady?: ((...args: any[]) => any) | undefined;
     "onBandwidth-change"?: ((...args: any[]) => any) | undefined;
 }>, {
-    options: PlayerOptions;
     poster: string;
     controlBar: ControlBarProps;
+    options: PlayerOptions;
     playerId: string;
     bandwidthOptionProps: BandwidthOptionRecord;
     intersectionThreshold: number;

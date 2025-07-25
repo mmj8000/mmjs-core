@@ -1,4 +1,4 @@
-import t from "./intersectionDraw.js";
+import { default as t } from "./intersectionDraw.js";
 export {
-  t as default
+  t as IntersectionDraw
 };

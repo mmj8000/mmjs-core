@@ -1,4 +1,6 @@
-import IntersectionDraw from './intersectionDraw.vue';
+import IntersectionDraw from "./intersectionDraw.vue";
 
-export type IntersectionDrawInstanceType = InstanceType<typeof IntersectionDraw>;
-export default IntersectionDraw;
+export type IntersectionDrawInstanceType = InstanceType<
+  typeof IntersectionDraw
+>;
+export { IntersectionDraw };
