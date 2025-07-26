@@ -4,31 +4,42 @@ import { transformCss } from "./filters";
 import { CssLegendPropType } from "./types";
 
 export function getCustomLegendProperty(legend: LegendComponentOption) {
-  console.log(legend)
   const propertys: CssLegendPropType = {};
-  for (let key in legend) {
-    if (legend.hasOwnProperty(key) && typeof legend[key] !== "object") {
-      normalizeProperty(key, propertys, legend[key]);
-    }
-  }
+  forPropertsEffect(legend, propertys, '');
+  console.log(propertys)
   return {
     ...propertys,
   };
 }
 
+function forPropertsEffect(data: LegendComponentOption, propertys: Record<string, string | number>, pkey: string = '') {
+  for (let key in data) {
+    const item = data[key];
+    if (typeof item === "string" || typeof item === 'number') {
+      normalizeProperty(pkey, key, propertys, item, data);
+    } else if (Object.prototype.toString.call(item) === '[object Object]') {
+      forPropertsEffect(item, propertys, key);
+    }
+  }
+}
+
 function normalizeProperty(
+  parentKey: string,
   key: string,
   propertys: Record<string, string | number>,
-  value: string | number
+  value: string | number,
+  data: LegendComponentOption,
 ) {
+  const keys = [parentKey, key].filter(Boolean);
+  const newKey = keys.join('-');
   if (matchCenterKey.includes(key) && value === "center") {
-    propertys[`--${key}`] = "50%";
-    propertys[`--css-translate`] = `translate(${[
+    propertys[`--${newKey}`] = "50%";
+    propertys[`--custom-translate`] = `translate(${[
       translateCenterXMaps[key] ?? translateCenterXMaps.default,
       translateCenterYMaps[key] ?? translateCenterYMaps.default,
     ].join(",")})`;
     return;
   }
   const filterFn = transformCss[key as keyof typeof transformCss];
-  propertys[`--${key}`] = filterFn ? filterFn(value, propertys) : transformCss.default(value, propertys);
+  propertys[`--${newKey}`] = filterFn ? filterFn(value, data, propertys) : transformCss.default(value, data, propertys);
 }

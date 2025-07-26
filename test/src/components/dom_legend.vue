@@ -16,12 +16,12 @@ import {
 import { option } from "./const";
 
 const chartDom = useTemplateRef("chartDomKey");
-const chartInstance = shallowRef();
+const chartInstance = shallowRef<echarts.ECharts>();
 provide(
   cssomLegendInjectKey,
   computed(() => {
     return {
-      ec: chartInstance.value,
+      ec: chartInstance.value!,
     };
   })
 );
@@ -29,9 +29,12 @@ provide(
 onMounted(() => {
   chartInstance.value = echarts.init(chartDom.value);
   chartInstance.value.setOption(option);
+  window.onresize = function() {
+    chartInstance.value?.resize();
+  }
 });
 function setOption() {
-  chartInstance.value.setOption({
+  chartInstance.value!.setOption({
     series: [
       {
         data: [

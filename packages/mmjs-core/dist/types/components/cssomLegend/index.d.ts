@@ -1,5 +1,6 @@
 import { default as CssomLegend } from './cssomLegend';
 export * from './const';
+export * from './types';
 export type CssomLegendInstanceType = InstanceType<typeof CssomLegend>;
 declare const UseCssomLegend: import('vue').DefineComponent<{
     ecInstance?: import('echarts').ECharts;

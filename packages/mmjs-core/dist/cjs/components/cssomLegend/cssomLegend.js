@@ -1,1 +1,1 @@
-"use strict";const e=require("./cssomLegend2.js");module.exports=e;
+"use strict";require('../../../css/components/cssomLegend/cssomLegend.css');const e=require("./cssomLegend2.js");;/* empty css              */const s=require("../../_virtual/_plugin-vue_export-helper.js"),r=s(e,[["__scopeId","data-v-cb0ae3a0"]]);module.exports=r;

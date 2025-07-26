@@ -1,12 +1,16 @@
-function f(m, r = 2, t = !1) {
-  let e = m;
+function m(r, t = 2, n = !1) {
+  let e = r;
   if (typeof e != "number" && (e = Number(e)), Number.isNaN(e))
     return 0;
-  if (t)
-    return Number(e.toFixed(r));
+  if (n)
+    return Number(e.toFixed(t));
   let [u, i] = `${e}`.split(".");
-  return typeof r == "number" && i ? +`${u}.${i.slice(0, r)}` : Number(u);
+  return typeof t == "number" && i ? +`${u}.${i.slice(0, t)}` : Number(u);
+}
+function f(r, t = "px") {
+  return typeof r == "string" ? r : `${r}${t}`;
 }
 export {
-  f as keepDecimals
+  m as keepDecimals,
+  f as normalizeNumUnit
 };

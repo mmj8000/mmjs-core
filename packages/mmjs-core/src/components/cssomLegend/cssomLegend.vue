@@ -35,7 +35,7 @@ import {
 import { cssomLegendInjectKey } from "./const";
 import { EChartsOption, SeriesOption, type ECharts } from "echarts";
 import { getCustomLegendProperty } from "./methods";
-import { PieSeriesRecordDataType$1 } from "./types";
+import { normalizeLegendName } from "./filters";
 
 const ecInjectInstance = inject(cssomLegendInjectKey, void 0);
 const { ecInstance, eventName = "finished" } = defineProps<{
@@ -43,7 +43,7 @@ const { ecInstance, eventName = "finished" } = defineProps<{
   eventName?: "rendered" | "finished";
 }>();
 
-const proxyEcInstance = shallowRef();
+const proxyEcInstance = shallowRef<ECharts>();
 const renderOption = ref<EChartsOption>();
 
 function getLegendNames(index: number) {
@@ -54,17 +54,6 @@ function getLegendNames(index: number) {
   return data.map((item) => normalizeLegendName(serie, item));
 }
 
-function normalizeLegendName(
-  serie: SeriesOption,
-  record: PieSeriesRecordDataType$1
-) {
-  switch (serie.type) {
-    case "pie":
-      return record.name;
-  }
-
-  return record;
-}
 const renderLegends = computed(() => renderOption.value?.legend ?? []);
 function renderedHandler(this: echarts.ECharts) {
   renderOption.value = this.getOption() as EChartsOption;
@@ -102,10 +91,15 @@ onScopeDispose(() => {
     right: var(--right);
     bottom: var(--bottom);
     left: var(--left);
-    transform: var(--css-translate);
-    width: var(--width, fit-content);
-    display: inline-flex;
-    flex-direction: var(--orient, "row");
+    transform: var(--custom-translate);
+    width: var(--width, auto);
+    display: flex;
+    gap: var(--itemGap);
+    flex-direction: var(--orient, row);
+    z-index: var(--z);
+    padding: var(--padding);
+    flex-wrap: wrap;
+    box-sizing: border-box;
   }
 
   &__rect {
@@ -113,11 +107,22 @@ onScopeDispose(() => {
     width: var(--itemWidth);
     height: var(--itemHeight);
     box-sizing: border-box;
+    border-color: var(--itemStyle-borderColor);
+    border-width: var(--itemStyle-borderWidth);
+    border-style: solid;
+  }
+
+  &__text {
+    color: var(--textStyle-color);
+    white-space: nowrap;
+    font-size: var(--textStyle-fontSize, 12px);
   }
 
   &__legend_item {
     pointer-events: auto;
     display: inline-flex;
+    width: fit-content;
+    flex-direction: var(--align, row);
     align-items: var(--itemAlign, center);
     gap: var(--itemGap);
   }

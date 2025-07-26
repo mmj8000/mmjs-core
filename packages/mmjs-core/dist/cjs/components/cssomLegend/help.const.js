@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,Symbol.toStringTag,{value:"Module"});const t=["left","top","right","bottom"],e={left:"-50%",right:"50%",default:"0px"},a={bottom:"50%",top:"-50%",default:"0px"},r={horizontal:"horizontal",vertical:"vertical"};exports.ecOrientValue=r;exports.matchCenterKey=t;exports.translateCenterXMaps=e;exports.translateCenterYMaps=a;

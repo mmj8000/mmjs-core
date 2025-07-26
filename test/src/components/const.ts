@@ -1,6 +1,6 @@
-import { EChartsCoreOption } from "echarts";
+import { type EChartsOption } from "echarts";
 
-export const option: EChartsCoreOption = {
+export const option: EChartsOption = {
   tooltip: {
     trigger: "item",
   },
@@ -8,12 +8,18 @@ export const option: EChartsCoreOption = {
     {
       top: "5%",
       left: "center",
-      orient: 'vertical'
+      // align: 'right',
+      width: '100%',
+      textStyle: {
+        fontSize: 15,
+        overflow: 'breakAll'
+      }
     },
     {
       bottom: "5%",
       left: "center",
-        orient: 'vertical'
+      orient: 'vertical',
+      
     },
   ],
   series: [

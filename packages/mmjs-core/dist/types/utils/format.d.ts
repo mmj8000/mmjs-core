@@ -9,3 +9,14 @@
  * @returns
  */
 export declare function keepDecimals(num: number, count?: number, round?: boolean): number;
+/**
+ *
+ * @param val
+ * @param unit
+ * @example
+ * normalizeNumUnit(12) // 12px
+ * normalizeNumUnit('12px') // 12px
+ * normalizeNumUnit(12, 'rem') // 12rem
+ * @returns
+ */
+export declare function normalizeNumUnit(val: number | string, unit?: string): string;
