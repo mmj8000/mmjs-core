@@ -8,10 +8,12 @@ export const option: EChartsCoreOption = {
     {
       top: "5%",
       left: "center",
+      orient: 'vertical'
     },
     {
       bottom: "5%",
       left: "center",
+        orient: 'vertical'
     },
   ],
   series: [

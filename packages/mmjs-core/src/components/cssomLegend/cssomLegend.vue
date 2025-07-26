@@ -8,7 +8,16 @@
         :style="getCustomLegendProperty(legend)"
         :key
       >
-        <div class="cssom_legend__legend_item">{{ key }}</div>
+        <div
+          class="cssom_legend__legend_item"
+          v-for="(name, index) in getLegendNames(key)"
+          :key="index"
+        >
+          <div class="cssom_legend__rect"></div>
+          <div class="cssom_legend__text">
+            {{ name }}
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -24,21 +33,41 @@ import {
   computed,
 } from "vue";
 import { cssomLegendInjectKey } from "./const";
-import { type ECharts, type EChartsCoreOption } from "echarts";
+import { EChartsOption, SeriesOption, type ECharts } from "echarts";
 import { getCustomLegendProperty } from "./methods";
+import { PieSeriesRecordDataType$1 } from "./types";
 
 const ecInjectInstance = inject(cssomLegendInjectKey, void 0);
-const { ecInstance, eventName = "rendered" } = defineProps<{
+const { ecInstance, eventName = "finished" } = defineProps<{
   ecInstance?: ECharts;
   eventName?: "rendered" | "finished";
 }>();
 
 const proxyEcInstance = shallowRef();
-const renderOption = ref<EChartsCoreOption>();
+const renderOption = ref<EChartsOption>();
 
+function getLegendNames(index: number) {
+  const series = (renderOption.value?.series as SeriesOption[]) ?? [];
+  const serie = series.at(index) ?? series.at(0);
+  if (!serie) return [];
+  const data = (serie?.data as any[]) ?? [];
+  return data.map((item) => normalizeLegendName(serie, item));
+}
+
+function normalizeLegendName(
+  serie: SeriesOption,
+  record: PieSeriesRecordDataType$1
+) {
+  switch (serie.type) {
+    case "pie":
+      return record.name;
+  }
+
+  return record;
+}
 const renderLegends = computed(() => renderOption.value?.legend ?? []);
 function renderedHandler(this: echarts.ECharts) {
-  renderOption.value = this.getOption();
+  renderOption.value = this.getOption() as EChartsOption;
 }
 
 function onEcEvents() {
@@ -74,12 +103,23 @@ onScopeDispose(() => {
     bottom: var(--bottom);
     left: var(--left);
     transform: var(--css-translate);
-    width: var(--width, 100%);
-    text-align: center;
+    width: var(--width, fit-content);
+    display: inline-flex;
+    flex-direction: var(--orient, "row");
+  }
+
+  &__rect {
+    background: red;
+    width: var(--itemWidth);
+    height: var(--itemHeight);
+    box-sizing: border-box;
   }
 
   &__legend_item {
     pointer-events: auto;
+    display: inline-flex;
+    align-items: var(--itemAlign, center);
+    gap: var(--itemGap);
   }
 
   &__wrapper {

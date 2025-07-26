@@ -1,30 +1,22 @@
 import { type LegendComponentOption } from "echarts";
+import { matchCenterKey, translateCenterXMaps, translateCenterYMaps } from "./help.const";
+import { transformCss } from "./filters";
+import { CssLegendPropType } from "./types";
 
 export function getCustomLegendProperty(legend: LegendComponentOption) {
-  console.log(legend);
-  const propertys = {};
+  console.log(legend)
+  const propertys: CssLegendPropType = {};
   for (let key in legend) {
     if (legend.hasOwnProperty(key) && typeof legend[key] !== "object") {
-      normalizeCenterProperty(key, propertys, legend[key]);
+      normalizeProperty(key, propertys, legend[key]);
     }
   }
-  console.log(propertys);
   return {
     ...propertys,
   };
 }
-const matchCenterKey = ["left", "top", "right", "bottom"];
-const translateCenterXMaps = {
-  left: "-50%",
-  right: "50%",
-  default: "0px",
-} as const;
-const translateCenterYMaps = {
-  bottom: "50%",
-  top: "-50%",
-  default: "0px",
-} as const;
-function normalizeCenterProperty(
+
+function normalizeProperty(
   key: string,
   propertys: Record<string, string | number>,
   value: string | number
@@ -37,5 +29,6 @@ function normalizeCenterProperty(
     ].join(",")})`;
     return;
   }
-  propertys[`--${key}`] = value;
+  const filterFn = transformCss[key as keyof typeof transformCss];
+  propertys[`--${key}`] = filterFn ? filterFn(value, propertys) : transformCss.default(value, propertys);
 }
