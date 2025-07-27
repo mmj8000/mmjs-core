@@ -5,7 +5,9 @@
   pnpm add mmjs-core
   ```
 - **支持按需导入版本（^0.7.0-alpha.1 以上）**
-- **components 在^0.11.0后已从全局导出去除**
+
+  - **components 在^0.11.0后已从全局导出去除**
+
 - Example
   ```ts
   import {} from "mmjs-core/components/{组件名}";
@@ -114,7 +116,7 @@
 
    ```vue
    <script>
-   const zoomContentRef = useTemplateRef < HTMLElement > "zoomContentRefName";
+   const zoomContentRef = useTemplateRef<HTMLElement>("zoomContentRefName");
    const { wheel } = useWheel(zoomContentRef);
    </script>
    ```
@@ -151,6 +153,35 @@
    <IntersectionDraw>
        <div>content ....</div>
    </IntersectionDraw>
+   ```
+3. CssomLegend (`^0.12.0-alpha.1`)
+   - FrameWork (**Vue**、**ECharts**) 
+   - 针对pie、line、bar显示，其余后续版本陆续支持
+   - Example
+   ```vue
+   <template>
+     <!-- // 注意这里我用relative 定位 -->
+     <div class="chart_wrap relative">
+        <div class="chart" ref="chartDomKey"></div>
+        <CssomLegend />
+    </div>
+   </template>
+    <script lang="ts" setup>
+    import {
+     CssomLegend,
+     cssomLegendInjectKey,
+   } from "mmjs-core/components/cssomLegend";
+    import { provide } from 'vue'; 
+        // 使用provide 或者 props 传递给CssomLegend
+        provide(
+            cssomLegendInjectKey,
+            computed(() => {
+                return {
+               	 ec: chartInstance.value!,
+                };
+            })
+        );
+    </script>
    ```
 
 ## Utils

@@ -1,1 +1,1 @@
-"use strict";Object.defineProperty(exports,Symbol.toStringTag,{value:"Module"});const e=require("./cssomLegend.js"),s=require("./const.js");require("./types.js");const n=e;exports.cssomLegendInjectKey=s.cssomLegendInjectKey;exports.CssomLegend=n;
+"use strict";Object.defineProperty(exports,Symbol.toStringTag,{value:"Module"});const e=require("./cssomLegend.js"),s=require("./const.js"),n=e;exports.cssomLegendInjectKey=s.cssomLegendInjectKey;exports.CssomLegend=n;

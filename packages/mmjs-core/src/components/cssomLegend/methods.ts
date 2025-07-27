@@ -1,12 +1,17 @@
 import { type LegendComponentOption } from "echarts";
-import { matchCenterKey, translateCenterXMaps, translateCenterYMaps } from "./help.const";
+import { innerIocnNames, matchCenterKey } from "./help.const";
 import { transformCss } from "./filters";
 import { CssLegendPropType } from "./types";
 
+export function getSelectStatus(legend: LegendComponentOption, name: string) {
+  return legend?.selected?.[name] ?? true;
+}
+export function formatter(legend: LegendComponentOption, name: string) {
+  return typeof legend?.formatter === 'function' ? legend?.formatter(name) : legend.formatter ?? name;
+}
 export function getCustomLegendProperty(legend: LegendComponentOption) {
   const propertys: CssLegendPropType = {};
   forPropertsEffect(legend, propertys, '');
-  console.log(propertys)
   return {
     ...propertys,
   };
@@ -33,13 +38,39 @@ function normalizeProperty(
   const keys = [parentKey, key].filter(Boolean);
   const newKey = keys.join('-');
   if (matchCenterKey.includes(key) && value === "center") {
-    propertys[`--${newKey}`] = "50%";
-    propertys[`--custom-translate`] = `translate(${[
-      translateCenterXMaps[key] ?? translateCenterXMaps.default,
-      translateCenterYMaps[key] ?? translateCenterYMaps.default,
-    ].join(",")})`;
+    // propertys[`--${newKey}`] = "50%";  
+    propertys[`--custom-root-justify`] = 'center';
+    // propertys[`--custom-translate`] = `translate(${[
+    //   translateCenterXMaps[key] ?? translateCenterXMaps.default,
+    //   translateCenterYMaps[key] ?? translateCenterYMaps.default,
+    // ].join(",")})`;
     return;
   }
   const filterFn = transformCss[key as keyof typeof transformCss];
   propertys[`--${newKey}`] = filterFn ? filterFn(value, data, propertys) : transformCss.default(value, data, propertys);
+}
+
+export function getIconModified(icon?: string) {
+  if (!icon) return 'roundRect';
+  return innerIocnNames[icon] ?? 'roundRect';
+}
+
+export function calculateViewBox(pathData: string = '') {
+  let minX = Infinity, minY = Infinity;
+  let maxX = -Infinity, maxY = -Infinity;
+
+  // 简化版path解析逻辑
+  const commands = pathData.match(/[a-df-z][^a-df-z]*/gi);
+  commands?.forEach(cmd => {
+    const nums = cmd.slice(1).trim().split(/[\s,]+/).map(Number);
+    for (let i = 0; i < nums.length; i += 2) {
+      const x = nums[i], y = nums[i + 1];
+      if (!isNaN(x)) minX = Math.min(minX, x);
+      if (!isNaN(y)) minY = Math.min(minY, y);
+      if (!isNaN(x)) maxX = Math.max(maxX, x);
+      if (!isNaN(y)) maxY = Math.max(maxY, y);
+    }
+  });
+
+  return `${minX} ${minY} ${maxX - minX + 2} ${maxY - minY + 2}`;
 }

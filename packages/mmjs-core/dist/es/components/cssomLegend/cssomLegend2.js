@@ -1,59 +1,125 @@
-import { defineComponent as h, inject as N, shallowRef as x, ref as y, computed as w, watchPostEffect as z, onScopeDispose as C, createElementBlock as s, openBlock as o, createElementVNode as u, Fragment as g, renderList as v, normalizeStyle as S, unref as B, normalizeClass as D, toDisplayString as I } from "vue";
-import { cssomLegendInjectKey as O } from "./const.js";
-import { getCustomLegendProperty as P } from "./methods.js";
-import { normalizeLegendName as b } from "./filters.js";
-const j = { class: "cssom_legend" }, k = { class: "cssom_legend__wrapper" }, F = { class: "cssom_legend__text" }, $ = /* @__PURE__ */ h({
+import { defineComponent as b, inject as j, shallowRef as A, ref as F, computed as E, watchPostEffect as H, onScopeDispose as K, createElementBlock as c, openBlock as i, createElementVNode as u, Fragment as k, renderList as N, normalizeStyle as B, unref as o, normalizeClass as _, toDisplayString as R } from "vue";
+import { cssomLegendInjectKey as T } from "./const.js";
+import { getCustomLegendProperty as q, getSelectStatus as f, calculateViewBox as G, getIconModified as I, formatter as J } from "./methods.js";
+import { normalizeLegendName as C } from "./filters.js";
+import { useLegendAction as Q } from "./legend-action.js";
+const U = { class: "cssom_legend" }, X = { class: "cssom_legend__wrapper" }, Y = { class: "cssom_legend__legend__wrap" }, Z = ["onClick", "onMouseenter", "onMouseleave"], ee = ["src"], ne = ["viewBox"], te = ["d"], se = ["title"], _e = /* @__PURE__ */ b({
   __name: "cssomLegend",
   props: {
     ecInstance: {},
-    eventName: { default: "finished" }
+    eventName: { default: "rendered" }
   },
-  setup(a) {
-    const l = N(O, void 0), d = x(), i = y();
-    function p(e) {
-      var r;
-      const t = ((r = i.value) == null ? void 0 : r.series) ?? [], n = t.at(e) ?? t.at(0);
-      return n ? ((n == null ? void 0 : n.data) ?? []).map((m) => b(n, m)) : [];
+  setup(v) {
+    const g = j(T, void 0), m = A(), r = F(), { legendToggleSelect: M, highlight: $, downplay: z } = Q(m);
+    function P(e, l) {
+      var t, a;
+      const n = ((t = r.value) == null ? void 0 : t.series) ?? [], s = n.at(l) ?? n.at(0);
+      return s ? (a = e == null ? void 0 : e.data) != null && a.length ? C({
+        legend: e,
+        serie: s,
+        series: n
+      }) : C({
+        legend: e,
+        serie: s,
+        series: n
+      }) : [];
     }
-    const E = w(() => {
+    const D = E(
+      () => {
+        var e;
+        return ((e = r.value) == null ? void 0 : e.legend) ?? [];
+      }
+    ), O = E(() => {
       var e;
-      return ((e = i.value) == null ? void 0 : e.legend) ?? [];
+      return ((e = r.value) == null ? void 0 : e.color) ?? [];
     });
-    function _() {
-      i.value = this.getOption();
+    function d() {
+      r.value = this.getOption();
     }
-    function L() {
-      var e;
-      (e = d.value) == null || e.on(a.eventName, _);
+    function V(e, l) {
+      var s;
+      return {
+        "--item-color": O.value[e],
+        "--textStyle-color": (s = l == null ? void 0 : l.textStyle) == null ? void 0 : s.color
+      };
     }
-    function f() {
+    function W() {
       var e;
-      (e = d.value) == null || e.off(a.eventName, _);
+      (e = m.value) == null || e.on(v.eventName, d);
     }
-    return z(() => {
+    function p() {
       var e;
-      d.value = a.ecInstance ?? ((e = l == null ? void 0 : l.value) == null ? void 0 : e.ec), f(), L();
-    }), C(() => {
-      f();
-    }), (e, t) => (o(), s("div", j, [
-      u("div", k, [
-        (o(!0), s(g, null, v(E.value, (n, c) => (o(), s("div", {
-          class: D(["cssom_legend__legend", [`cssom_legend--box-${c}`]]),
-          style: S(B(P)(n)),
-          key: c
+      (e = m.value) == null || e.off(v.eventName, d);
+    }
+    return H(() => {
+      var e;
+      m.value = v.ecInstance ?? ((e = g == null ? void 0 : g.value) == null ? void 0 : e.ec), p(), W();
+    }), K(() => {
+      p();
+    }), (e, l) => (i(), c("div", U, [
+      u("div", X, [
+        (i(!0), c(k, null, N(D.value, (n, s) => (i(), c("div", {
+          class: _(["cssom_legend__legend", [`cssom_legend--box-${s}`]]),
+          style: B(o(q)(n)),
+          key: s
         }, [
-          (o(!0), s(g, null, v(p(c), (r, m) => (o(), s("div", {
-            class: "cssom_legend__legend_item",
-            key: m
-          }, [
-            t[0] || (t[0] = u("div", { class: "cssom_legend__rect" }, null, -1)),
-            u("div", F, I(r), 1)
-          ]))), 128))
+          u("div", Y, [
+            (i(!0), c(k, null, N(P(n, s), (t, a) => {
+              var h, y, x, S, w;
+              return i(), c("div", {
+                class: _(["cssom_legend__legend_item", {
+                  "cssom_legend__legend_item--unselect": !o(f)(
+                    n,
+                    t.name
+                  )
+                }]),
+                key: a,
+                style: B(V(a, t)),
+                onClick: (L) => o(M)(t.name),
+                onMouseenter: (L) => o($)(t.name),
+                onMouseleave: (L) => o(z)(t.name)
+              }, [
+                (h = t.icon ?? n.icon) != null && h.startsWith("image://") ? (i(), c("img", {
+                  key: 0,
+                  class: _(["cssom_legend__image_icon", {
+                    "cssom_legend__image_icon--unselect": !o(f)(
+                      n,
+                      t.name
+                    )
+                  }]),
+                  src: (y = t.icon ?? n.icon) == null ? void 0 : y.slice(8),
+                  alt: ""
+                }, null, 10, ee)) : (x = t.icon ?? n.icon) != null && x.startsWith("path://") ? (i(), c("svg", {
+                  key: 1,
+                  class: _(["cssom_legend__svg_icon", {
+                    "cssom_legend__svg_icon--unselect": !o(f)(
+                      n,
+                      t.name
+                    )
+                  }]),
+                  viewBox: o(G)((S = t.icon ?? n.icon) == null ? void 0 : S.slice(7))
+                }, [
+                  u("path", {
+                    d: (w = t.icon ?? n.icon) == null ? void 0 : w.slice(7)
+                  }, null, 8, te)
+                ], 10, ne)) : (i(), c("div", {
+                  key: 2,
+                  class: _(["cssom_legend__rect", [
+                    `legend-icon--${o(I)(t.icon ?? n.icon)}`
+                  ]])
+                }, null, 2)),
+                u("div", {
+                  class: "cssom_legend__text",
+                  title: t.name
+                }, R(o(J)(n, t.name)), 9, se)
+              ], 46, Z);
+            }), 128))
+          ])
         ], 6))), 128))
       ])
     ]));
   }
 });
 export {
-  $ as default
+  _e as default
 };

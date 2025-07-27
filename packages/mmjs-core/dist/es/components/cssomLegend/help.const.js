@@ -2,17 +2,27 @@ const t = ["left", "top", "right", "bottom"], e = {
   left: "-50%",
   right: "50%",
   default: "0px"
-}, o = {
+}, n = {
   bottom: "50%",
   top: "-50%",
   default: "0px"
-}, a = {
+}, r = {
   horizontal: "horizontal",
   vertical: "vertical"
+}, o = {
+  circle: "circle",
+  rect: "rect",
+  roundRect: "roundRect",
+  triangle: "triangle",
+  diamond: "diamond",
+  pin: "pin",
+  arrow: "arrow",
+  none: "none"
 };
 export {
-  a as ecOrientValue,
+  r as ecOrientValue,
+  o as innerIocnNames,
   t as matchCenterKey,
   e as translateCenterXMaps,
-  o as translateCenterYMaps
+  n as translateCenterYMaps
 };

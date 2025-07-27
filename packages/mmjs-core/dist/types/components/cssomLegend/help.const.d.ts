@@ -13,3 +13,13 @@ export declare const ecOrientValue: {
     readonly horizontal: "horizontal";
     readonly vertical: "vertical";
 };
+export declare const innerIocnNames: {
+    readonly circle: "circle";
+    readonly rect: "rect";
+    readonly roundRect: "roundRect";
+    readonly triangle: "triangle";
+    readonly diamond: "diamond";
+    readonly pin: "pin";
+    readonly arrow: "arrow";
+    readonly none: "none";
+};
