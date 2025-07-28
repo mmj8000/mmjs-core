@@ -1,4 +1,4 @@
-# mmjs-share hooks component vue
+# mmjs-share utils
 
 - Install
   ```shell
