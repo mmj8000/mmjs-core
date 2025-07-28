@@ -14,7 +14,6 @@
   import {} from "mmjs-core/client";
   import {} from "mmjs-core/hooks";
   import {} from "mmjs-core/utils";
-  import {} from "mmjs-core/share";
   ```
 - tsconfig.json
   - （如果用 Vite/Webpack 等打包工具）
