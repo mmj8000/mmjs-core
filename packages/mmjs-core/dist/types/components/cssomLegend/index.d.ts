@@ -30,8 +30,20 @@ export type CssomLegendInstanceType = InstanceType<typeof CssomLegend>;
 declare const UseCssomLegend: import('vue').DefineComponent<{
     ecInstance?: import('echarts').ECharts;
     eventName?: "rendered" | "finished";
-}, {}, {}, {}, {}, import('vue').ComponentOptionsMixin, import('vue').ComponentOptionsMixin, {}, string, import('vue').PublicProps, Readonly<{
+    throttleTime?: number;
+    disabled?: boolean;
+}, {}, {}, {}, {}, import('vue').ComponentOptionsMixin, import('vue').ComponentOptionsMixin, {} & {
+    legendToggleSelect: (v: string) => any;
+    highlight: (v: string) => any;
+    downplay: (v: string) => any;
+}, string, import('vue').PublicProps, Readonly<{
     ecInstance?: import('echarts').ECharts;
     eventName?: "rendered" | "finished";
-}> & Readonly<{}>, {}, {}, {}, {}, string, import('vue').ComponentProvideOptions, false, {}, HTMLDivElement>;
+    throttleTime?: number;
+    disabled?: boolean;
+}> & Readonly<{
+    onLegendToggleSelect?: ((v: string) => any) | undefined;
+    onHighlight?: ((v: string) => any) | undefined;
+    onDownplay?: ((v: string) => any) | undefined;
+}>, {}, {}, {}, {}, string, import('vue').ComponentProvideOptions, false, {}, HTMLDivElement>;
 export { UseCssomLegend as CssomLegend };

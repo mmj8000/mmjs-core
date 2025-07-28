@@ -1,34 +1,52 @@
-function c(n) {
-  function i(e) {
-    var t;
-    (t = n.value) == null || t.dispatchAction({
-      type: "legendToggleSelect",
-      // 图例名称
-      name: e
-    });
+function o(l) {
+  function n(t) {
+    var e;
+    (e = l.value) == null || e.dispatchAction(
+      {
+        type: "legendToggleSelect",
+        // 图例名称
+        name: t
+      },
+      {
+        flush: !1,
+        silent: !0
+      }
+    );
   }
-  function l(e) {
-    var t;
-    (t = n.value) == null || t.dispatchAction({
-      type: "highlight",
-      // 图例名称
-      name: e
-    });
+  function i(t) {
+    var e;
+    (e = l.value) == null || e.dispatchAction(
+      {
+        type: "highlight",
+        // 图例名称
+        name: t
+      },
+      {
+        flush: !1,
+        silent: !0
+      }
+    );
   }
-  function o(e) {
-    var t;
-    (t = n.value) == null || t.dispatchAction({
-      type: "downplay",
-      // 图例名称
-      name: e
-    });
+  function u(t) {
+    var e;
+    (e = l.value) == null || e.dispatchAction(
+      {
+        type: "downplay",
+        // 图例名称
+        name: t
+      },
+      {
+        flush: !1,
+        silent: !0
+      }
+    );
   }
   return {
-    legendToggleSelect: i,
-    highlight: l,
-    downplay: o
+    legendToggleSelect: n,
+    highlight: i,
+    downplay: u
   };
 }
 export {
-  c as useLegendAction
+  o as useLegendAction
 };

@@ -1,3 +1,4 @@
+import { LayoutOrient } from './types';
 export declare const matchCenterKey: string[];
 export declare const translateCenterXMaps: {
     readonly left: "-50%";
@@ -10,8 +11,7 @@ export declare const translateCenterYMaps: {
     readonly default: "0px";
 };
 export declare const ecOrientValue: {
-    readonly horizontal: "horizontal";
-    readonly vertical: "vertical";
+    [key in LayoutOrient]: LayoutOrient;
 };
 export declare const innerIocnNames: {
     readonly circle: "circle";

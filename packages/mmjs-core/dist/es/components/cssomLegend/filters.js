@@ -1,17 +1,17 @@
-import { normalizeNumUnit as o } from "../../utils/format.js";
-import { ecOrientValue as i } from "./help.const.js";
+import { normalizeNumUnit as n } from "../../utils/format.js";
+import { ecOrientValue as m } from "./help.const.js";
 const l = {
-  orient(r, e, t) {
+  orient(r, t, e) {
     switch (r) {
-      case i.horizontal:
+      case m.horizontal:
         return "row";
-      case i.vertical:
+      case m.vertical:
         return "column";
       default:
         return r;
     }
   },
-  align(r, e, t) {
+  align(r, t, e) {
     switch (r) {
       case "right":
         return "row-reverse";
@@ -19,103 +19,129 @@ const l = {
         return "row";
     }
   },
-  left(r, e, t) {
-    return t["--custom-root-justify"] = "flex-start", o(r);
+  left(r, t, e) {
+    return e["--custom-root-justify"] = "flex-start", n(r);
   },
-  right(r, e, t) {
-    return t["--custom-root-justify"] = "flex-end", o(r);
+  right(r, t, e) {
+    return e["--custom-root-justify"] = "flex-end", n(r);
   },
-  height(r, e, t) {
-    return o(r);
+  height(r, t, e) {
+    return n(r);
   },
-  lineHeight(r, e, t) {
-    return o(r);
+  lineHeight(r, t, e) {
+    return n(r);
   },
-  itemWidth(r, e, t) {
-    return o(r);
+  itemWidth(r, t, e) {
+    return n(r);
   },
-  itemHeight(r, e, t) {
-    return o(r);
+  itemHeight(r, t, e) {
+    return n(r);
   },
-  itemGap(r, e, t) {
-    return o(r);
+  itemGap(r, t, e) {
+    return n(r);
   },
-  padding(r, e, t) {
-    return o(r);
+  padding(r, t, e) {
+    return n(r);
   },
-  selectorButtonGap(r, e, t) {
-    return o(r);
+  selectorButtonGap(r, t, e) {
+    return n(r);
   },
-  selectorItemGap(r, e, t) {
-    return o(r);
+  selectorItemGap(r, t, e) {
+    return n(r);
   },
-  borderRadius(r, e, t) {
-    return o(r);
+  borderRadius(r, t, e) {
+    return n(r);
   },
-  borderWidth(r, e, t) {
+  borderWidth(r, t, e) {
     switch (r) {
       case "auto":
         return "2px";
       default:
-        return o(r);
+        return n(r);
     }
   },
-  inactiveWidth(r, e, t) {
-    return o(r);
+  inactiveWidth(r, t, e) {
+    return n(r);
   },
-  fontSize(r, e, t) {
-    return o(r);
+  fontSize(r, t, e) {
+    return n(r);
   },
-  inactiveBorderWidth(r, e, t) {
+  inactiveBorderWidth(r, t, e) {
     switch (r) {
       case "auto":
         return "0px";
       default:
-        return o(r);
+        return n(r);
     }
   },
-  default(r, e, t) {
+  default(r, t, e) {
+    return r;
+  }
+}, s = {
+  fontSize({ value: r }) {
+    return n(r);
+  },
+  width({ value: r }) {
+    return n(r);
+  },
+  height({ value: r }) {
+    return n(r);
+  },
+  borderWidth({ value: r }) {
+    return n(r);
+  },
+  padding({ value: r }) {
+    return Array.isArray(r) ? r.map((t) => n(t)).join(" ") : n(r);
+  },
+  default({ value: r }) {
     return r;
   }
 };
-function h({
-  serie: r,
-  series: e,
-  legend: t
+function P({
+  legendIndex: r,
+  series: t,
+  legend: e
 }) {
   var d;
-  const u = (r == null ? void 0 : r.data) ?? [];
-  if (!u.length) return [];
-  let f = [];
-  if ((d = t == null ? void 0 : t.data) != null && d.length && (f = t.data.map((c) => {
-    const n = typeof c == "string" ? c : c.name;
-    return typeof c == "string" ? {
-      name: n
+  const c = t.at(r) ?? t.at(0);
+  if (!c) return [];
+  const i = (c == null ? void 0 : c.data) ?? [];
+  if (!i.length) return [];
+  let u = [];
+  if ((d = e == null ? void 0 : e.data) != null && d.length && (u = e.data.map((f) => {
+    const o = typeof f == "string" ? f : f.name;
+    return typeof f == "string" ? {
+      name: o,
+      serie: c
     } : {
-      ...c
+      name: f.name,
+      icon: f.icon,
+      serie: c
     };
-  })), (r == null ? void 0 : r.type) === "pie") {
-    if (f.length) {
-      const c = u.reduce((n, a) => (n[a.name] = a.name, n), {});
-      return f.filter((n) => !!c[n.name]);
+  })), (c == null ? void 0 : c.type) === "pie") {
+    if (u.length) {
+      const f = i.reduce((o, a) => (o[a.name] = a.name, o.serie = c, o), {});
+      return u.filter((o) => !!f[o.name]);
     }
-    return u;
+    return i;
   }
-  if (e != null && e[0].name) {
-    if (f.length) {
-      const c = e.reduce((n, a) => (n[a.name] = a.name, n), {});
-      return f.filter((n) => !!c[n.name]);
+  if (t != null && t[0].name) {
+    if (u.length) {
+      const f = t.reduce((o, a) => (o[a.name] = a.name, o), {});
+      return u.filter((o) => !!f[o.name]);
     }
-    return e.map((c) => {
-      var n;
+    return t.map((f, o) => {
+      var a;
       return {
-        name: (n = c.name) == null ? void 0 : n.toString()
+        serie: t.at(o),
+        name: (a = f.name) == null ? void 0 : a.toString()
       };
     }).filter(Boolean);
   }
   return [];
 }
 export {
-  h as normalizeLegendName,
-  l as transformCss
+  P as normalizeLegendName,
+  l as transformCss,
+  s as transformTextStyle
 };

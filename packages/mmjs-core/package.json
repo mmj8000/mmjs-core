@@ -28,6 +28,11 @@
       "import": "./dist/es/client/*.js",
       "require": "./dist/cjs/client/*.js"
     },
+    "./share/*": {
+      "types": "./dist/types/share/*.d.ts",
+      "import": "./dist/es/share/*.js",
+      "require": "./dist/cjs/share/*.js"
+    },
     "./components/*": {
       "types": "./dist/types/components/*/index.d.ts",
       "import": "./dist/es/components/*/index.js",
@@ -74,6 +79,7 @@
     "axios": "^0.27.2",
     "less": "^4.4.0",
     "lodash-es": "^4.17.21",
+    "mmjs-share": "workspace:^",
     "typescript": "^5.8.3",
     "video.js": "^8.23.3",
     "vite": "^5.4.17",

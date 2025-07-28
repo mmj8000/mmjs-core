@@ -4,6 +4,23 @@
 
 <script setup lang="ts">
 import DomLegend from "./components/dom_legend.vue";
+// import { throttle, memoize } from "mmjs-core/share";
+// const throttledFn = throttle(() => {
+//   console.log("Throttled function");
+// }, 500);
+
+// // 手动取消节流
+// setTimeout(() => {
+//   throttledFn.cancel();
+// }, 2000);
+// const add = (a: number, b: number): number => {
+//   console.log("Calculating...");
+//   return a + b;
+// };
+
+// const memoizedAdd = memoize(add);
+// console.log(memoizedAdd(1, 2)); // 输出计算日志
+// console.log(memoizedAdd(1, 2)); // 从缓存读取
 // import {
 //   OptimizedVideoPlayer,
 //   OptimizedVideoPlayerInstanceType,
