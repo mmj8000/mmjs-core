@@ -23,8 +23,8 @@ export default defineConfig({
     outDir: "./dist",
     cssCodeSplit: false,
     lib: {
-      name: "MmjsCore",
-      entry: ["./src/index.ts", "./src/components/index.ts"],
+      name: "MmjsShare",
+      entry: ["./src/index.ts"],
       formats: ["es", "cjs"],
       fileName(fromat, entry) {
         return `${fromat}/${entry.replace(".vue", "")}.js`;
@@ -39,16 +39,6 @@ export default defineConfig({
         assetFileNames: "[ext]/[name].[ext]",
       },
       external: [
-        "vue",
-        "axios",
-        "video.js",
-        "video.js/dist/video-js.css",
-        "lodash-es",
-        "@vueuse/core",
-        "raf-polyfill-es",
-        "@enhances/with-resolvers",
-        "echarts",
-        "mmjs-share"
       ],
     },
   },

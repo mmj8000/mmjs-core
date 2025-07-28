@@ -25,12 +25,8 @@
   ```
 
 ## 近期更新
-
-- Share
-  1. memoize (`包含过期时间`)
-  2. throttle （`主动cancel`)
 - Components
-  1. CssomLegend (`ECharts Option To HTML Legend`、`Beta`、`ECharts^5`)
+  1. CssomLegend (`ECharts Option 转 Html 结构的Legend 很有用`)
 
 
 
@@ -232,27 +228,4 @@
 
 
 ## Share
-
-1. throttle
-   - Custom Cancel
-   ```ts
-   const throttledFn = throttle(() => {
-   console.log("Throttled function");
-   }, 500);
-   
-   // 手动取消节流
-   setTimeout(() => {
-    throttledFn.cancel();
-   }, 2000);
-   ```
-2. memoize
-   - TTL 
-   ```ts
-   const add = (a: number, b: number): number => {
-   console.log("Calculating...");
-   return a + b;
-   };
-   const memoizedAdd = memoize(add);
-   console.log(memoizedAdd(1, 2)); // 输出计算日志
-   console.log(memoizedAdd(1, 2)); // 从缓存读取
-   ```
+- [mmjs-share](https://www.npmjs.com/package/mmjs-share)

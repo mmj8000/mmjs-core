@@ -3,9 +3,8 @@ import { cssomLegendInjectKey as J } from "./const.js";
 import { getCustomLegendProperty as Q, getSelectStatus as v, calculateViewBox as U, getIconModified as X, formatter as Y } from "./methods.js";
 import { normalizeLegendName as Z } from "./filters.js";
 import { useLegendAction as ee } from "./legend-action.js";
-import "../../mmjs-share/src/index.js";
-import { throttle as ne } from "../../mmjs-share/src/utils.js";
-const te = { class: "cssom_legend" }, oe = { class: "cssom_legend__wrapper" }, se = ["onClick", "onMouseenter", "onMouseleave"], le = ["src"], ie = ["viewBox"], ce = ["d"], ae = ["innerHTML"], ve = /* @__PURE__ */ F({
+import { throttle as ne } from "mmjs-share";
+const te = { class: "cssom_legend" }, oe = { class: "cssom_legend__wrapper" }, se = ["onClick", "onMouseenter", "onMouseleave"], le = ["src"], ie = ["viewBox"], ce = ["d"], ae = ["innerHTML"], fe = /* @__PURE__ */ F({
   __name: "cssomLegend",
   props: {
     ecInstance: {},
@@ -133,5 +132,5 @@ const te = { class: "cssom_legend" }, oe = { class: "cssom_legend__wrapper" }, s
   }
 });
 export {
-  ve as default
+  fe as default
 };
