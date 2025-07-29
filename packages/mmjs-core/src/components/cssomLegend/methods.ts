@@ -7,7 +7,7 @@ import type {
   FilterTemplate,
 } from "./types";
 import { parseRichFormatString } from "./tools";
-import { isObject } from "mmjs-share";
+import { isPlainObject } from "mmjs-share";
 import { transfromState } from "./transform";
 
 export function getSelectStatus(legend: LegendComponentOption, name: string) {
@@ -82,7 +82,7 @@ export function getCustomLegendProperty(legend: LegendComponentOption) {
   };
 }
 
-function forPropertsEffect(
+export function forPropertsEffect(
   data: object,
   propertys: Record<string, string | number>,
   parentKey: string,
@@ -90,7 +90,9 @@ function forPropertsEffect(
 ) {
   for (let key in data) {
     const item = data[key];
-    if (typeof item === "string" || typeof item === "number") {
+    if (isPlainObject(item)) {
+      forPropertsEffect(item, propertys, key, filterTemplate);
+    } else if (typeof item !== "function" && item !== null) {
       const keys = [parentKey, key].filter(Boolean);
       const newKey = keys.join("-");
       const filterFn = filterTemplate[key] ?? filterTemplate.default;
@@ -104,8 +106,6 @@ function forPropertsEffect(
       const tempValue = filterFn(options);
       const newValue = transfromState.transform(tempValue, options);
       propertys[`--${newKey}`] = newValue;
-    } else if (isObject(item)) {
-      forPropertsEffect(item, propertys, key, filterTemplate);
     }
   }
 }

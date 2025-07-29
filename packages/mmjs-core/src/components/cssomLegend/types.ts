@@ -87,26 +87,59 @@ export interface DataItem extends LegendStyleOption {
   textStyle?: LegendComponentOption["textStyle"];
   tooltip?: unknown;
 }
-
+type DecalDashArrayX = number | (number | number[])[];
+type DecalDashArrayY = number | number[];
+interface DecalObject {
+  symbol?: string | string[];
+  symbolSize?: number;
+  symbolKeepAspect?: boolean;
+  color?: string;
+  backgroundColor?: string;
+  dashArrayX?: DecalDashArrayX;
+  dashArrayY?: DecalDashArrayY;
+  rotation?: number;
+  maxTileWidth?: number;
+  maxTileHeight?: number;
+}
+interface BorderOptionMixin {
+  borderColor?: string;
+  borderWidth?: number;
+  borderType?: ZRLineType;
+  borderCap?: CanvasLineCap;
+  borderJoin?: CanvasLineJoin;
+  borderDashOffset?: number;
+  borderMiterLimit?: number;
+}
+export interface ItemStyleOption {
+  color?: string;
+  opacity?: number;
+  borderRadius?: (number | string)[] | number | string;
+}
 export interface CustomDataItem extends DataItem {
-  serie?: SeriesOption;
+  name?: string;
+  value?: number;
+  serie?: (SeriesOption & { itemStyle?: ItemStyleOption }) | undefined;
 }
 
-
 export type FilterTemplateFnParameters = {
-  value: CssLegendPropValue;
+  value: CssLegendPropValue | any[];
   record: LegendComponentOption;
   effectProp: CssLegendPropType;
   key: string;
   parentKey: string;
 };
 
-export type FilterTemplateFn = (options: FilterTemplateFnParameters) => CssLegendPropValue;
+export type FilterTemplateFn = (
+  options: FilterTemplateFnParameters
+) => CssLegendPropValue;
 
 export type FilterTemplate = {
   [key: string]: FilterTemplateFn;
 } & { default: FilterTemplateFn };
 
 export type TransfromState = {
-    transform(value: CssLegendPropValue, options: FilterTemplateFnParameters): CssLegendPropValue;
-}
+  transform(
+    value: CssLegendPropValue,
+    options: FilterTemplateFnParameters
+  ): CssLegendPropValue;
+};

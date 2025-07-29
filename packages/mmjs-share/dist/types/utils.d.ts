@@ -43,8 +43,16 @@ export declare function memoize<T extends (...args: any[]) => any>(func: T, reso
     clear: () => void;
 };
 /**
- *
+ * 判断是否是一个对象 包含Array
+ * @param value
+ * @example
+ * isObject({}) // true
+ * @returns
+ */
+export declare function isObject(value: unknown): value is Record<string, unknown>;
+/**
+ * 判断是否是一个普通对象
  * @param value
  * @returns
  */
-export declare function isObject<T>(value: T): boolean;
+export declare function isPlainObject(value: unknown): value is Record<string, unknown>;

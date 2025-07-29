@@ -19,6 +19,7 @@
   1. memoize (`包含过期时间`)
   2. throttle （`主动cancel`)
   3. isObject
+  4. isPlainObject
 
 ## Share
 
@@ -46,7 +47,13 @@
    console.log(memoizedAdd(1, 2)); // 从缓存读取
    ```
 3. isObject
-  ```ts
-  isObject({}) // true
-  isObject([]) // false
-  ```
+    - 不要问我为什么不用lodash
+    ```ts
+    isObject({}) // true
+    isObject([]) // true
+    ```
+4. isPlainObject
+    ```ts
+    isPlainObject({}) // true
+    isPlainObject([]) // false
+    ```

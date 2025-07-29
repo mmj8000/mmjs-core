@@ -18,8 +18,8 @@ importers:
         specifier: ^0.0.5
         version: 0.0.5
       mmjs-share:
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: ^0.2.1
+        version: 0.2.1
       raf-polyfill-es:
         specifier: ^0.1.1
         version: 0.1.1
@@ -949,8 +949,8 @@ packages:
   mlly@1.7.4:
     resolution: {integrity: sha512-qmdSIPC4bDJXgZTCR7XosJiNKySV7O215tsPtDN9iEO/7q/76b/ijtgRu/+epFXSJhijtTCCGp3DWS549P3xKw==}
 
-  mmjs-share@0.2.0:
-    resolution: {integrity: sha512-GZR6LN5ysD8089LgdfExXQpBJYphdLXy2dd0a1Gf3vzkl0859YYFp6K6C3HDMtErDAmrtwmRkv0FTGmuqKX57A==}
+  mmjs-share@0.2.1:
+    resolution: {integrity: sha512-DdQtb4J34TcjqmtEtzeQ9zYuwbBTkc0a/J0yXq+EPA89V9AfUTNuRbqJUT/Rph2vhsDQAEK+aRGOK3exZOV1cw==}
 
   mpd-parser@1.3.1:
     resolution: {integrity: sha512-1FuyEWI5k2HcmhS1HkKnUAQV7yFPfXPht2DnRRGtoiiAAW+ESTbtEXIDpRkwdU+XyrQuwrIym7UkoPKsZ0SyFw==}
@@ -2108,7 +2108,7 @@ snapshots:
       pkg-types: 1.3.1
       ufo: 1.6.1
 
-  mmjs-share@0.2.0: {}
+  mmjs-share@0.2.1: {}
 
   mpd-parser@1.3.1:
     dependencies:

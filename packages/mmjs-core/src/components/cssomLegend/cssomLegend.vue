@@ -24,7 +24,7 @@
             class="cssom_legend__legend_item"
             v-for="(record, index) in getLegendNames(legend, key)"
             :key="index"
-            :style="getItemStyleProperties(index, record)"
+            :style="getItemStyleProperties(index, key, record)"
             :class="{
               'cssom_legend__legend_item--unselect': !getSelectStatus(
                 legend,
@@ -100,10 +100,11 @@ import {
   getSelectStatus,
   formatter,
   getIconModified,
+  forPropertsEffect,
 } from "./methods";
-import { normalizeLegendName } from "./filters";
+import { normalizeLegendName, transformCss } from "./filters";
 import { useLegendAction } from "./legend-action";
-import type { DataItem, TransfromState } from "./types";
+import type { CustomDataItem, TransfromState } from "./types";
 import { throttle } from "mmjs-share";
 import { scrollDirMap } from "./help.const";
 import { calculateViewBox } from "./tools";
@@ -231,16 +232,45 @@ function getWrapCneterProperties(legend: LegendComponentOption, index: number) {
 const renderLegends = computed(
   () => (renderOption.value?.legend ?? []) as LegendComponentOption[]
 );
-const colors = computed(() => renderOption.value?.color ?? []);
+const colors = computed(() => {
+  let _colors = renderOption.value?.color;
+  if (Array.isArray(_colors)) return _colors;
+  return _colors ? [_colors] : [];
+});
 const renderedHandler = throttle(function (this: echarts.ECharts) {
   renderOption.value = this.getOption() as EChartsOption;
 }, throttleTime);
 
-function getItemStyleProperties(index: number, dataItem: DataItem) {
-  let color = colors.value[index];
+function getItemStyleProperties(
+  dataIndex: number,
+  seriesIndex: number,
+  dataItem: CustomDataItem
+) {
+  let tempColor = dataItem?.serie?.itemStyle?.color as any;
+  tempColor =
+    typeof tempColor === "function"
+      ? tempColor({
+          dataIndex,
+          seriesIndex,
+          value: dataItem.serie?.data?.[dataIndex],
+          data: dataItem.serie?.data?.[dataIndex],
+          seriesType: dataItem.serie?.type,
+          name: dataItem.serie?.name,
+          seriesName: dataItem?.name,
+          color: null,
+          componentIndex: seriesIndex,
+          componentSubType: dataItem.serie?.type,
+          componentType: "customSeries",
+        })
+      : tempColor;
+  let color = [tempColor].filter(Boolean).concat(colors.value)[dataIndex];
+  const textStyleProperties = {};
+  const textStyle = dataItem?.textStyle ?? {};
+  forPropertsEffect(textStyle, textStyleProperties, "textStyle", transformCss);
   return {
     "--item-color": color,
-    "--textStyle-color": dataItem?.textStyle?.color,
+    "--data-item-icon": dataItem.icon?.replaceAll("image://", ""),
+    ...textStyleProperties,
   };
 }
 
@@ -471,6 +501,9 @@ onScopeDispose(() => {
     width: var(--textStyle-width, auto);
     height: var(--textStyle-height, auto);
     line-height: var(--textStyle-lineHeight, auto);
+    padding: var(--textStyle-padding);
+    box-sizing: border-box;
+
     :deep(.cssom_legend-rich) {
       display: inline-block;
       color: var(--rich-textStyle-color);

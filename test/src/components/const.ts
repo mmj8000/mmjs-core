@@ -1,4 +1,4 @@
-import { type EChartsOption } from "echarts";
+import { color, type EChartsOption } from "echarts";
 
 export const pieOption: EChartsOption = {
   tooltip: {
@@ -25,6 +25,7 @@ export const pieOption: EChartsOption = {
           icon: "image:///setting.jpg",
           // // 设置文本为红色
           textStyle: {
+            fontSize: 22,
             color: "red",
           },
         },
@@ -45,7 +46,7 @@ export const pieOption: EChartsOption = {
       ],
       icon: "path://M30.9,53.2C16.8,53.2,5.3,41.7,5.3,27.6S16.8,2,30.9,2C45,2,56.4,13.5,56.4,27.6S45,53.2,30.9,53.2z M30.9,3.5C17.6,3.5,6.8,14.4,6.8,27.6c0,13.3,10.8,24.1,24.101,24.1C44.2,51.7,55,40.9,55,27.6C54.9,14.4,44.1,3.5,30.9,3.5z M36.9,35.8c0,0.601-0.4,1-0.9,1h-1.3c-0.5,0-0.9-0.399-0.9-1V19.5c0-0.6,0.4-1,0.9-1H36c0.5,0,0.9,0.4,0.9,1V35.8z M27.8,35.8 c0,0.601-0.4,1-0.9,1h-1.3c-0.5,0-0.9-0.399-0.9-1V19.5c0-0.6,0.4-1,0.9-1H27c0.5,0,0.9,0.4,0.9,1L27.8,35.8L27.8,35.8z",
       itemStyle: {
-        color: "red",
+        // color: "red",
         borderColor: "red",
         borderWidth: 1,
       },
@@ -75,6 +76,7 @@ export const pieOption: EChartsOption = {
         borderRadius: 10,
         borderColor: "#fff",
         borderWidth: 2,
+        // color: 'red',
       },
       label: {
         show: false,
@@ -165,7 +167,7 @@ export const lineOption: EChartsOption = {
     {
       name: "Email",
       type: "line",
-      stack: "Total",
+      // stack: "Total",
       areaStyle: {},
       emphasis: {
         focus: "series",
@@ -187,7 +189,7 @@ export const lineOption: EChartsOption = {
     {
       name: "Union Ads",
       type: "line",
-      stack: "Total",
+      // stack: "Total",
       symbol: "line",
       areaStyle: {},
       emphasis: {
@@ -198,7 +200,7 @@ export const lineOption: EChartsOption = {
     {
       name: "Video Ads",
       type: "line",
-      stack: "Total",
+      // stack: "Total",
       areaStyle: {},
       emphasis: {
         focus: "series",
@@ -208,7 +210,7 @@ export const lineOption: EChartsOption = {
     {
       name: "Direct",
       type: "line",
-      stack: "Total",
+      // stack: "Total",
       areaStyle: {},
       emphasis: {
         focus: "series",
@@ -218,7 +220,7 @@ export const lineOption: EChartsOption = {
     {
       name: "Search Engine",
       type: "line",
-      stack: "Total",
+      // stack: "Total",
       label: {
         show: true,
         position: "top",
@@ -249,7 +251,8 @@ export const barOption: EChartsOption = {
     // right: '10%',
     // left: "center",
     // left: '10%',
-    // width: 'atuo'
+    // width: 'atuo',
+    left: 'center',
   },
   toolbox: {
     feature: {
@@ -278,17 +281,20 @@ export const barOption: EChartsOption = {
     {
       name: "Email",
       type: "bar",
-      stack: "Total",
+      // stack: "Total",
       emphasis: {
         focus: "series",
       },
       // symbol: 'circle',
       data: [235, 132, 101, 134, 90, 230, 210],
+      itemStyle: {
+        // color: 'red',
+      }
     },
     {
       name: "Union Ads",
       type: "bar",
-      stack: "Total",
+      // stack: "Total",
 
       emphasis: {
         focus: "series",
@@ -298,7 +304,7 @@ export const barOption: EChartsOption = {
     {
       name: "Video Ads",
       type: "bar",
-      stack: "Total",
+      // stack: "Total",
 
       emphasis: {
         focus: "series",
@@ -308,8 +314,10 @@ export const barOption: EChartsOption = {
     {
       name: "Direct",
       type: "bar",
-      stack: "Total",
-
+      // stack: "Total",
+      itemStyle: {
+        
+      },
       emphasis: {
         focus: "series",
       },
@@ -318,7 +326,7 @@ export const barOption: EChartsOption = {
     {
       name: "Search Engine",
       type: "bar",
-      stack: "Total",
+      // stack: "Total",
       label: {
         show: true,
         position: "top",
@@ -337,6 +345,11 @@ export const echartsOptions: EChartsOption = {
     {
       radius: ["50%", "33%"],
       center: ["center", "30%"],
+      itemStyle: {
+        color: () => {
+          return 'red';
+        }
+      }
     },
   ],
   legend: {

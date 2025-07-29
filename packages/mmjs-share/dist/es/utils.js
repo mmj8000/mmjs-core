@@ -1,38 +1,45 @@
-function s(o, r) {
-  let c = 0, t = null;
-  const l = function(...i) {
-    const e = Date.now(), n = r - (e - c);
-    n <= 0 ? (t && (clearTimeout(t), t = null), o.apply(this, i), c = e) : t || (t = setTimeout(() => {
-      o.apply(this, i), c = Date.now(), t = null;
-    }, n));
+function f(e, n) {
+  let l = 0, t = null;
+  const r = function(...c) {
+    const o = Date.now(), i = n - (o - l);
+    i <= 0 ? (t && (clearTimeout(t), t = null), e.apply(this, c), l = o) : t || (t = setTimeout(() => {
+      e.apply(this, c), l = Date.now(), t = null;
+    }, i));
   };
-  return l.cancel = function() {
+  return r.cancel = function() {
     t && (clearTimeout(t), t = null);
-  }, l;
+  }, r;
 }
-function f(o, r, c) {
-  const t = /* @__PURE__ */ new Map(), l = (...e) => JSON.stringify(e), i = function(...e) {
-    const n = (r || l)(...e);
-    if (t.has(n)) {
-      const u = t.get(n);
-      if (u.expireAt > Date.now())
-        return u.data;
-      t.delete(n);
+function a(e, n, l) {
+  const t = /* @__PURE__ */ new Map(), r = (...o) => JSON.stringify(o), c = function(...o) {
+    const i = (n || r)(...o);
+    if (t.has(i)) {
+      const s = t.get(i);
+      if (s.expireAt > Date.now())
+        return s.data;
+      t.delete(i);
     }
-    const a = o.apply(this, e);
-    return t.set(n, {
-      data: a,
-      expireAt: Date.now() + (c ?? 1 / 0)
+    const u = e.apply(this, o);
+    return t.set(i, {
+      data: u,
+      expireAt: Date.now() + (l ?? 1 / 0)
       // 默认永不过期
-    }), a;
+    }), u;
   };
-  return i.cache = t, i.clear = () => t.clear(), i;
+  return c.cache = t, c.clear = () => t.clear(), c;
 }
-function p(o) {
-  return Object.prototype.toString.call(o) === "[object Object]";
+function p(e) {
+  const n = typeof e;
+  return e != null && (n == "object" || n == "function");
+}
+function y(e) {
+  if (typeof e != "object" || e === null) return !1;
+  const n = Object.getPrototypeOf(e);
+  return n === null || n === Object.prototype;
 }
 export {
   p as isObject,
-  f as memoize,
-  s as throttle
+  y as isPlainObject,
+  a as memoize,
+  f as throttle
 };

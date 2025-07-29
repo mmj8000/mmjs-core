@@ -39,6 +39,7 @@ export function keepDecimals(num: number, count = 2, round = false) {
  * @returns 
  */
 export function normalizeNumUnit(val: number | string, unit = 'px') {
+    if(!val && val !== 0) return val;
     if (typeof val === 'string') return val;
     return `${val}${unit}`;
 }

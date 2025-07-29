@@ -1,6 +1,7 @@
-import { isObject as o, memoize as m, throttle as r } from "./utils.js";
+import { isObject as i, isPlainObject as o, memoize as m, throttle as r } from "./utils.js";
 export {
-  o as isObject,
+  i as isObject,
+  o as isPlainObject,
   m as memoize,
   r as throttle
 };

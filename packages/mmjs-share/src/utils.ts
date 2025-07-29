@@ -1,4 +1,3 @@
-
 /**
  * 
  * @param func 
@@ -50,12 +49,10 @@ export function throttle<T extends Function>(func: T, delay: number) {
   return throttled;
 }
 
-
 export type CacheEntry<T> = {
   data: T;
   expireAt: number;
 };
-
 
 /**
  * 
@@ -83,7 +80,8 @@ export function memoize<T extends (...args: any[]) => any>(
   clear: () => void;
 } {
   const cache = new Map<string, CacheEntry<ReturnType<T>>>();
-  const defaultResolver = (...args: Parameters<T>): string => JSON.stringify(args);
+  const defaultResolver = (...args: Parameters<T>): string =>
+    JSON.stringify(args);
 
   const memoized = function (this: any, ...args: Parameters<T>): ReturnType<T> {
     const key = (resolver || defaultResolver)(...args);
@@ -117,12 +115,25 @@ export function memoize<T extends (...args: any[]) => any>(
   };
 }
 
+/**
+ * 判断是否是一个对象 包含Array
+ * @param value
+ * @example
+ * isObject({}) // true
+ * @returns
+ */
+export function isObject(value: unknown): value is Record<string, unknown>  {
+  const type = typeof value;
+  return value != null && (type == "object" || type == "function");
+}
 
 /**
- * 
+ * 判断是否是一个普通对象
  * @param value 
  * @returns 
  */
-export function isObject<T>(value: T) {
-  return Object.prototype.toString.call(value) === "[object Object]";
+export function isPlainObject(value: unknown): value is Record<string, unknown> {
+  if (typeof value !== "object" || value === null) return false;
+  const proto = Object.getPrototypeOf(value);
+  return proto === null || proto === Object.prototype;
 }

@@ -1,13 +1,11 @@
 import { type LegendComponentOption, type SeriesOption } from "echarts";
 import { normalizeNumUnit } from "../../utils/format";
 import { ecOrientValue } from "./help.const";
-import type {
-  CustomDataItem,
-  FilterTemplate,
-} from "./types";
+import type { CustomDataItem, FilterTemplate } from "./types";
 
 export const transformCss: FilterTemplate = {
   orient({ value, record, effectProp }) {
+    if (Array.isArray(value)) return "";
     switch (value) {
       case ecOrientValue.horizontal:
         return "row";
@@ -26,6 +24,7 @@ export const transformCss: FilterTemplate = {
     }
   },
   left({ value, record, effectProp, key }) {
+    if (Array.isArray(value)) return "";
     if (value === "center") {
       effectProp[`--custom-root-justify`] = "center";
       return "";
@@ -34,6 +33,7 @@ export const transformCss: FilterTemplate = {
     return normalizeNumUnit(value);
   },
   right({ value, record, effectProp, key }) {
+    if (Array.isArray(value)) return "";
     if (value === "center") {
       effectProp[`--custom-root-justify`] = "center";
       return "";
@@ -42,6 +42,7 @@ export const transformCss: FilterTemplate = {
     return normalizeNumUnit(value);
   },
   top({ value, record, effectProp, key }) {
+    if (Array.isArray(value)) return "";
     if (value === "center") {
       effectProp[`--custom-root-justify`] = "center";
       return "";
@@ -49,6 +50,7 @@ export const transformCss: FilterTemplate = {
     return normalizeNumUnit(value);
   },
   bottom({ value, record, effectProp, key }) {
+    if (Array.isArray(value)) return "";
     if (value === "center") {
       effectProp[`--custom-root-justify`] = "center";
       return "";
@@ -56,33 +58,56 @@ export const transformCss: FilterTemplate = {
     return normalizeNumUnit(value);
   },
   height({ value, record, effectProp }) {
+    if (Array.isArray(value)) return "";
     return normalizeNumUnit(value);
   },
+  data({ value, record, effectProp }) {
+    return "";
+  },
+  icon({ value, record, effectProp }) {
+    if (value?.toString().startsWith("path:")) {
+      return value?.toString()?.slice(8);
+    } else if (value?.toString().startsWith("image:")) {
+      return value?.toString()?.slice(8);
+    }
+    return "";
+  },
   lineHeight({ value, record, effectProp }) {
+    if (Array.isArray(value)) return "";
     return normalizeNumUnit(value);
   },
   itemWidth({ value, record, effectProp }) {
+    if (Array.isArray(value)) return "";
     return normalizeNumUnit(value);
   },
   itemHeight({ value, record, effectProp }) {
+    if (Array.isArray(value)) return "";
     return normalizeNumUnit(value);
   },
   itemGap({ value, record, effectProp }) {
+    if (Array.isArray(value)) return "";
     return normalizeNumUnit(value);
   },
-  padding({ value, record, effectProp }) {
+  padding({ value }) {
+    if (Array.isArray(value)) {
+      return value.map((v) => normalizeNumUnit(v)).join(" ");
+    }
     return normalizeNumUnit(value);
   },
   selectorButtonGap({ value, record, effectProp }) {
+    if (Array.isArray(value)) return "";
     return normalizeNumUnit(value);
   },
   selectorItemGap({ value, record, effectProp }) {
+    if (Array.isArray(value)) return "";
     return normalizeNumUnit(value);
   },
   borderRadius({ value, record, effectProp }) {
+    if (Array.isArray(value)) return "";
     return normalizeNumUnit(value);
   },
   width({ value, record, effectProp }) {
+    if (Array.isArray(value)) return "";
     switch (value) {
       case "auto":
         return "100%";
@@ -91,6 +116,7 @@ export const transformCss: FilterTemplate = {
     }
   },
   borderWidth({ value, record, effectProp }) {
+    if (Array.isArray(value)) return "";
     switch (value) {
       case "auto":
         return "2px";
@@ -99,12 +125,15 @@ export const transformCss: FilterTemplate = {
     }
   },
   inactiveWidth({ value, record, effectProp }) {
+    if (Array.isArray(value)) return "";
     return normalizeNumUnit(value);
   },
   fontSize({ value, record, effectProp }) {
+    if (Array.isArray(value)) return "";
     return normalizeNumUnit(value);
   },
   inactiveBorderWidth({ value, record, effectProp }) {
+    if (Array.isArray(value)) return "";
     switch (value) {
       case "auto":
         return "0px";
@@ -113,24 +142,30 @@ export const transformCss: FilterTemplate = {
     }
   },
   default({ value, record, effectProp }) {
+    if (Array.isArray(value)) return "";
     return value;
   },
 };
 
 export const transformTextStyle: FilterTemplate = {
   fontSize({ value }) {
+    if (Array.isArray(value)) return "";
     return normalizeNumUnit(value);
   },
   width({ value }) {
+    if (Array.isArray(value)) return "";
     return normalizeNumUnit(value);
   },
   height({ value }) {
+    if (Array.isArray(value)) return "";
     return normalizeNumUnit(value);
   },
   lineHeight({ value }) {
+    if (Array.isArray(value)) return "";
     return normalizeNumUnit(value);
   },
   borderWidth({ value }) {
+    if (Array.isArray(value)) return "";
     return normalizeNumUnit(value);
   },
   padding({ value }) {
@@ -140,6 +175,7 @@ export const transformTextStyle: FilterTemplate = {
     return normalizeNumUnit(value);
   },
   default({ value }) {
+    if (Array.isArray(value)) return value.join(" ");
     return value;
   },
 };
@@ -160,17 +196,18 @@ export function normalizeLegendName({
   let legendData: CustomDataItem[] = [];
   if (legend?.data?.length) {
     legendData = legend.data.map((item) => {
-      const name = typeof item === "string" ? item : item.name;
-      return typeof item === "string"
-        ? {
-            name,
-            serie,
-          }
-        : {
-            name: item.name!,
-            icon: item.icon,
-            serie,
-          };
+      if (typeof item === "string") {
+        return {
+          name: item,
+   
+        };
+      }
+      return {
+        ...item,
+        name: item.name!,
+        icon: item.icon,
+      
+      };
     });
   }
 
@@ -198,7 +235,8 @@ export function normalizeLegendName({
     return series
       .map((item, index) => {
         return {
-          serie: series.at(index),
+          ...(legend[index]?.data ?? {}),
+          serie: item,
           name: item.name?.toString(),
         };
       })
