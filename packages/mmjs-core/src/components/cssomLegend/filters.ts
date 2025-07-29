@@ -68,6 +68,14 @@ export const transformCss: {
   borderRadius(value: CssLegendPropValue, record, effectProp) {
     return normalizeNumUnit(value);
   },
+  width(value, record, effectProp) {
+    switch (value) {
+      case "auto":
+        return "100%";
+      default:
+        return normalizeNumUnit(value);
+    }
+  },
   borderWidth(value, record, effectProp) {
     switch (value) {
       case "auto":

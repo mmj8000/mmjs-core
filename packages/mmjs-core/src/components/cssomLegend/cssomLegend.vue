@@ -3,17 +3,22 @@
     <div class="cssom_legend__wrapper">
       <div
         class="cssom_legend__legend"
+        ref="cssomLegendRefKey"
         v-for="(legend, key) in renderLegends"
         :class="[
           `cssom_legend--box-${key}`,
           `cssom_legend__legend--${legend.type ?? 'plain'}`,
+          `legend_orient--${legend.orient ?? 'horizontal'}`,
         ]"
         :style="getCustomLegendProperty(legend)"
         :key
+        @wheel.capture.stop="legendWrapScrollHandler($event, legend, key)"
       >
         <div
+          ref="cssomLegendWrapRefKey"
           class="cssom_legend__legend__wrap"
           :class="[`cssom_legend__legend__wrap--${legend.type ?? 'plain'}`]"
+          :style="getWrapCneterProperties(legend, key)"
         >
           <div
             class="cssom_legend__legend_item"
@@ -81,6 +86,7 @@ import {
   ref,
   computed,
   watchEffect,
+  useTemplateRef,
 } from "vue";
 import { cssomLegendInjectKey } from "./const";
 import type {
@@ -100,6 +106,7 @@ import { normalizeLegendName } from "./filters";
 import { useLegendAction } from "./legend-action";
 import { DataItem } from "./types";
 import { throttle } from "mmjs-share";
+import { scrollDirMap } from "./help.const";
 
 const ecInjectInstance = inject(cssomLegendInjectKey, void 0);
 const {
@@ -107,13 +114,22 @@ const {
   eventName = "rendered",
   throttleTime = 500,
   disabled = false,
+  enchanceCenter = true,
 } = defineProps<{
   ecInstance?: ECharts;
   eventName?: "rendered" | "finished";
   throttleTime?: number;
   disabled?: boolean;
+  /**
+   * @desc left、right === 'center' 有效
+   */
+  enchanceCenter?: boolean;
 }>();
 
+const cssomLegendRef = useTemplateRef<HTMLElement[]>("cssomLegendRefKey");
+const cssomLegendWrapRef = useTemplateRef<HTMLElement[]>(
+  "cssomLegendWrapRefKey"
+);
 const proxyEcInstance = shallowRef<ECharts>();
 const renderOption = ref<EChartsOption>();
 const $emits = defineEmits<{
@@ -146,6 +162,59 @@ function getLegendNames(legend: LegendComponentOption, legendIndex: number) {
   });
 }
 
+function getWrapCneterProperties(legend: LegendComponentOption, index: number) {
+  if (!enchanceCenter) return {};
+  if (
+    legend.type === "scroll" ||
+    legend.orient === "vertical" ||
+    !cssomLegendWrapRef.value
+  )
+    return {};
+  if (legend.left !== "center" && legend.right !== "center") return {};
+  const wrapTarget = cssomLegendWrapRef.value[index];
+  const parentEl = wrapTarget.parentElement!;
+  const rect = parentEl.getBoundingClientRect();
+  const computedStyle = window.getComputedStyle(parentEl);
+  const paddingLeft = parseFloat(computedStyle.paddingLeft);
+  const paddingRight = parseFloat(computedStyle.paddingRight);
+  const borderLeft = parseFloat(computedStyle.borderLeftWidth);
+  const borderRight = parseFloat(computedStyle.borderRightWidth);
+
+  // 内容宽度 = rect.width - padding - border
+  const contentWidth =
+    rect.width - paddingLeft - paddingRight - borderLeft - borderRight;
+  let containCount = 0;
+
+  const childNodesArr = Array.from(wrapTarget.children);
+  const gap =
+    parseFloat(String(legend.itemGap || 0)) * (childNodesArr.length - 1);
+  const childWidthList = childNodesArr.map((cur) => {
+    return cur!.clientWidth;
+  });
+  let childAllWidth = childWidthList.reduce((pre, cur) => {
+    pre += cur;
+    if (pre <= contentWidth) {
+      containCount += 1;
+    }
+    return pre;
+  }, gap);
+
+  if (childAllWidth > contentWidth) {
+    let childAllWidth2 = childWidthList
+      .slice(0, containCount)
+      .reduce((pre, cur) => {
+        pre += cur;
+        return pre;
+      }, gap);
+    return {
+      "--custom-max-width": `${childAllWidth2}px`,
+    };
+  }
+  return {
+    "--custom-max-width": `${childAllWidth}px`,
+  };
+}
+
 const renderLegends = computed(
   () => (renderOption.value?.legend ?? []) as LegendComponentOption[]
 );
@@ -160,6 +229,19 @@ function getItemStyleProperties(index: number, dataItem: DataItem) {
     "--item-color": color,
     "--textStyle-color": dataItem?.textStyle?.color,
   };
+}
+
+function legendWrapScrollHandler(
+  e: WheelEvent,
+  legend: LegendComponentOption,
+  index: number
+) {
+  if (legend.type !== "scroll") return;
+  e.preventDefault();
+  const target = cssomLegendRef.value?.[index];
+  if (!target) return;
+  const scrollDir = scrollDirMap[legend.orient!] ?? scrollDirMap.horizontal;
+  target.scrollTo(scrollDir(target, e.deltaY));
 }
 
 function onEcEvents() {
@@ -193,7 +275,7 @@ onScopeDispose(() => {
     bottom: var(--bottom);
     left: var(--left);
     transform: var(--custom-translate);
-    width: var(--width, auto);
+    width: var(--width, 100%);
     height: var(--height, auto);
     z-index: var(--z);
     padding: var(--padding);
@@ -207,30 +289,57 @@ onScopeDispose(() => {
       overflow: auto;
       pointer-events: auto;
 
+      &.legend_orient {
+        &--horizontal {
+          --mask-image: linear-gradient(
+            to right,
+            #22222200 0%,
+            #222 5%,
+            #222 95%,
+            #22222200 100%
+          );
+          mask-image: var(--mask-image);
+          -webkit-mask-image: var(--mask-image);
+        }
+        &--vertical {
+          --mask-image: linear-gradient(
+            to bottom,
+            #22222200 0%,
+            #222 10%,
+            #222 90%,
+            #22222200 100%
+          );
+          mask-image: var(--mask-image);
+          -webkit-mask-image: var(--mask-image);
+        }
+      }
+
       /* 设置滚动条宽度 */
       &::-webkit-scrollbar {
-        width: 2px;
-        height: 2px;
+        width: 1px;
+        height: 1px;
+        display: none;
       }
       // 必须添加这两个部分
       &::-webkit-scrollbar-track {
-        background: #f1f1f1;
+        background: #f1f1f100;
       }
 
       &::-webkit-scrollbar-thumb {
-        background: #888;
+        background: #e4e2e2;
         border-radius: 8px;
       }
     }
   }
 
   &__legend__wrap {
-    width: 100%;
+    width: fit-content;
     height: 100%;
     display: inline-flex;
     flex-direction: var(--orient, row);
     flex-wrap: wrap;
     gap: var(--itemGap);
+    max-width: var(--custom-max-width, 100%);
 
     &--scroll {
       flex-wrap: nowrap;

@@ -1,11 +1,11 @@
 import { normalizeNumUnit as n } from "../../utils/format.js";
-import { ecOrientValue as m } from "./help.const.js";
+import { ecOrientValue as p } from "./help.const.js";
 const l = {
   orient(r, t, e) {
     switch (r) {
-      case m.horizontal:
+      case p.horizontal:
         return "row";
-      case m.vertical:
+      case p.vertical:
         return "column";
       default:
         return r;
@@ -51,6 +51,14 @@ const l = {
   },
   borderRadius(r, t, e) {
     return n(r);
+  },
+  width(r, t, e) {
+    switch (r) {
+      case "auto":
+        return "100%";
+      default:
+        return n(r);
+    }
   },
   borderWidth(r, t, e) {
     switch (r) {
@@ -103,38 +111,38 @@ function P({
   legend: e
 }) {
   var d;
-  const c = t.at(r) ?? t.at(0);
-  if (!c) return [];
-  const i = (c == null ? void 0 : c.data) ?? [];
+  const f = t.at(r) ?? t.at(0);
+  if (!f) return [];
+  const i = (f == null ? void 0 : f.data) ?? [];
   if (!i.length) return [];
   let u = [];
-  if ((d = e == null ? void 0 : e.data) != null && d.length && (u = e.data.map((f) => {
-    const o = typeof f == "string" ? f : f.name;
-    return typeof f == "string" ? {
+  if ((d = e == null ? void 0 : e.data) != null && d.length && (u = e.data.map((c) => {
+    const o = typeof c == "string" ? c : c.name;
+    return typeof c == "string" ? {
       name: o,
-      serie: c
+      serie: f
     } : {
-      name: f.name,
-      icon: f.icon,
-      serie: c
+      name: c.name,
+      icon: c.icon,
+      serie: f
     };
-  })), (c == null ? void 0 : c.type) === "pie") {
+  })), (f == null ? void 0 : f.type) === "pie") {
     if (u.length) {
-      const f = i.reduce((o, a) => (o[a.name] = a.name, o.serie = c, o), {});
-      return u.filter((o) => !!f[o.name]);
+      const c = i.reduce((o, a) => (o[a.name] = a.name, o.serie = f, o), {});
+      return u.filter((o) => !!c[o.name]);
     }
     return i;
   }
   if (t != null && t[0].name) {
     if (u.length) {
-      const f = t.reduce((o, a) => (o[a.name] = a.name, o), {});
-      return u.filter((o) => !!f[o.name]);
+      const c = t.reduce((o, a) => (o[a.name] = a.name, o), {});
+      return u.filter((o) => !!c[o.name]);
     }
-    return t.map((f, o) => {
+    return t.map((c, o) => {
       var a;
       return {
         serie: t.at(o),
-        name: (a = f.name) == null ? void 0 : a.toString()
+        name: (a = c.name) == null ? void 0 : a.toString()
       };
     }).filter(Boolean);
   }

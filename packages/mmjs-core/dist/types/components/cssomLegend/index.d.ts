@@ -32,6 +32,7 @@ declare const UseCssomLegend: import('vue').DefineComponent<{
     eventName?: "rendered" | "finished";
     throttleTime?: number;
     disabled?: boolean;
+    enchanceCenter?: boolean;
 }, {}, {}, {}, {}, import('vue').ComponentOptionsMixin, import('vue').ComponentOptionsMixin, {} & {
     legendToggleSelect: (v: string) => any;
     highlight: (v: string) => any;
@@ -41,9 +42,13 @@ declare const UseCssomLegend: import('vue').DefineComponent<{
     eventName?: "rendered" | "finished";
     throttleTime?: number;
     disabled?: boolean;
+    enchanceCenter?: boolean;
 }> & Readonly<{
     onLegendToggleSelect?: ((v: string) => any) | undefined;
     onHighlight?: ((v: string) => any) | undefined;
     onDownplay?: ((v: string) => any) | undefined;
-}>, {}, {}, {}, {}, string, import('vue').ComponentProvideOptions, false, {}, HTMLDivElement>;
+}>, {}, {}, {}, {}, string, import('vue').ComponentProvideOptions, false, {
+    cssomLegendRefKey: HTMLDivElement[];
+    cssomLegendWrapRefKey: HTMLDivElement;
+}, HTMLDivElement>;
 export { UseCssomLegend as CssomLegend };

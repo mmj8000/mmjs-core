@@ -1,4 +1,3 @@
-import { LayoutOrient } from './types';
 export declare const matchCenterKey: string[];
 export declare const translateCenterXMaps: {
     readonly left: "-50%";
@@ -11,7 +10,8 @@ export declare const translateCenterYMaps: {
     readonly default: "0px";
 };
 export declare const ecOrientValue: {
-    [key in LayoutOrient]: LayoutOrient;
+    readonly horizontal: "horizontal";
+    readonly vertical: "vertical";
 };
 export declare const innerIocnNames: {
     readonly circle: "circle";
@@ -22,4 +22,12 @@ export declare const innerIocnNames: {
     readonly pin: "pin";
     readonly arrow: "arrow";
     readonly none: "none";
+};
+export declare const scrollDirMap: {
+    readonly horizontal: (target: HTMLElement, deltaY: number) => {
+        left: number;
+    };
+    readonly vertical: (target: HTMLElement, deltaY: number) => {
+        top: number;
+    };
 };

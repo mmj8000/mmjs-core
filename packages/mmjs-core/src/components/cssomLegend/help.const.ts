@@ -14,7 +14,7 @@ export const translateCenterYMaps = {
   default: "0px",
 } as const;
 
-export const ecOrientValue: { [key in LayoutOrient]: LayoutOrient } = {
+export const ecOrientValue = {
   horizontal: "horizontal",
   vertical: "vertical",
 } as const;
@@ -28,4 +28,17 @@ export const innerIocnNames = {
   pin: "pin",
   arrow: "arrow",
   none: "none",
+} as const;
+
+export const scrollDirMap = {
+  [ecOrientValue.horizontal]: (target: HTMLElement, deltaY: number) => {
+    return {
+      left: (target.scrollLeft += deltaY * 0.3),
+    };
+  },
+  [ecOrientValue.vertical]: (target: HTMLElement, deltaY: number) => {
+    return {
+      top: (target.scrollTop += deltaY * 0.3),
+    };
+  },
 } as const;

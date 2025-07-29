@@ -116,6 +116,11 @@ export const lineOption: EChartsOption = {
     // data: ['Email', 'Union Ads', 'Video Ads', 'Direct', 'Search Engine']
     // itemHeight: 5,
     orient: "vertical",
+    type: "scroll",
+    top: 'center',
+    // width: "auto",
+    height: "50%",
+    right: "center",
     formatter(name) {
       return `{name|${name}}  {value|121212}\n{test|测试}`;
     },
@@ -241,6 +246,10 @@ export const barOption: EChartsOption = {
     show: false,
     data: ["Email", "Union Ads", "Video Ads", "Direct", "Search Engine"],
     itemHeight: 10,
+    // right: '10%',
+    // left: "center",
+    // left: '10%',
+    // width: 'atuo'
   },
   toolbox: {
     feature: {

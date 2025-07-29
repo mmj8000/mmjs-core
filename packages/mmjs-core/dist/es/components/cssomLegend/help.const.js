@@ -1,15 +1,15 @@
-const t = ["left", "top", "right", "bottom"], e = {
+const o = ["left", "top", "right", "bottom"], n = {
   left: "-50%",
   right: "50%",
   default: "0px"
-}, n = {
+}, a = {
   bottom: "50%",
   top: "-50%",
   default: "0px"
 }, r = {
   horizontal: "horizontal",
   vertical: "vertical"
-}, o = {
+}, l = {
   circle: "circle",
   rect: "rect",
   roundRect: "roundRect",
@@ -18,11 +18,19 @@ const t = ["left", "top", "right", "bottom"], e = {
   pin: "pin",
   arrow: "arrow",
   none: "none"
+}, c = {
+  [r.horizontal]: (t, e) => ({
+    left: t.scrollLeft += e * 0.3
+  }),
+  [r.vertical]: (t, e) => ({
+    top: t.scrollTop += e * 0.3
+  })
 };
 export {
   r as ecOrientValue,
-  o as innerIocnNames,
-  t as matchCenterKey,
-  e as translateCenterXMaps,
-  n as translateCenterYMaps
+  l as innerIocnNames,
+  o as matchCenterKey,
+  c as scrollDirMap,
+  n as translateCenterXMaps,
+  a as translateCenterYMaps
 };

@@ -1,6 +1,6 @@
 {
   "name": "mmjs-core",
-  "version": "0.12.1",
+  "version": "0.12.3",
   "description": "mmjs-core hooks component vue",
   "main": "dist/es/index.js",
   "types": "dist/types/index.d.ts",
@@ -51,11 +51,6 @@
   ],
   "publishConfig": {
     "access": "public"
-  },
-  "homepage": "https://github.com/com-hooks/mmjs-core/tree/dev",
-  "repository": {
-    "type": "github",
-    "url": "https://github.com/com-hooks/mmjs-core.git"
   },
   "author": "mmj",
   "license": "ISC",

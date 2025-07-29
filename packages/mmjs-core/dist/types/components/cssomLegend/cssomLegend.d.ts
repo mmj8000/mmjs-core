@@ -4,6 +4,10 @@ type __VLS_Props = {
     eventName?: "rendered" | "finished";
     throttleTime?: number;
     disabled?: boolean;
+    /**
+     * @desc left、right === 'center' 有效
+     */
+    enchanceCenter?: boolean;
 };
 declare const _default: import('vue').DefineComponent<__VLS_Props, {}, {}, {}, {}, import('vue').ComponentOptionsMixin, import('vue').ComponentOptionsMixin, {} & {
     legendToggleSelect: (v: string) => any;
@@ -13,5 +17,8 @@ declare const _default: import('vue').DefineComponent<__VLS_Props, {}, {}, {}, {
     onLegendToggleSelect?: ((v: string) => any) | undefined;
     onHighlight?: ((v: string) => any) | undefined;
     onDownplay?: ((v: string) => any) | undefined;
-}>, {}, {}, {}, {}, string, import('vue').ComponentProvideOptions, false, {}, HTMLDivElement>;
+}>, {}, {}, {}, {}, string, import('vue').ComponentProvideOptions, false, {
+    cssomLegendRefKey: HTMLDivElement[];
+    cssomLegendWrapRefKey: HTMLDivElement;
+}, HTMLDivElement>;
 export default _default;
