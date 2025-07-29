@@ -18,6 +18,7 @@
 - Share
   1. memoize (`包含过期时间`)
   2. throttle （`主动cancel`)
+  3. isObject
 
 ## Share
 
@@ -44,3 +45,8 @@
    console.log(memoizedAdd(1, 2)); // 输出计算日志
    console.log(memoizedAdd(1, 2)); // 从缓存读取
    ```
+3. isObject
+  ```ts
+  isObject({}) // true
+  isObject([]) // false
+  ```

@@ -26,7 +26,7 @@
 ## 近期更新
 - Components
   1. CssomLegend (`ECharts Option 转 Html 结构的Legend 很有用`)
-
+      -  (`^0.13.0.alpha.1`) Add Function `transformFn` 用来转换Option To Css Var 的结果
 
 
 ## Client
@@ -168,15 +168,10 @@
      <!-- // 注意这里我用relative 定位 -->
      <div class="chart_wrap relative">
         <div class="chart" ref="chartDomKey"></div>
-        <CssomLegend />
+        <CssomLegend :transfrom-fn="transformFn" />
     </div>
    </template>
     <script lang="ts" setup>
-    import {
-     CssomLegend,
-     cssomLegendInjectKey,
-   } from "mmjs-core/components/cssomLegend";
-    import { provide } from 'vue'; 
         // 使用provide 或者 props 传递给CssomLegend
         provide(
             cssomLegendInjectKey,
@@ -186,6 +181,10 @@
                 };
             })
         );
+        function transformFn(val, options) {
+         // 这里可以转换你要的 css var properties
+          return val;
+        }
     </script>
    ```
 

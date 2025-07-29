@@ -1,4 +1,3 @@
-import { LayoutOrient } from "./types";
 
 export const matchCenterKey = ["left", "top", "right", "bottom"];
 

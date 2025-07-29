@@ -33,6 +33,7 @@ declare const UseCssomLegend: import('vue').DefineComponent<{
     throttleTime?: number;
     disabled?: boolean;
     enchanceCenter?: boolean;
+    transfromFn?: import('./types').TransfromState["transform"];
 }, {}, {}, {}, {}, import('vue').ComponentOptionsMixin, import('vue').ComponentOptionsMixin, {} & {
     legendToggleSelect: (v: string) => any;
     highlight: (v: string) => any;
@@ -43,6 +44,7 @@ declare const UseCssomLegend: import('vue').DefineComponent<{
     throttleTime?: number;
     disabled?: boolean;
     enchanceCenter?: boolean;
+    transfromFn?: import('./types').TransfromState["transform"];
 }> & Readonly<{
     onLegendToggleSelect?: ((v: string) => any) | undefined;
     onHighlight?: ((v: string) => any) | undefined;

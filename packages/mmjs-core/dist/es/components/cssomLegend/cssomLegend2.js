@@ -1,101 +1,108 @@
-import { defineComponent as te, inject as ne, useTemplateRef as A, shallowRef as oe, ref as se, computed as F, watchEffect as le, onScopeDispose as ie, createElementBlock as c, openBlock as r, createElementVNode as w, Fragment as k, renderList as z, withModifiers as W, normalizeStyle as x, unref as a, normalizeClass as u } from "vue";
+import { defineComponent as ne, inject as oe, useTemplateRef as N, shallowRef as se, ref as le, watchEffect as A, computed as k, onScopeDispose as ie, createElementBlock as c, openBlock as r, createElementVNode as w, Fragment as z, renderList as K, withModifiers as W, normalizeStyle as x, unref as a, normalizeClass as m } from "vue";
 import { cssomLegendInjectKey as ce } from "./const.js";
-import { getCustomLegendProperty as re, getSelectStatus as R, calculateViewBox as ae, getIconModified as de, formatter as ue } from "./methods.js";
+import { getCustomLegendProperty as re, getSelectStatus as R, getIconModified as ae, formatter as de } from "./methods.js";
 import { normalizeLegendName as me } from "./filters.js";
-import { useLegendAction as ge } from "./legend-action.js";
+import { useLegendAction as ue } from "./legend-action.js";
 import { throttle as fe } from "mmjs-share";
-import { scrollDirMap as K } from "./help.const.js";
-const _e = { class: "cssom_legend" }, he = { class: "cssom_legend__wrapper" }, pe = ["onWheelCapture"], ve = ["onClick", "onMouseenter", "onMouseleave"], ye = ["src"], Le = ["viewBox"], we = ["d"], We = ["innerHTML"], $e = /* @__PURE__ */ te({
+import { scrollDirMap as D } from "./help.const.js";
+import { calculateViewBox as ge } from "./tools.js";
+import { transfromState as he } from "./transform.js";
+const _e = { class: "cssom_legend" }, pe = { class: "cssom_legend__wrapper" }, ve = ["onWheelCapture"], ye = ["onClick", "onMouseenter", "onMouseleave"], Le = ["src"], we = ["viewBox"], We = ["d"], Se = ["innerHTML"], Be = /* @__PURE__ */ ne({
   __name: "cssomLegend",
   props: {
     ecInstance: {},
     eventName: { default: "rendered" },
     throttleTime: { default: 500 },
     disabled: { type: Boolean, default: !1 },
-    enchanceCenter: { type: Boolean, default: !0 }
+    enchanceCenter: { type: Boolean, default: !0 },
+    transfromFn: {}
   },
   emits: ["legendToggleSelect", "highlight", "downplay"],
-  setup(i, { emit: D }) {
-    const C = ne(ce, void 0), H = A("cssomLegendRefKey"), M = A(
+  setup(l, { emit: H }) {
+    const S = oe(ce, void 0), P = N("cssomLegendRefKey"), M = N(
       "cssomLegendWrapRefKey"
-    ), f = oe(), _ = se(), S = D, { legendToggleSelect: P, highlight: O, downplay: V } = ge(f);
-    function j(e) {
-      !i.disabled && P(e), S("legendToggleSelect", e);
-    }
+    ), g = se(), h = le(), C = H;
+    A(() => {
+      typeof l.transfromFn == "function" && (he.transform = l.transfromFn);
+    });
+    const { legendToggleSelect: O, highlight: V, downplay: j } = ue(g);
     function G(e) {
-      !i.disabled && O(e), S("highlight", e);
+      !l.disabled && O(e), C("legendToggleSelect", e);
     }
     function Y(e) {
-      !i.disabled && V(e), S("downplay", e);
+      !l.disabled && V(e), C("highlight", e);
     }
-    function q(e, s) {
+    function q(e) {
+      !l.disabled && j(e), C("downplay", e);
+    }
+    function I(e, s) {
       var o;
-      const t = ((o = _.value) == null ? void 0 : o.series) ?? [];
+      const t = ((o = h.value) == null ? void 0 : o.series) ?? [];
       return me({
         legend: e,
         series: t,
         legendIndex: s
       });
     }
-    function I(e, s) {
-      if (!i.enchanceCenter) return {};
+    function J(e, s) {
+      if (!l.enchanceCenter) return {};
       if (e.type === "scroll" || e.orient === "vertical" || !M.value)
         return {};
       if (e.left !== "center" && e.right !== "center") return {};
-      const t = M.value[s], o = t.parentElement, n = o.getBoundingClientRect(), l = window.getComputedStyle(o), h = parseFloat(l.paddingLeft), p = parseFloat(l.paddingRight), v = parseFloat(l.borderLeftWidth), y = parseFloat(l.borderRightWidth), m = n.width - h - p - v - y;
-      let g = 0;
-      const $ = Array.from(t.children), b = parseFloat(String(e.itemGap || 0)) * ($.length - 1), B = $.map((d) => d.clientWidth);
-      let N = B.reduce((d, L) => (d += L, d <= m && (g += 1), d), b);
-      return N > m ? {
-        "--custom-max-width": `${B.slice(0, g).reduce((L, ee) => (L += ee, L), b)}px`
+      const t = M.value[s], o = t.parentElement, n = o.getBoundingClientRect(), i = window.getComputedStyle(o), _ = parseFloat(i.paddingLeft), p = parseFloat(i.paddingRight), v = parseFloat(i.borderLeftWidth), y = parseFloat(i.borderRightWidth), u = n.width - _ - p - v - y;
+      let f = 0;
+      const $ = Array.from(t.children), b = parseFloat(String(e.itemGap || 0)) * ($.length - 1), F = $.map((d) => d.clientWidth);
+      let B = F.reduce((d, L) => (d += L, d <= u && (f += 1), d), b);
+      return B > u ? {
+        "--custom-max-width": `${F.slice(0, f).reduce((L, te) => (L += te, L), b)}px`
       } : {
-        "--custom-max-width": `${N}px`
+        "--custom-max-width": `${B}px`
       };
     }
-    const J = F(
+    const Q = k(
       () => {
         var e;
-        return ((e = _.value) == null ? void 0 : e.legend) ?? [];
+        return ((e = h.value) == null ? void 0 : e.legend) ?? [];
       }
-    ), Q = F(() => {
+    ), U = k(() => {
       var e;
-      return ((e = _.value) == null ? void 0 : e.color) ?? [];
+      return ((e = h.value) == null ? void 0 : e.color) ?? [];
     }), E = fe(function() {
-      _.value = this.getOption();
-    }, i.throttleTime);
-    function U(e, s) {
+      h.value = this.getOption();
+    }, l.throttleTime);
+    function X(e, s) {
       var o;
       return {
-        "--item-color": Q.value[e],
+        "--item-color": U.value[e],
         "--textStyle-color": (o = s == null ? void 0 : s.textStyle) == null ? void 0 : o.color
       };
     }
-    function X(e, s, t) {
-      var l;
+    function Z(e, s, t) {
+      var i;
       if (s.type !== "scroll") return;
       e.preventDefault();
-      const o = (l = H.value) == null ? void 0 : l[t];
+      const o = (i = P.value) == null ? void 0 : i[t];
       if (!o) return;
-      const n = K[s.orient] ?? K.horizontal;
+      const n = D[s.orient] ?? D.horizontal;
       o.scrollTo(n(o, e.deltaY));
     }
-    function Z() {
+    function ee() {
       var e;
-      (e = f.value) == null || e.on(i.eventName, E);
+      (e = g.value) == null || e.on(l.eventName, E);
     }
     function T() {
       var e;
-      (e = f.value) == null || e.off(i.eventName, E);
+      (e = g.value) == null || e.off(l.eventName, E);
     }
-    return le(() => {
+    return A(() => {
       var e;
-      f.value = i.ecInstance ?? ((e = C == null ? void 0 : C.value) == null ? void 0 : e.ec), T(), Z();
+      g.value = l.ecInstance ?? ((e = S == null ? void 0 : S.value) == null ? void 0 : e.ec), T(), ee();
     }), ie(() => {
       T();
     }), (e, s) => (r(), c("div", _e, [
-      w("div", he, [
-        (r(!0), c(k, null, z(J.value, (t, o) => (r(), c("div", {
-          class: u(["cssom_legend__legend", [
+      w("div", pe, [
+        (r(!0), c(z, null, K(Q.value, (t, o) => (r(), c("div", {
+          class: m(["cssom_legend__legend", [
             `cssom_legend--box-${o}`,
             `cssom_legend__legend--${t.type ?? "plain"}`,
             `legend_orient--${t.orient ?? "horizontal"}`
@@ -104,32 +111,32 @@ const _e = { class: "cssom_legend" }, he = { class: "cssom_legend__wrapper" }, p
           ref: "cssomLegendRefKey",
           style: x(a(re)(t)),
           key: o,
-          onWheelCapture: W((n) => X(n, t, o), ["stop"])
+          onWheelCapture: W((n) => Z(n, t, o), ["stop"])
         }, [
           w("div", {
             ref_for: !0,
             ref: "cssomLegendWrapRefKey",
-            class: u(["cssom_legend__legend__wrap", [`cssom_legend__legend__wrap--${t.type ?? "plain"}`]]),
-            style: x(I(t, o))
+            class: m(["cssom_legend__legend__wrap", [`cssom_legend__legend__wrap--${t.type ?? "plain"}`]]),
+            style: x(J(t, o))
           }, [
-            (r(!0), c(k, null, z(q(t, o), (n, l) => {
-              var h, p, v, y, m;
+            (r(!0), c(z, null, K(I(t, o), (n, i) => {
+              var _, p, v, y, u;
               return r(), c("div", {
-                class: u(["cssom_legend__legend_item", {
+                class: m(["cssom_legend__legend_item", {
                   "cssom_legend__legend_item--unselect": !a(R)(
                     t,
                     n.name
                   )
                 }]),
-                key: l,
-                style: x(U(l, n)),
-                onClick: W((g) => j(n.name), ["stop"]),
-                onMouseenter: W((g) => G(n.name), ["stop"]),
-                onMouseleave: W((g) => Y(n.name), ["stop"])
+                key: i,
+                style: x(X(i, n)),
+                onClick: W((f) => G(n.name), ["stop"]),
+                onMouseenter: W((f) => Y(n.name), ["stop"]),
+                onMouseleave: W((f) => q(n.name), ["stop"])
               }, [
-                (h = n.icon ?? t.icon) != null && h.startsWith("image://") ? (r(), c("img", {
+                (_ = n.icon ?? t.icon) != null && _.startsWith("image://") ? (r(), c("img", {
                   key: 0,
-                  class: u(["cssom_legend__image_icon", {
+                  class: m(["cssom_legend__image_icon", {
                     "cssom_legend__image_icon--unselect": !a(R)(
                       t,
                       n.name
@@ -137,35 +144,35 @@ const _e = { class: "cssom_legend" }, he = { class: "cssom_legend__wrapper" }, p
                   }]),
                   src: (p = n.icon ?? t.icon) == null ? void 0 : p.slice(8),
                   alt: ""
-                }, null, 10, ye)) : (v = n.icon ?? t.icon) != null && v.startsWith("path://") ? (r(), c("svg", {
+                }, null, 10, Le)) : (v = n.icon ?? t.icon) != null && v.startsWith("path://") ? (r(), c("svg", {
                   key: 1,
-                  class: u(["cssom_legend__svg_icon", {
+                  class: m(["cssom_legend__svg_icon", {
                     "cssom_legend__svg_icon--unselect": !a(R)(
                       t,
                       n.name
                     )
                   }]),
-                  viewBox: a(ae)((y = n.icon ?? t.icon) == null ? void 0 : y.slice(7))
+                  viewBox: a(ge)((y = n.icon ?? t.icon) == null ? void 0 : y.slice(7))
                 }, [
                   w("path", {
-                    d: (m = n.icon ?? t.icon) == null ? void 0 : m.slice(7)
-                  }, null, 8, we)
-                ], 10, Le)) : (r(), c("div", {
+                    d: (u = n.icon ?? t.icon) == null ? void 0 : u.slice(7)
+                  }, null, 8, We)
+                ], 10, we)) : (r(), c("div", {
                   key: 2,
-                  class: u(["cssom_legend__rect", [...a(de)(n.icon ?? t.icon, n)]])
+                  class: m(["cssom_legend__rect", [...a(ae)(n.icon ?? t.icon, n)]])
                 }, null, 2)),
                 w("div", {
                   class: "cssom_legend__text",
-                  innerHTML: a(ue)(t, n.name)
-                }, null, 8, We)
-              ], 46, ve);
+                  innerHTML: a(de)(t, n.name)
+                }, null, 8, Se)
+              ], 46, ye);
             }), 128))
           ], 6)
-        ], 46, pe))), 128))
+        ], 46, ve))), 128))
       ])
     ]));
   }
 });
 export {
-  $e as default
+  Be as default
 };

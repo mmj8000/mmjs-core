@@ -1,17 +1,17 @@
 import { normalizeNumUnit as n } from "../../utils/format.js";
-import { ecOrientValue as p } from "./help.const.js";
-const l = {
-  orient(r, t, e) {
+import { ecOrientValue as m } from "./help.const.js";
+const h = {
+  orient({ value: r, record: t, effectProp: e }) {
     switch (r) {
-      case p.horizontal:
+      case m.horizontal:
         return "row";
-      case p.vertical:
+      case m.vertical:
         return "column";
       default:
         return r;
     }
   },
-  align(r, t, e) {
+  align({ value: r, record: t, effectProp: e }) {
     switch (r) {
       case "right":
         return "row-reverse";
@@ -19,40 +19,46 @@ const l = {
         return "row";
     }
   },
-  left(r, t, e) {
-    return e["--custom-root-justify"] = "flex-start", n(r);
+  left({ value: r, record: t, effectProp: e, key: o }) {
+    return r === "center" ? (e["--custom-root-justify"] = "center", "") : (e["--custom-root-justify"] = "flex-start", n(r));
   },
-  right(r, t, e) {
-    return e["--custom-root-justify"] = "flex-end", n(r);
+  right({ value: r, record: t, effectProp: e, key: o }) {
+    return r === "center" ? (e["--custom-root-justify"] = "center", "") : (e["--custom-root-justify"] = "flex-end", n(r));
   },
-  height(r, t, e) {
+  top({ value: r, record: t, effectProp: e, key: o }) {
+    return r === "center" ? (e["--custom-root-justify"] = "center", "") : n(r);
+  },
+  bottom({ value: r, record: t, effectProp: e, key: o }) {
+    return r === "center" ? (e["--custom-root-justify"] = "center", "") : n(r);
+  },
+  height({ value: r, record: t, effectProp: e }) {
     return n(r);
   },
-  lineHeight(r, t, e) {
+  lineHeight({ value: r, record: t, effectProp: e }) {
     return n(r);
   },
-  itemWidth(r, t, e) {
+  itemWidth({ value: r, record: t, effectProp: e }) {
     return n(r);
   },
-  itemHeight(r, t, e) {
+  itemHeight({ value: r, record: t, effectProp: e }) {
     return n(r);
   },
-  itemGap(r, t, e) {
+  itemGap({ value: r, record: t, effectProp: e }) {
     return n(r);
   },
-  padding(r, t, e) {
+  padding({ value: r, record: t, effectProp: e }) {
     return n(r);
   },
-  selectorButtonGap(r, t, e) {
+  selectorButtonGap({ value: r, record: t, effectProp: e }) {
     return n(r);
   },
-  selectorItemGap(r, t, e) {
+  selectorItemGap({ value: r, record: t, effectProp: e }) {
     return n(r);
   },
-  borderRadius(r, t, e) {
+  borderRadius({ value: r, record: t, effectProp: e }) {
     return n(r);
   },
-  width(r, t, e) {
+  width({ value: r, record: t, effectProp: e }) {
     switch (r) {
       case "auto":
         return "100%";
@@ -60,7 +66,7 @@ const l = {
         return n(r);
     }
   },
-  borderWidth(r, t, e) {
+  borderWidth({ value: r, record: t, effectProp: e }) {
     switch (r) {
       case "auto":
         return "2px";
@@ -68,13 +74,13 @@ const l = {
         return n(r);
     }
   },
-  inactiveWidth(r, t, e) {
+  inactiveWidth({ value: r, record: t, effectProp: e }) {
     return n(r);
   },
-  fontSize(r, t, e) {
+  fontSize({ value: r, record: t, effectProp: e }) {
     return n(r);
   },
-  inactiveBorderWidth(r, t, e) {
+  inactiveBorderWidth({ value: r, record: t, effectProp: e }) {
     switch (r) {
       case "auto":
         return "0px";
@@ -82,10 +88,10 @@ const l = {
         return n(r);
     }
   },
-  default(r, t, e) {
+  default({ value: r, record: t, effectProp: e }) {
     return r;
   }
-}, s = {
+}, l = {
   fontSize({ value: r }) {
     return n(r);
   },
@@ -93,6 +99,9 @@ const l = {
     return n(r);
   },
   height({ value: r }) {
+    return n(r);
+  },
+  lineHeight({ value: r }) {
     return n(r);
   },
   borderWidth({ value: r }) {
@@ -105,51 +114,51 @@ const l = {
     return r;
   }
 };
-function P({
+function y({
   legendIndex: r,
   series: t,
   legend: e
 }) {
   var d;
-  const f = t.at(r) ?? t.at(0);
-  if (!f) return [];
-  const i = (f == null ? void 0 : f.data) ?? [];
-  if (!i.length) return [];
-  let u = [];
-  if ((d = e == null ? void 0 : e.data) != null && d.length && (u = e.data.map((c) => {
-    const o = typeof c == "string" ? c : c.name;
-    return typeof c == "string" ? {
-      name: o,
-      serie: f
+  const o = t.at(r) ?? t.at(0);
+  if (!o) return [];
+  const a = (o == null ? void 0 : o.data) ?? [];
+  if (!a.length) return [];
+  let i = [];
+  if ((d = e == null ? void 0 : e.data) != null && d.length && (i = e.data.map((f) => {
+    const c = typeof f == "string" ? f : f.name;
+    return typeof f == "string" ? {
+      name: c,
+      serie: o
     } : {
-      name: c.name,
-      icon: c.icon,
-      serie: f
+      name: f.name,
+      icon: f.icon,
+      serie: o
     };
-  })), (f == null ? void 0 : f.type) === "pie") {
-    if (u.length) {
-      const c = i.reduce((o, a) => (o[a.name] = a.name, o.serie = f, o), {});
-      return u.filter((o) => !!c[o.name]);
+  })), (o == null ? void 0 : o.type) === "pie") {
+    if (i.length) {
+      const f = a.reduce((c, u) => (c[u.name] = u.name, c.serie = o, c), {});
+      return i.filter((c) => !!f[c.name]);
     }
-    return i;
+    return a;
   }
   if (t != null && t[0].name) {
-    if (u.length) {
-      const c = t.reduce((o, a) => (o[a.name] = a.name, o), {});
-      return u.filter((o) => !!c[o.name]);
+    if (i.length) {
+      const f = t.reduce((c, u) => (c[u.name] = u.name, c), {});
+      return i.filter((c) => !!f[c.name]);
     }
-    return t.map((c, o) => {
-      var a;
+    return t.map((f, c) => {
+      var u;
       return {
-        serie: t.at(o),
-        name: (a = c.name) == null ? void 0 : a.toString()
+        serie: t.at(c),
+        name: (u = f.name) == null ? void 0 : u.toString()
       };
     }).filter(Boolean);
   }
   return [];
 }
 export {
-  P as normalizeLegendName,
-  l as transformCss,
-  s as transformTextStyle
+  y as normalizeLegendName,
+  h as transformCss,
+  l as transformTextStyle
 };

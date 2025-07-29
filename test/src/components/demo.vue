@@ -1,7 +1,7 @@
 <template>
   <div class="chart_wrap relative">
     <div class="chart" ref="chartDomKey"></div>
-    <CssomLegend />
+    <CssomLegend :transfrom-fn="transformFn" />
   </div>
   <button @click="setOption">变化</button>
 </template>
@@ -24,21 +24,23 @@ import {
   CssomLegend,
   cssomLegendInjectKey,
 } from "mmjs-core/components/cssomLegend";
-
+function transformFn(val, options) {
+  return val;
+}
 
 const { option = {} } = defineProps<{
   option: echarts.EChartsOption;
 }>();
 const chartDom = useTemplateRef("chartDomKey");
 const chartInstance = shallowRef<echarts.ECharts>();
-  provide(
-    cssomLegendInjectKey,
-    computed(() => {
-      return {
-        ec: chartInstance.value!,
-      };
-    })
-  );
+provide(
+  cssomLegendInjectKey,
+  computed(() => {
+    return {
+      ec: chartInstance.value!,
+    };
+  })
+);
 
 function resize() {
   chartInstance.value?.resize();

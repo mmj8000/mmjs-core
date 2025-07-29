@@ -2,20 +2,12 @@ import { type LegendComponentOption, type SeriesOption } from "echarts";
 import { normalizeNumUnit } from "../../utils/format";
 import { ecOrientValue } from "./help.const";
 import type {
-  CssLegendPropType,
-  CssLegendPropValue,
   CustomDataItem,
-  TextCommonOptionKey,
+  FilterTemplate,
 } from "./types";
 
-export const transformCss: {
-  [key: string]: (
-    value: CssLegendPropValue,
-    record: LegendComponentOption,
-    effectProp: CssLegendPropType
-  ) => CssLegendPropValue;
-} = {
-  orient(value, record, effectProp) {
+export const transformCss: FilterTemplate = {
+  orient({ value, record, effectProp }) {
     switch (value) {
       case ecOrientValue.horizontal:
         return "row";
@@ -25,7 +17,7 @@ export const transformCss: {
         return value;
     }
   },
-  align(value: CssLegendPropValue, record, effectProp) {
+  align({ value, record, effectProp }) {
     switch (value) {
       case "right":
         return "row-reverse";
@@ -33,42 +25,64 @@ export const transformCss: {
         return "row";
     }
   },
-  left(value: CssLegendPropValue, record, effectProp) {
+  left({ value, record, effectProp, key }) {
+    if (value === "center") {
+      effectProp[`--custom-root-justify`] = "center";
+      return "";
+    }
     effectProp[`--custom-root-justify`] = "flex-start";
     return normalizeNumUnit(value);
   },
-  right(value: CssLegendPropValue, record, effectProp) {
+  right({ value, record, effectProp, key }) {
+    if (value === "center") {
+      effectProp[`--custom-root-justify`] = "center";
+      return "";
+    }
     effectProp[`--custom-root-justify`] = "flex-end";
     return normalizeNumUnit(value);
   },
-  height(value: CssLegendPropValue, record, effectProp) {
+  top({ value, record, effectProp, key }) {
+    if (value === "center") {
+      effectProp[`--custom-root-justify`] = "center";
+      return "";
+    }
     return normalizeNumUnit(value);
   },
-  lineHeight(value: CssLegendPropValue, record, effectProp) {
+  bottom({ value, record, effectProp, key }) {
+    if (value === "center") {
+      effectProp[`--custom-root-justify`] = "center";
+      return "";
+    }
     return normalizeNumUnit(value);
   },
-  itemWidth(value: CssLegendPropValue, record, effectProp) {
+  height({ value, record, effectProp }) {
     return normalizeNumUnit(value);
   },
-  itemHeight(value: CssLegendPropValue, record, effectProp) {
+  lineHeight({ value, record, effectProp }) {
     return normalizeNumUnit(value);
   },
-  itemGap(value: CssLegendPropValue, record, effectProp) {
+  itemWidth({ value, record, effectProp }) {
     return normalizeNumUnit(value);
   },
-  padding(value: CssLegendPropValue, record, effectProp) {
+  itemHeight({ value, record, effectProp }) {
     return normalizeNumUnit(value);
   },
-  selectorButtonGap(value: CssLegendPropValue, record, effectProp) {
+  itemGap({ value, record, effectProp }) {
     return normalizeNumUnit(value);
   },
-  selectorItemGap(value: CssLegendPropValue, record, effectProp) {
+  padding({ value, record, effectProp }) {
     return normalizeNumUnit(value);
   },
-  borderRadius(value: CssLegendPropValue, record, effectProp) {
+  selectorButtonGap({ value, record, effectProp }) {
     return normalizeNumUnit(value);
   },
-  width(value, record, effectProp) {
+  selectorItemGap({ value, record, effectProp }) {
+    return normalizeNumUnit(value);
+  },
+  borderRadius({ value, record, effectProp }) {
+    return normalizeNumUnit(value);
+  },
+  width({ value, record, effectProp }) {
     switch (value) {
       case "auto":
         return "100%";
@@ -76,7 +90,7 @@ export const transformCss: {
         return normalizeNumUnit(value);
     }
   },
-  borderWidth(value, record, effectProp) {
+  borderWidth({ value, record, effectProp }) {
     switch (value) {
       case "auto":
         return "2px";
@@ -84,13 +98,13 @@ export const transformCss: {
         return normalizeNumUnit(value);
     }
   },
-  inactiveWidth(value, record, effectProp) {
+  inactiveWidth({ value, record, effectProp }) {
     return normalizeNumUnit(value);
   },
-  fontSize(value, record, effectProp) {
+  fontSize({ value, record, effectProp }) {
     return normalizeNumUnit(value);
   },
-  inactiveBorderWidth(value, record, effectProp) {
+  inactiveBorderWidth({ value, record, effectProp }) {
     switch (value) {
       case "auto":
         return "0px";
@@ -98,20 +112,12 @@ export const transformCss: {
         return normalizeNumUnit(value);
     }
   },
-  default(value, record, effectProp) {
+  default({ value, record, effectProp }) {
     return value;
   },
 };
-type TextTransformStyleFn = <
-  T extends {
-    value: CssLegendPropValue;
-  }
->(
-  opts: T
-) => T["value"];
-export const transformTextStyle: {
-  [key in TextCommonOptionKey]: TextTransformStyleFn;
-} & { default: TextTransformStyleFn } = {
+
+export const transformTextStyle: FilterTemplate = {
   fontSize({ value }) {
     return normalizeNumUnit(value);
   },
@@ -121,12 +127,15 @@ export const transformTextStyle: {
   height({ value }) {
     return normalizeNumUnit(value);
   },
+  lineHeight({ value }) {
+    return normalizeNumUnit(value);
+  },
   borderWidth({ value }) {
     return normalizeNumUnit(value);
   },
   padding({ value }) {
     if (Array.isArray(value)) {
-      return value.map((v) => normalizeNumUnit(v)).join(' ');
+      return value.map((v) => normalizeNumUnit(v)).join(" ");
     }
     return normalizeNumUnit(value);
   },

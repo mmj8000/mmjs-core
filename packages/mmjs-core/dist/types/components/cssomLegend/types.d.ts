@@ -9,13 +9,13 @@ interface ShadowOptionMixin {
     shadowOffsetX?: number;
     shadowOffsetY?: number;
 }
-export type ZRLineType = 'solid' | 'dotted' | 'dashed' | number | number[];
-export type ZRFontStyle = 'normal' | 'italic' | 'oblique';
-export type ZRFontWeight = 'normal' | 'bold' | 'bolder' | 'lighter' | number;
-export type RendererType = 'canvas' | 'svg';
-export type LayoutOrient = 'vertical' | 'horizontal';
-export type HorizontalAlign = 'left' | 'center' | 'right';
-export type VerticalAlign = 'top' | 'middle' | 'bottom';
+export type ZRLineType = "solid" | "dotted" | "dashed" | number | number[];
+export type ZRFontStyle = "normal" | "italic" | "oblique";
+export type ZRFontWeight = "normal" | "bold" | "bolder" | "lighter" | number;
+export type RendererType = "canvas" | "svg";
+export type LayoutOrient = "vertical" | "horizontal";
+export type HorizontalAlign = "left" | "center" | "right";
+export type VerticalAlign = "top" | "middle" | "bottom";
 export type ImageLike = HTMLImageElement | HTMLCanvasElement | HTMLVideoElement;
 export interface TextCommonOption extends ShadowOptionMixin {
     color?: string;
@@ -69,20 +69,36 @@ interface LegendStyleOption {
     /**
      * Border color when legend item is not selected
      */
-    inactiveBorderWidth?: number | 'auto';
+    inactiveBorderWidth?: number | "auto";
     /**
      * Legend label formatter
      */
     formatter?: string | ((name: string) => string);
-    symbolRotate?: number | 'inherit';
+    symbolRotate?: number | "inherit";
 }
 export interface DataItem extends LegendStyleOption {
     name?: string;
     icon?: string;
-    textStyle?: LegendComponentOption['textStyle'];
+    textStyle?: LegendComponentOption["textStyle"];
     tooltip?: unknown;
 }
 export interface CustomDataItem extends DataItem {
     serie?: SeriesOption;
 }
+export type FilterTemplateFnParameters = {
+    value: CssLegendPropValue;
+    record: LegendComponentOption;
+    effectProp: CssLegendPropType;
+    key: string;
+    parentKey: string;
+};
+export type FilterTemplateFn = (options: FilterTemplateFnParameters) => CssLegendPropValue;
+export type FilterTemplate = {
+    [key: string]: FilterTemplateFn;
+} & {
+    default: FilterTemplateFn;
+};
+export type TransfromState = {
+    transform(value: CssLegendPropValue, options: FilterTemplateFnParameters): CssLegendPropValue;
+};
 export {};

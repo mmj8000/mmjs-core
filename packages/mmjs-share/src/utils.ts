@@ -116,3 +116,13 @@ export function memoize<T extends (...args: any[]) => any>(
     clear: () => void;
   };
 }
+
+
+/**
+ * 
+ * @param value 
+ * @returns 
+ */
+export function isObject<T>(value: T) {
+  return Object.prototype.toString.call(value) === "[object Object]";
+}

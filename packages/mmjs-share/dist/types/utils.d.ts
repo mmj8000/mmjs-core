@@ -42,3 +42,9 @@ export declare function memoize<T extends (...args: any[]) => any>(func: T, reso
     cache: Map<string, CacheEntry<ReturnType<T>>>;
     clear: () => void;
 };
+/**
+ *
+ * @param value
+ * @returns
+ */
+export declare function isObject<T>(value: T): boolean;

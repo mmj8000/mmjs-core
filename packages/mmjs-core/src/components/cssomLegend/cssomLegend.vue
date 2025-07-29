@@ -100,13 +100,14 @@ import {
   getSelectStatus,
   formatter,
   getIconModified,
-  calculateViewBox,
 } from "./methods";
 import { normalizeLegendName } from "./filters";
 import { useLegendAction } from "./legend-action";
-import { DataItem } from "./types";
+import type { DataItem, TransfromState } from "./types";
 import { throttle } from "mmjs-share";
 import { scrollDirMap } from "./help.const";
+import { calculateViewBox } from "./tools";
+import { transfromState } from "./transform";
 
 const ecInjectInstance = inject(cssomLegendInjectKey, void 0);
 const {
@@ -115,6 +116,7 @@ const {
   throttleTime = 500,
   disabled = false,
   enchanceCenter = true,
+  transfromFn,
 } = defineProps<{
   ecInstance?: ECharts;
   eventName?: "rendered" | "finished";
@@ -124,6 +126,7 @@ const {
    * @desc left、right === 'center' 有效
    */
   enchanceCenter?: boolean;
+  transfromFn?: TransfromState["transform"];
 }>();
 
 const cssomLegendRef = useTemplateRef<HTMLElement[]>("cssomLegendRefKey");
@@ -137,6 +140,12 @@ const $emits = defineEmits<{
   (name: "highlight", v: string): void;
   (name: "downplay", v: string): void;
 }>();
+
+watchEffect(() => {
+  if (typeof transfromFn === "function") {
+    transfromState.transform = transfromFn;
+  }
+});
 
 const { legendToggleSelect, highlight, downplay } =
   useLegendAction(proxyEcInstance);
@@ -171,48 +180,52 @@ function getWrapCneterProperties(legend: LegendComponentOption, index: number) {
   )
     return {};
   if (legend.left !== "center" && legend.right !== "center") return {};
-  const wrapTarget = cssomLegendWrapRef.value[index];
-  const parentEl = wrapTarget.parentElement!;
-  const rect = parentEl.getBoundingClientRect();
-  const computedStyle = window.getComputedStyle(parentEl);
-  const paddingLeft = parseFloat(computedStyle.paddingLeft);
-  const paddingRight = parseFloat(computedStyle.paddingRight);
-  const borderLeft = parseFloat(computedStyle.borderLeftWidth);
-  const borderRight = parseFloat(computedStyle.borderRightWidth);
+  try {
+    const wrapTarget = cssomLegendWrapRef.value[index];
+    const parentEl = wrapTarget.parentElement!;
+    const rect = parentEl.getBoundingClientRect();
+    const computedStyle = window.getComputedStyle(parentEl);
+    const paddingLeft = parseFloat(computedStyle.paddingLeft);
+    const paddingRight = parseFloat(computedStyle.paddingRight);
+    const borderLeft = parseFloat(computedStyle.borderLeftWidth);
+    const borderRight = parseFloat(computedStyle.borderRightWidth);
 
-  // 内容宽度 = rect.width - padding - border
-  const contentWidth =
-    rect.width - paddingLeft - paddingRight - borderLeft - borderRight;
-  let containCount = 0;
+    // 内容宽度 = rect.width - padding - border
+    const contentWidth =
+      rect.width - paddingLeft - paddingRight - borderLeft - borderRight;
+    let containCount = 0;
 
-  const childNodesArr = Array.from(wrapTarget.children);
-  const gap =
-    parseFloat(String(legend.itemGap || 0)) * (childNodesArr.length - 1);
-  const childWidthList = childNodesArr.map((cur) => {
-    return cur!.clientWidth;
-  });
-  let childAllWidth = childWidthList.reduce((pre, cur) => {
-    pre += cur;
-    if (pre <= contentWidth) {
-      containCount += 1;
+    const childNodesArr = Array.from(wrapTarget.children);
+    const gap =
+      parseFloat(String(legend.itemGap || 0)) * (childNodesArr.length - 1);
+    const childWidthList = childNodesArr.map((cur) => {
+      return cur!.clientWidth;
+    });
+    let childAllWidth = childWidthList.reduce((pre, cur) => {
+      pre += cur;
+      if (pre <= contentWidth) {
+        containCount += 1;
+      }
+      return pre;
+    }, gap);
+
+    if (childAllWidth > contentWidth) {
+      let childAllWidth2 = childWidthList
+        .slice(0, containCount)
+        .reduce((pre, cur) => {
+          pre += cur;
+          return pre;
+        }, gap);
+      return {
+        "--custom-max-width": `${childAllWidth2}px`,
+      };
     }
-    return pre;
-  }, gap);
-
-  if (childAllWidth > contentWidth) {
-    let childAllWidth2 = childWidthList
-      .slice(0, containCount)
-      .reduce((pre, cur) => {
-        pre += cur;
-        return pre;
-      }, gap);
     return {
-      "--custom-max-width": `${childAllWidth2}px`,
+      "--custom-max-width": `${childAllWidth}px`,
     };
+  } catch (err) {
+    console.error(`[Enhance Center]: ${err}`);
   }
-  return {
-    "--custom-max-width": `${childAllWidth}px`,
-  };
 }
 
 const renderLegends = computed(
@@ -462,10 +475,11 @@ onScopeDispose(() => {
       display: inline-block;
       color: var(--rich-textStyle-color);
       font-size: var(--rich-textStyle-fontSize, inherit);
-      width: var(--rich-textStyle-width, auto);
-      height: var(--rich-textStyle-height, auto);
+      width: var(--rich-textStyle-width, fit-content);
+      height: var(--rich-textStyle-height, fit-content);
       line-height: var(--rich-textStyle-lineHeight, auto);
       padding: var(--rich-textStyle-padding);
+      text-align: var(--rich-textStyle-align);
     }
   }
 

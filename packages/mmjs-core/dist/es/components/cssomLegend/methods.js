@@ -1,116 +1,84 @@
-import { matchCenterKey as m, innerIocnNames as p } from "./help.const.js";
-import { transformTextStyle as l, transformCss as h } from "./filters.js";
-function j(t, n) {
-  var e;
-  return ((e = t == null ? void 0 : t.selected) == null ? void 0 : e[n]) ?? !0;
+import { innerIocnNames as m } from "./help.const.js";
+import { transformTextStyle as h, transformCss as l } from "./filters.js";
+import { parseRichFormatString as S } from "./tools.js";
+import { isObject as x } from "mmjs-share";
+import { transfromState as b } from "./transform.js";
+function A(t, s) {
+  var r;
+  return ((r = t == null ? void 0 : t.selected) == null ? void 0 : r[s]) ?? !0;
 }
-function I(t, n) {
-  var i;
-  const e = typeof (t == null ? void 0 : t.formatter) == "function" ? t == null ? void 0 : t.formatter(n) : t.formatter ?? n;
-  return (i = t == null ? void 0 : t.textStyle) != null && i.rich ? x({
+function C(t, s) {
+  var o;
+  const r = typeof (t == null ? void 0 : t.formatter) == "function" ? t == null ? void 0 : t.formatter(s) : t.formatter ?? s;
+  return (o = t == null ? void 0 : t.textStyle) != null && o.rich ? $({
     legend: t,
-    richName: e
-  }) : e;
+    richName: r
+  }) : r;
 }
-function M(t) {
-  var i;
-  const n = {}, e = ((i = t.textStyle) == null ? void 0 : i.rich) ?? {};
-  for (let r in e) {
-    const s = e[r];
-    if (s)
-      for (let c in s)
-        n[`--textStyle-${c}`] = s[c];
+function F(t) {
+  var o;
+  const s = {}, r = ((o = t.textStyle) == null ? void 0 : o.rich) ?? {};
+  for (let n in r) {
+    const e = r[n];
+    if (e)
+      for (let c in e)
+        s[`--textStyle-${c}`] = e[c];
   }
-  return n;
+  return s;
 }
-function x({
+function $({
   legend: t,
-  richName: n
+  richName: s
 }) {
-  return b(n).map((e) => {
-    var i, r, s;
-    switch (e.type) {
+  return S(s).map((r) => {
+    var o, n, e;
+    switch (r.type) {
       case "rich":
-        const c = [], u = (((i = t.textStyle) == null ? void 0 : i.rich) ?? {})[e == null ? void 0 : e.name];
-        for (let o in u) {
-          const a = l[o] ?? l.default;
-          c.push(
-            `--rich-textStyle-${o}: ${a({
-              value: u[o]
-            })}`
-          );
-        }
-        return `<span style="${c.join(
-          ";"
-        )}" class="cssom_legend-rich cssom_legend-rich--${e.name}">${e.content}</span>`;
+        const f = (((o = t.textStyle) == null ? void 0 : o.rich) ?? {})[r == null ? void 0 : r.name], i = {};
+        return y(
+          f,
+          i,
+          "rich-textStyle",
+          h
+        ), `<span style="${Object.entries(i).map((p) => p.join(":")).join(";")}" class="cssom_legend-rich cssom_legend-rich--${r.name}">${r.content}</span>`;
       case "text":
-        return (s = (r = e.content) == null ? void 0 : r.replaceAll(" ", "&nbsp;")) == null ? void 0 : s.replaceAll(`
+        return (e = (n = r.content) == null ? void 0 : n.replaceAll(" ", "&nbsp;")) == null ? void 0 : e.replaceAll(`
 `, "<br />");
       default:
         return "";
     }
   }).join("");
 }
-function k(t) {
-  const n = {};
-  return y(t, n, ""), {
-    ...n
+function I(t) {
+  const s = {};
+  return y(t, s, "", l), {
+    ...s
   };
 }
-function y(t, n, e = "") {
-  for (let i in t) {
-    const r = t[i];
-    typeof r == "string" || typeof r == "number" ? $(e, i, n, r, t) : Object.prototype.toString.call(r) === "[object Object]" && y(r, n, i);
+function y(t, s, r, o) {
+  for (let n in t) {
+    const e = t[n];
+    if (typeof e == "string" || typeof e == "number") {
+      const f = [r, n].filter(Boolean).join("-"), i = o[n] ?? o.default, u = {
+        value: e,
+        record: t,
+        effectProp: s,
+        key: n,
+        parentKey: r
+      }, p = i(u), a = b.transform(p, u);
+      s[`--${f}`] = a;
+    } else x(e) && y(e, s, n, o);
   }
 }
-function $(t, n, e, i, r) {
-  const c = [t, n].filter(Boolean).join("-");
-  if (m.includes(n) && i === "center") {
-    e["--custom-root-justify"] = "center";
-    return;
-  }
-  const f = h[n];
-  e[`--${c}`] = f ? f(i, r, e) : h.default(i, r, e);
-}
-function w(t, n) {
-  var i, r, s, c;
-  const e = [];
-  return t ? e.push(`legend-icon--${p[t] ?? t}`) : (i = n.serie) != null && i.type ? e.push(`legend-icon--${(r = n.serie) == null ? void 0 : r.type}`) : t || e.push("legend-icon--roundRect"), (s = n.serie) != null && s.symbol && e.push(`legend-symbol--${(c = n.serie) == null ? void 0 : c.symbol}`), e;
-}
-function P(t = "") {
-  let n = 1 / 0, e = 1 / 0, i = -1 / 0, r = -1 / 0;
-  const s = t.match(/[a-df-z][^a-df-z]*/gi);
-  return s == null || s.forEach((c) => {
-    const f = c.slice(1).trim().split(/[\s,]+/).map(Number);
-    for (let u = 0; u < f.length; u += 2) {
-      const o = f[u], a = f[u + 1];
-      isNaN(o) || (n = Math.min(n, o)), isNaN(a) || (e = Math.min(e, a)), isNaN(o) || (i = Math.max(i, o)), isNaN(a) || (r = Math.max(r, a));
-    }
-  }), `${n} ${e} ${i - n + 2} ${r - e + 2}`;
-}
-function b(t) {
-  const n = [], e = /\{([^}|]+)\|([^}]+)\}/g;
-  let i, r = 0;
-  for (; (i = e.exec(t)) !== null; )
-    i.index > r && n.push({
-      type: "text",
-      content: t.substring(r, i.index)
-    }), n.push({
-      type: "rich",
-      name: i[1],
-      content: i[2] ?? ""
-    }), r = i.index + i[0].length;
-  return r < t.length && n.push({
-    type: "text",
-    content: t.substring(r)
-  }), n;
+function L(t, s) {
+  var o, n, e, c;
+  const r = [];
+  return t ? r.push(`legend-icon--${m[t] ?? t}`) : (o = s.serie) != null && o.type ? r.push(`legend-icon--${(n = s.serie) == null ? void 0 : n.type}`) : t || r.push("legend-icon--roundRect"), (e = s.serie) != null && e.symbol && r.push(`legend-symbol--${(c = s.serie) == null ? void 0 : c.symbol}`), r;
 }
 export {
-  P as calculateViewBox,
-  I as formatter,
-  k as getCustomLegendProperty,
-  w as getIconModified,
-  j as getSelectStatus,
-  b as parseRichFormatString,
-  M as useRichStyleProperties
+  C as formatter,
+  I as getCustomLegendProperty,
+  L as getIconModified,
+  A as getSelectStatus,
+  F as useRichStyleProperties
 };

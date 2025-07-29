@@ -4,67 +4,6 @@ export const pieOption: EChartsOption = {
   tooltip: {
     trigger: "item",
   },
-  legend: [
-    {
-      show: false,
-      top: "5%",
-      left: "center",
-      // align: 'right',
-      // width: '100%',
-      textStyle: {
-        fontSize: 15,
-        height: 15,
-        lineHeight: 15,
-        overflow: "breakAll",
-      },
-      type: "scroll",
-      data: [
-        {
-          name: "Search Engine",
-          // 强制设置图形为圆。
-          icon: "image:///setting.jpg",
-          // // 设置文本为红色
-          textStyle: {
-            color: "red",
-          },
-        },
-        "Direct",
-        {
-          name: "Email",
-          icon: "triangle",
-          itemStyle: {
-            color: "blue",
-          },
-        },
-        {
-          name: "Union Ads",
-          itemStyle: {
-            color: "red",
-          },
-        },
-      ],
-      icon: "path://M30.9,53.2C16.8,53.2,5.3,41.7,5.3,27.6S16.8,2,30.9,2C45,2,56.4,13.5,56.4,27.6S45,53.2,30.9,53.2z M30.9,3.5C17.6,3.5,6.8,14.4,6.8,27.6c0,13.3,10.8,24.1,24.101,24.1C44.2,51.7,55,40.9,55,27.6C54.9,14.4,44.1,3.5,30.9,3.5z M36.9,35.8c0,0.601-0.4,1-0.9,1h-1.3c-0.5,0-0.9-0.399-0.9-1V19.5c0-0.6,0.4-1,0.9-1H36c0.5,0,0.9,0.4,0.9,1V35.8z M27.8,35.8 c0,0.601-0.4,1-0.9,1h-1.3c-0.5,0-0.9-0.399-0.9-1V19.5c0-0.6,0.4-1,0.9-1H27c0.5,0,0.9,0.4,0.9,1L27.8,35.8L27.8,35.8z",
-      itemStyle: {
-        color: "red",
-        borderColor: "red",
-        borderWidth: 1,
-      },
-      formatter(name) {
-        return name + "-11";
-      },
-    },
-    {
-      show: false,
-      bottom: "10px",
-      right: "center",
-      orient: "vertical",
-      itemWidth: 20,
-      itemStyle: {
-        borderColor: "yellow",
-      },
-      icon: "path://M30.9,53.2C16.8,53.2,5.3,41.7,5.3,27.6S16.8,2,30.9,2C45,2,56.4,13.5,56.4,27.6S45,53.2,30.9,53.2z M30.9,3.5C17.6,3.5,6.8,14.4,6.8,27.6c0,13.3,10.8,24.1,24.101,24.1C44.2,51.7,55,40.9,55,27.6C54.9,14.4,44.1,3.5,30.9,3.5z M36.9,35.8c0,0.601-0.4,1-0.9,1h-1.3c-0.5,0-0.9-0.399-0.9-1V19.5c0-0.6,0.4-1,0.9-1H36c0.5,0,0.9,0.4,0.9,1V35.8z M27.8,35.8 c0,0.601-0.4,1-0.9,1h-1.3c-0.5,0-0.9-0.399-0.9-1V19.5c0-0.6,0.4-1,0.9-1H27c0.5,0,0.9,0.4,0.9,1L27.8,35.8L27.8,35.8z",
-    },
-  ],
   series: [
     {
       name: "Access From",
@@ -117,7 +56,7 @@ export const lineOption: EChartsOption = {
     // itemHeight: 5,
     orient: "vertical",
     type: "scroll",
-    top: 'center',
+    top: "center",
     // width: "auto",
     height: "50%",
     right: "center",
@@ -244,7 +183,7 @@ export const barOption: EChartsOption = {
   },
   legend: {
     show: false,
-    data: ["Email", "Union Ads", "Video Ads", "Direct", "Search Engine"],
+    // data: ["Email", "Union Ads", "Video Ads", "Direct", "Search Engine"],
     itemHeight: 10,
     // right: '10%',
     // left: "center",
@@ -328,6 +267,62 @@ export const barOption: EChartsOption = {
         focus: "series",
       },
       data: [820, 932, 901, 934, 1290, 1330, 1320],
+    },
+  ],
+};
+
+export const echartsOptions: EChartsOption = {
+  series: [
+    {
+      radius: ["50%", "33%"],
+      center: ["center", "30%"],
+    },
+  ],
+  legend: {
+    show: false,
+    orient: "horizontal",
+    width: "90%",
+    bottom: 0,
+    left: "center",
+    itemGap: 18,
+    itemWidth: 16,
+    itemHeight: 16,
+    textStyle: {
+      color: "#606266",
+      padding: [10, 0, 5, 5],
+      fontSize: 15, // 文本字体大小
+      lineHeight: 20,
+      rich: {
+        name: {
+          fontSize: 14,
+          color: "#606266",
+           width: 70,
+          align: 'left',
+        },
+        value: {
+          width: 70,
+          fontWeight: 700,
+          fontSize: 20,
+          lineHeight: 24,
+          color: "#303133",
+          align: 'left',
+        },
+      },
+    },
+  },
+  title: [
+    {
+      subtextStyle: {
+        fontSize: 16,
+        color: "#606266",
+      },
+      left: "48.5%",
+      top: "24.5%",
+      // textAlign: 'center'
+    },
+    {
+      left: "48.5%",
+      top: "31%",
     },
   ],
 };

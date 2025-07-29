@@ -1,4 +1,5 @@
 import { ECharts } from 'echarts';
+import { TransfromState } from './types';
 type __VLS_Props = {
     ecInstance?: ECharts;
     eventName?: "rendered" | "finished";
@@ -8,6 +9,7 @@ type __VLS_Props = {
      * @desc left、right === 'center' 有效
      */
     enchanceCenter?: boolean;
+    transfromFn?: TransfromState["transform"];
 };
 declare const _default: import('vue').DefineComponent<__VLS_Props, {}, {}, {}, {}, import('vue').ComponentOptionsMixin, import('vue').ComponentOptionsMixin, {} & {
     legendToggleSelect: (v: string) => any;
