@@ -1,5 +1,6 @@
 <template>
   <button @click="test = !test">切换1</button>
+  <Demo :option="pieOption" v-if="test" />
   <Demo :option="pieChartOption" v-if="test" />
   <Demo :option="lineOption" />
   <Demo :option="barOption" />

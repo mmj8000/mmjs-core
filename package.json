@@ -1,11 +1,11 @@
 {
   "name": "mmjs-mp",
-  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "directories": {
     "test": "test"
   },
+  "files": [],
   "scripts": {},
   "author": "",
   "license": "ISC",
