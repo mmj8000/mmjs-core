@@ -1,7 +1,7 @@
 <template>
   <div class="chart_wrap relative">
     <div class="chart" ref="chartDomKey"></div>
-    <CssomLegend :transfrom-fn="transformFn" />
+    <CssomLegend :ec-instance="chartInstance" :transfrom-fn="transformFn" />
   </div>
   <button @click="setOption">变化</button>
 </template>
@@ -33,14 +33,14 @@ const { option = {} } = defineProps<{
 }>();
 const chartDom = useTemplateRef("chartDomKey");
 const chartInstance = shallowRef<echarts.ECharts>();
-provide(
-  cssomLegendInjectKey,
-  computed(() => {
-    return {
-      ec: chartInstance.value!,
-    };
-  })
-);
+// provide(
+//   cssomLegendInjectKey,
+//   computed(() => {
+//     return {
+//       ec: chartInstance.value!,
+//     };
+//   })
+// );
 
 function resize() {
   chartInstance.value?.resize();
@@ -56,6 +56,7 @@ onMounted(() => {
 });
 function setOption() {
   chartInstance.value!.setOption({
+    color: ["red"],
     series: [
       {
         data: [
