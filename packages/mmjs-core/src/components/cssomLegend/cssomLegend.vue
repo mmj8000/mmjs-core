@@ -185,11 +185,13 @@ function getWrapCneterProperties(legend: LegendComponentOption, index: number) {
     const wrapTarget = cssomLegendWrapRef.value[index];
     const parentEl = wrapTarget.parentElement!;
     const rect = parentEl.getBoundingClientRect();
+    const targetComputeStyle = window.getComputedStyle(wrapTarget);
     const computedStyle = window.getComputedStyle(parentEl);
     const paddingLeft = parseFloat(computedStyle.paddingLeft);
     const paddingRight = parseFloat(computedStyle.paddingRight);
     const borderLeft = parseFloat(computedStyle.borderLeftWidth);
     const borderRight = parseFloat(computedStyle.borderRightWidth);
+    const itemRowGap = parseFloat(targetComputeStyle.rowGap);
 
     // 内容宽度 = rect.width - padding - border
     const contentWidth =
@@ -197,10 +199,13 @@ function getWrapCneterProperties(legend: LegendComponentOption, index: number) {
     let containCount = 0;
 
     const childNodesArr = Array.from(wrapTarget.children);
-    const gap =
-      parseFloat(String(legend.itemGap || 0)) * (childNodesArr.length - 1);
-    const childWidthList = childNodesArr.map((cur) => {
-      return cur!.clientWidth;
+    const gap = itemRowGap * (childNodesArr.length - 1);
+    const childWidthList = childNodesArr.map((element) => {
+      // 获取计算样式对象
+      const style = window.getComputedStyle(element);
+      const marginLeft = parseFloat(style.marginLeft); // 上边距
+      const marginRight = parseFloat(style.marginRight); // 右边距
+      return element!.clientWidth + marginLeft + marginRight;
     });
     let childAllWidth = childWidthList.reduce((pre, cur) => {
       pre += cur;
@@ -216,13 +221,19 @@ function getWrapCneterProperties(legend: LegendComponentOption, index: number) {
         .reduce((pre, cur) => {
           pre += cur;
           return pre;
-        }, gap);
+        }, itemRowGap * (containCount - 1));
+
+      const maxWidth = transfromState.transformWrapMaxWidth(
+        childAllWidth2,
+        "px"
+      );
       return {
-        "--custom-max-width": `${childAllWidth2}px`,
+        "--custom-max-width": maxWidth,
       };
     }
+    const maxWidth = transfromState.transformWrapMaxWidth(childAllWidth, "px");
     return {
-      "--custom-max-width": `${childAllWidth}px`,
+      "--custom-max-width": maxWidth,
     };
   } catch (err) {
     console.error(`[Enhance Center]: ${err}`);
@@ -249,34 +260,48 @@ function getItemStyleProperties(
   dataItem: CustomDataItem
 ) {
   let tempColor = dataItem?.serie?.itemStyle?.color;
+  Reflect.set(
+    getItemStyleProperties,
+    "__colors",
+    JSON.parse(JSON.stringify(colors.value))
+  );
+  const seriesName = dataItem?.name;
   const zrcolorOption = {
+    $vars: ["seriesName", "name", "value"],
+    borderColor: dataItem?.serie?.itemStyle?.borderColor,
     dataIndex,
     seriesIndex,
     value: dataItem.serie?.data?.[dataIndex],
     data: dataItem.serie?.data?.[dataIndex],
     seriesType: dataItem.serie?.type,
     name: dataItem.serie?.name,
-    seriesName: dataItem?.name,
-    color: null,
+    seriesId: `\u0000${seriesName}\u00000`,
+    seriesName,
+    dataType: void 0,
+    color: getItemStyleProperties.__colors[dataIndex],
     componentIndex: seriesIndex,
     componentSubType: dataItem.serie?.type,
     componentType: "customSeries",
   };
+
   if (tempColor) {
-    colors.value.splice(dataIndex, 0, tempColor);
+    getItemStyleProperties.__colors.splice(dataIndex, 0, tempColor);
   }
-  let color = colors.value[dataIndex];
+  let color = getItemStyleProperties.__colors[dataIndex] as
+    | string
+    | ((v: any) => string);
   const textStyleProperties = {};
   const textStyle = dataItem?.textStyle ?? {};
   forPropertsEffect(textStyle, textStyleProperties, "textStyle", transformCss);
-  // @ts-ignore
-  const resultColor = typeof color === "function" ? color(zrcolorOption) : color;
+  const resultColor =
+    typeof color === "function" ? color(zrcolorOption) : color;
   return {
     "--item-color": transfromState.transformGradientCss(resultColor),
     "--data-item-icon": dataItem.icon?.replaceAll("image://", ""),
     ...textStyleProperties,
   };
 }
+getItemStyleProperties.__colors = [];
 
 function legendWrapScrollHandler(
   e: WheelEvent,

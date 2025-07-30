@@ -112,6 +112,7 @@ interface BorderOptionMixin {
 }
 export interface ItemStyleOption {
   color?: string;
+  borderColor?: string;
   opacity?: number;
   borderRadius?: (number | string)[] | number | string;
 }
@@ -150,4 +151,5 @@ export type TransfromState = {
   transformGradientCss(
     object: LinearGradientObject | RadialGradientObject | PatternObject | string
   ): string;
+  transformWrapMaxWidth(val: number, unit: 'px'): string;
 };

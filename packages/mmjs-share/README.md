@@ -20,6 +20,7 @@
   2. throttle （`主动cancel`)
   3. isObject
   4. isPlainObject
+  5. structuredClonePolyfill
 
 ## Share
 

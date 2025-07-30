@@ -84,6 +84,7 @@ export interface DataItem extends LegendStyleOption {
 }
 export interface ItemStyleOption {
     color?: string;
+    borderColor?: string;
     opacity?: number;
     borderRadius?: (number | string)[] | number | string;
 }
@@ -114,5 +115,6 @@ export interface GradientColorStop {
 export type TransfromState = {
     transform(value: CssLegendPropValue, options: FilterTemplateFnParameters): CssLegendPropValue;
     transformGradientCss(object: LinearGradientObject | RadialGradientObject | PatternObject | string): string;
+    transformWrapMaxWidth(val: number, unit: 'px'): string;
 };
 export {};

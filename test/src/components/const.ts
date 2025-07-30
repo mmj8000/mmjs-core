@@ -288,7 +288,9 @@ export const barOption: EChartsOption = {
       // symbol: 'circle',
       data: [235, 132, 101, 134, 90, 230, 210],
       itemStyle: {
-        color: "red",
+        color() {
+          return  "red"
+        },
       },
     },
     {

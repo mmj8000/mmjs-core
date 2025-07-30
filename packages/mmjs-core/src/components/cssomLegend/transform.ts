@@ -59,4 +59,7 @@ export const transfromState: TransfromState = {
 
     return "";
   },
+  transformWrapMaxWidth(val: number, unit: "px") {
+    return !val && typeof val === 'number' ? "auto" : `${val}${unit}`;
+  },
 };

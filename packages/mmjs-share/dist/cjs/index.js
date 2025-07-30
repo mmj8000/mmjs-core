@@ -1,1 +1,1 @@
-"use strict";Object.defineProperty(exports,Symbol.toStringTag,{value:"Module"});const e=require("./utils.js");exports.isObject=e.isObject;exports.isPlainObject=e.isPlainObject;exports.memoize=e.memoize;exports.throttle=e.throttle;
+"use strict";Object.defineProperty(exports,Symbol.toStringTag,{value:"Module"});const e=require("./utils.js"),t=require("./structuredClone.js");exports.isObject=e.isObject;exports.isPlainObject=e.isPlainObject;exports.memoize=e.memoize;exports.throttle=e.throttle;exports.structuredClonePolyfill=t.structuredClonePolyfill;

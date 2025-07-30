@@ -1,7 +1,9 @@
-import { isObject as i, isPlainObject as o, memoize as m, throttle as r } from "./utils.js";
+import { isObject as o, isPlainObject as r, memoize as l, throttle as i } from "./utils.js";
+import { structuredClonePolyfill as c } from "./structuredClone.js";
 export {
-  i as isObject,
-  o as isPlainObject,
-  m as memoize,
-  r as throttle
+  o as isObject,
+  r as isPlainObject,
+  l as memoize,
+  c as structuredClonePolyfill,
+  i as throttle
 };

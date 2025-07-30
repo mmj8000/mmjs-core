@@ -1,9 +1,9 @@
-import { normalizeNumUnit as g } from "../../utils/format.js";
-function s(o) {
+import { normalizeNumUnit as f } from "../../utils/format.js";
+function $(o) {
   var n;
   return (n = o ?? []) == null ? void 0 : n.map((t) => `${t.color} ${t.offset * 100}%`).join(", ");
 }
-const p = {
+const i = {
   transform(o, n) {
     return o;
   },
@@ -15,32 +15,35 @@ const p = {
         image: n,
         imageHeight: t,
         imageWidth: r,
-        svgElement: l,
-        svgHeight: e,
-        svgWidth: f
+        svgElement: e,
+        svgHeight: g,
+        svgWidth: u
       } = o;
       if (n)
-        return `url(${n}) center/${g(
+        return `url(${n}) center/${f(
           r ?? 0
-        )} ${g(t ?? 0)}`;
-      if (l)
-        return `url(${l}) center/${g(
-          f ?? 0
-        )} ${g(e ?? 0)}`;
+        )} ${f(t ?? 0)}`;
+      if (e)
+        return `url(${e}) center/${f(
+          u ?? 0
+        )} ${f(g ?? 0)}`;
     }
     if (o.type === "linear") {
-      const { x: n, y: t, x2: r, y2: l } = o, e = r - n, f = l - t;
-      return `linear-gradient(${90 - Math.atan2(f, e) * 180 / Math.PI}deg, ${s(
+      const { x: n, y: t, x2: r, y2: e } = o, g = r - n, u = e - t;
+      return `linear-gradient(${90 - Math.atan2(u, g) * 180 / Math.PI}deg, ${$(
         o.colorStops
       )})`;
     }
     if (o.type === "radial") {
       const { x: n, y: t, r } = o;
-      return `radial-gradient(${r * 100}%  ${r * 100}% at ${n * 100}% ${t * 100}%, ${s(o.colorStops)})`;
+      return `radial-gradient(${r * 100}%  ${r * 100}% at ${n * 100}% ${t * 100}%, ${$(o.colorStops)})`;
     }
     return "";
+  },
+  transformWrapMaxWidth(o, n) {
+    return !o && typeof o == "number" ? "auto" : `${o}${n}`;
   }
 };
 export {
-  p as transfromState
+  i as transfromState
 };

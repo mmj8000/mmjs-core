@@ -1,13 +1,13 @@
-import { defineComponent as oe, inject as se, useTemplateRef as z, shallowRef as re, ref as ie, watchEffect as K, computed as P, onScopeDispose as le, createElementBlock as u, openBlock as m, createElementVNode as T, Fragment as k, renderList as D, withModifiers as E, normalizeStyle as $, unref as g, normalizeClass as v } from "vue";
-import { cssomLegendInjectKey as ce } from "./const.js";
-import { forPropertsEffect as ae, getCustomLegendProperty as ue, getSelectStatus as b, getIconModified as me, formatter as fe } from "./methods.js";
-import { normalizeLegendName as de, transformCss as pe } from "./filters.js";
-import { useLegendAction as ge } from "./legend-action.js";
-import { throttle as he } from "mmjs-share";
-import { scrollDirMap as H } from "./help.const.js";
-import { calculateViewBox as _e } from "./tools.js";
-import { transfromState as O } from "./transform.js";
-const ve = { class: "cssom_legend" }, ye = { class: "cssom_legend__wrapper" }, Le = ["onWheelCapture"], Se = ["onClick", "onMouseenter", "onMouseleave"], Ce = ["src"], we = ["viewBox"], We = ["d"], Re = ["innerHTML"], Ne = /* @__PURE__ */ oe({
+import { defineComponent as le, inject as ce, useTemplateRef as D, shallowRef as ae, ref as me, watchEffect as H, computed as G, onScopeDispose as ue, createElementBlock as u, openBlock as f, createElementVNode as b, Fragment as J, renderList as V, withModifiers as E, normalizeStyle as z, unref as _, normalizeClass as w } from "vue";
+import { cssomLegendInjectKey as fe } from "./const.js";
+import { forPropertsEffect as pe, getCustomLegendProperty as de, getSelectStatus as K, getIconModified as ge, formatter as _e } from "./methods.js";
+import { normalizeLegendName as he, transformCss as ye } from "./filters.js";
+import { useLegendAction as ve } from "./legend-action.js";
+import { throttle as Se } from "mmjs-share";
+import { scrollDirMap as j } from "./help.const.js";
+import { calculateViewBox as we } from "./tools.js";
+import { transfromState as F } from "./transform.js";
+const Ce = { class: "cssom_legend" }, Le = { class: "cssom_legend__wrapper" }, We = ["onWheelCapture"], xe = ["onClick", "onMouseenter", "onMouseleave"], Re = ["src"], Te = ["viewBox"], Me = ["d"], be = ["innerHTML"], Pe = /* @__PURE__ */ le({
   __name: "cssomLegend",
   props: {
     ecInstance: {},
@@ -18,186 +18,206 @@ const ve = { class: "cssom_legend" }, ye = { class: "cssom_legend__wrapper" }, L
     transfromFn: {}
   },
   emits: ["legendToggleSelect", "highlight", "downplay"],
-  setup(i, { emit: G }) {
-    const x = se(ce, void 0), V = z("cssomLegendRefKey"), A = z(
+  setup(l, { emit: Y }) {
+    const N = ce(fe, void 0), q = D("cssomLegendRefKey"), O = D(
       "cssomLegendWrapRefKey"
-    ), w = re(), W = ie(), M = G;
-    K(() => {
-      typeof i.transfromFn == "function" && (O.transform = i.transfromFn);
+    ), R = ae(), T = me(), $ = Y;
+    H(() => {
+      typeof l.transfromFn == "function" && (F.transform = l.transfromFn);
     });
-    const { legendToggleSelect: j, highlight: Y, downplay: q } = ge(w);
-    function J(e) {
-      !i.disabled && j(e), M("legendToggleSelect", e);
+    const { legendToggleSelect: Q, highlight: U, downplay: X } = ve(R);
+    function Z(t) {
+      !l.disabled && Q(t), $("legendToggleSelect", t);
     }
-    function Q(e) {
-      !i.disabled && Y(e), M("highlight", e);
+    function I(t) {
+      !l.disabled && U(t), $("highlight", t);
     }
-    function U(e) {
-      !i.disabled && q(e), M("downplay", e);
+    function ee(t) {
+      !l.disabled && X(t), $("downplay", t);
     }
-    function X(e, r) {
-      var o;
-      const t = ((o = W.value) == null ? void 0 : o.series) ?? [];
-      return de({
-        legend: e,
-        series: t,
-        legendIndex: r
+    function te(t, s) {
+      var n;
+      const e = ((n = T.value) == null ? void 0 : n.series) ?? [];
+      return he({
+        legend: t,
+        series: e,
+        legendIndex: s
       });
     }
-    function Z(e, r) {
-      if (!i.enchanceCenter) return {};
-      if (e.type === "scroll" || e.orient === "vertical" || !A.value)
+    function oe(t, s) {
+      if (!l.enchanceCenter) return {};
+      if (t.type === "scroll" || t.orient === "vertical" || !O.value)
         return {};
-      if (e.left !== "center" && e.right !== "center") return {};
+      if (t.left !== "center" && t.right !== "center") return {};
       try {
-        const t = A.value[r], o = t.parentElement, n = o.getBoundingClientRect(), s = window.getComputedStyle(o), f = parseFloat(s.paddingLeft), h = parseFloat(s.paddingRight), _ = parseFloat(s.borderLeftWidth), d = parseFloat(s.borderRightWidth), c = n.width - f - h - _ - d;
-        let a = 0;
-        const y = Array.from(t.children), L = parseFloat(String(e.itemGap || 0)) * (y.length - 1), S = y.map((l) => l.clientWidth);
-        let C = S.reduce((l, p) => (l += p, l <= c && (a += 1), l), L);
-        return C > c ? {
-          "--custom-max-width": `${S.slice(0, a).reduce((p, R) => (p += R, p), L)}px`
-        } : {
-          "--custom-max-width": `${C}px`
+        const e = O.value[s], n = e.parentElement, o = n.getBoundingClientRect(), c = window.getComputedStyle(e), r = window.getComputedStyle(n), p = parseFloat(r.paddingLeft), y = parseFloat(r.paddingRight), v = parseFloat(r.borderLeftWidth), d = parseFloat(r.borderRightWidth), a = parseFloat(c.rowGap), C = o.width - p - y - v - d;
+        let S = 0;
+        const L = Array.from(e.children), M = a * (L.length - 1), W = L.map((i) => {
+          const m = window.getComputedStyle(i), g = parseFloat(m.marginLeft), B = parseFloat(m.marginRight);
+          return i.clientWidth + g + B;
+        });
+        let x = W.reduce((i, m) => (i += m, i <= C && (S += 1), i), M);
+        if (x > C) {
+          let i = W.slice(0, S).reduce((g, B) => (g += B, g), a * (S - 1));
+          return {
+            "--custom-max-width": F.transformWrapMaxWidth(
+              i,
+              "px"
+            )
+          };
+        }
+        return {
+          "--custom-max-width": F.transformWrapMaxWidth(x, "px")
         };
-      } catch (t) {
-        console.error(`[Enhance Center]: ${t}`);
+      } catch (e) {
+        console.error(`[Enhance Center]: ${e}`);
       }
     }
-    const I = P(
+    const ne = G(
       () => {
-        var e;
-        return ((e = W.value) == null ? void 0 : e.legend) ?? [];
+        var t;
+        return ((t = T.value) == null ? void 0 : t.legend) ?? [];
       }
-    ), F = P(() => {
-      var r;
-      let e = (r = W.value) == null ? void 0 : r.color;
-      return Array.isArray(e) ? e : e ? [e] : [];
-    }), B = he(function() {
-      W.value = this.getOption();
-    }, i.throttleTime);
-    function ee(e, r, t) {
-      var d, c, a, y, L, S, C, l, p, R;
-      let o = (c = (d = t == null ? void 0 : t.serie) == null ? void 0 : d.itemStyle) == null ? void 0 : c.color;
-      const n = {
-        dataIndex: e,
-        seriesIndex: r,
-        value: (y = (a = t.serie) == null ? void 0 : a.data) == null ? void 0 : y[e],
-        data: (S = (L = t.serie) == null ? void 0 : L.data) == null ? void 0 : S[e],
-        seriesType: (C = t.serie) == null ? void 0 : C.type,
-        name: (l = t.serie) == null ? void 0 : l.name,
-        seriesName: t == null ? void 0 : t.name,
-        color: null,
-        componentIndex: r,
-        componentSubType: (p = t.serie) == null ? void 0 : p.type,
+    ), se = G(() => {
+      var s;
+      let t = (s = T.value) == null ? void 0 : s.color;
+      return Array.isArray(t) ? t : t ? [t] : [];
+    }), P = Se(function() {
+      T.value = this.getOption();
+    }, l.throttleTime);
+    function h(t, s, e) {
+      var d, a, C, S, L, M, W, x, A, i, m, g;
+      let n = (a = (d = e == null ? void 0 : e.serie) == null ? void 0 : d.itemStyle) == null ? void 0 : a.color;
+      Reflect.set(
+        h,
+        "__colors",
+        JSON.parse(JSON.stringify(se.value))
+      );
+      const o = e == null ? void 0 : e.name, c = {
+        $vars: ["seriesName", "name", "value"],
+        borderColor: (S = (C = e == null ? void 0 : e.serie) == null ? void 0 : C.itemStyle) == null ? void 0 : S.borderColor,
+        dataIndex: t,
+        seriesIndex: s,
+        value: (M = (L = e.serie) == null ? void 0 : L.data) == null ? void 0 : M[t],
+        data: (x = (W = e.serie) == null ? void 0 : W.data) == null ? void 0 : x[t],
+        seriesType: (A = e.serie) == null ? void 0 : A.type,
+        name: (i = e.serie) == null ? void 0 : i.name,
+        seriesId: `\0${o}\x000`,
+        seriesName: o,
+        dataType: void 0,
+        color: h.__colors[t],
+        componentIndex: s,
+        componentSubType: (m = e.serie) == null ? void 0 : m.type,
         componentType: "customSeries"
       };
-      o && F.value.splice(e, 0, o);
-      let s = F.value[e];
-      const f = {}, h = (t == null ? void 0 : t.textStyle) ?? {};
-      ae(h, f, "textStyle", pe);
-      const _ = typeof s == "function" ? s(n) : s;
+      n && h.__colors.splice(t, 0, n);
+      let r = h.__colors[t];
+      const p = {}, y = (e == null ? void 0 : e.textStyle) ?? {};
+      pe(y, p, "textStyle", ye);
+      const v = typeof r == "function" ? r(c) : r;
       return {
-        "--item-color": O.transformGradientCss(_),
-        "--data-item-icon": (R = t.icon) == null ? void 0 : R.replaceAll("image://", ""),
-        ...f
+        "--item-color": F.transformGradientCss(v),
+        "--data-item-icon": (g = e.icon) == null ? void 0 : g.replaceAll("image://", ""),
+        ...p
       };
     }
-    function te(e, r, t) {
-      var s;
-      if (r.type !== "scroll") return;
-      e.preventDefault();
-      const o = (s = V.value) == null ? void 0 : s[t];
-      if (!o) return;
-      const n = H[r.orient] ?? H.horizontal;
-      o.scrollTo(n(o, e.deltaY));
+    h.__colors = [];
+    function re(t, s, e) {
+      var c;
+      if (s.type !== "scroll") return;
+      t.preventDefault();
+      const n = (c = q.value) == null ? void 0 : c[e];
+      if (!n) return;
+      const o = j[s.orient] ?? j.horizontal;
+      n.scrollTo(o(n, t.deltaY));
     }
-    function ne() {
-      var e;
-      (e = w.value) == null || e.on(i.eventName, B);
+    function ie() {
+      var t;
+      (t = R.value) == null || t.on(l.eventName, P);
     }
-    function N() {
-      var e;
-      (e = w.value) == null || e.off(i.eventName, B);
+    function k() {
+      var t;
+      (t = R.value) == null || t.off(l.eventName, P);
     }
-    return K(() => {
-      var e;
-      w.value = i.ecInstance ?? ((e = x == null ? void 0 : x.value) == null ? void 0 : e.ec), N(), ne();
-    }), le(() => {
-      N();
-    }), (e, r) => (m(), u("div", ve, [
-      T("div", ye, [
-        (m(!0), u(k, null, D(I.value, (t, o) => (m(), u("div", {
-          class: v(["cssom_legend__legend", [
-            `cssom_legend--box-${o}`,
-            `cssom_legend__legend--${t.type ?? "plain"}`,
-            `legend_orient--${t.orient ?? "horizontal"}`
+    return H(() => {
+      var t;
+      R.value = l.ecInstance ?? ((t = N == null ? void 0 : N.value) == null ? void 0 : t.ec), k(), ie();
+    }), ue(() => {
+      k();
+    }), (t, s) => (f(), u("div", Ce, [
+      b("div", Le, [
+        (f(!0), u(J, null, V(ne.value, (e, n) => (f(), u("div", {
+          class: w(["cssom_legend__legend", [
+            `cssom_legend--box-${n}`,
+            `cssom_legend__legend--${e.type ?? "plain"}`,
+            `legend_orient--${e.orient ?? "horizontal"}`
           ]]),
           ref_for: !0,
           ref: "cssomLegendRefKey",
-          style: $(g(ue)(t)),
-          key: o,
-          onWheelCapture: E((n) => te(n, t, o), ["stop"])
+          style: z(_(de)(e)),
+          key: n,
+          onWheelCapture: E((o) => re(o, e, n), ["stop"])
         }, [
-          T("div", {
+          b("div", {
             ref_for: !0,
             ref: "cssomLegendWrapRefKey",
-            class: v(["cssom_legend__legend__wrap", [`cssom_legend__legend__wrap--${t.type ?? "plain"}`]]),
-            style: $(Z(t, o))
+            class: w(["cssom_legend__legend__wrap", [`cssom_legend__legend__wrap--${e.type ?? "plain"}`]]),
+            style: z(oe(e, n))
           }, [
-            (m(!0), u(k, null, D(X(t, o), (n, s) => {
-              var f, h, _, d, c;
-              return m(), u("div", {
-                class: v(["cssom_legend__legend_item", {
-                  "cssom_legend__legend_item--unselect": !g(b)(
-                    t,
-                    n.name
+            (f(!0), u(J, null, V(te(e, n), (o, c) => {
+              var r, p, y, v, d;
+              return f(), u("div", {
+                class: w(["cssom_legend__legend_item", {
+                  "cssom_legend__legend_item--unselect": !_(K)(
+                    e,
+                    o.name
                   )
                 }]),
-                key: s,
-                style: $(ee(s, o, n)),
-                onClick: E((a) => J(n.name), ["stop"]),
-                onMouseenter: E((a) => Q(n.name), ["stop"]),
-                onMouseleave: E((a) => U(n.name), ["stop"])
+                key: c,
+                style: z(h(c, n, o)),
+                onClick: E((a) => Z(o.name), ["stop"]),
+                onMouseenter: E((a) => I(o.name), ["stop"]),
+                onMouseleave: E((a) => ee(o.name), ["stop"])
               }, [
-                (f = n.icon ?? t.icon) != null && f.startsWith("image://") ? (m(), u("img", {
+                (r = o.icon ?? e.icon) != null && r.startsWith("image://") ? (f(), u("img", {
                   key: 0,
-                  class: v(["cssom_legend__image_icon", {
-                    "cssom_legend__image_icon--unselect": !g(b)(
-                      t,
-                      n.name
+                  class: w(["cssom_legend__image_icon", {
+                    "cssom_legend__image_icon--unselect": !_(K)(
+                      e,
+                      o.name
                     )
                   }]),
-                  src: (h = n.icon ?? t.icon) == null ? void 0 : h.slice(8),
+                  src: (p = o.icon ?? e.icon) == null ? void 0 : p.slice(8),
                   alt: ""
-                }, null, 10, Ce)) : (_ = n.icon ?? t.icon) != null && _.startsWith("path://") ? (m(), u("svg", {
+                }, null, 10, Re)) : (y = o.icon ?? e.icon) != null && y.startsWith("path://") ? (f(), u("svg", {
                   key: 1,
-                  class: v(["cssom_legend__svg_icon", {
-                    "cssom_legend__svg_icon--unselect": !g(b)(
-                      t,
-                      n.name
+                  class: w(["cssom_legend__svg_icon", {
+                    "cssom_legend__svg_icon--unselect": !_(K)(
+                      e,
+                      o.name
                     )
                   }]),
-                  viewBox: g(_e)((d = n.icon ?? t.icon) == null ? void 0 : d.slice(7))
+                  viewBox: _(we)((v = o.icon ?? e.icon) == null ? void 0 : v.slice(7))
                 }, [
-                  T("path", {
-                    d: (c = n.icon ?? t.icon) == null ? void 0 : c.slice(7)
-                  }, null, 8, We)
-                ], 10, we)) : (m(), u("div", {
+                  b("path", {
+                    d: (d = o.icon ?? e.icon) == null ? void 0 : d.slice(7)
+                  }, null, 8, Me)
+                ], 10, Te)) : (f(), u("div", {
                   key: 2,
-                  class: v(["cssom_legend__rect", [...g(me)(n.icon ?? t.icon, n)]])
+                  class: w(["cssom_legend__rect", [..._(ge)(o.icon ?? e.icon, o)]])
                 }, null, 2)),
-                T("div", {
+                b("div", {
                   class: "cssom_legend__text",
-                  innerHTML: g(fe)(t, n.name)
-                }, null, 8, Re)
-              ], 46, Se);
+                  innerHTML: _(_e)(e, o.name)
+                }, null, 8, be)
+              ], 46, xe);
             }), 128))
           ], 6)
-        ], 46, Le))), 128))
+        ], 46, We))), 128))
       ])
     ]));
   }
 });
 export {
-  Ne as default
+  Pe as default
 };
