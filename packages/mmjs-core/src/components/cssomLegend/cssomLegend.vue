@@ -232,11 +232,13 @@ function getWrapCneterProperties(legend: LegendComponentOption, index: number) {
 const renderLegends = computed(
   () => (renderOption.value?.legend ?? []) as LegendComponentOption[]
 );
+
 const colors = computed(() => {
   let _colors = renderOption.value?.color;
   if (Array.isArray(_colors)) return _colors;
   return _colors ? [_colors] : [];
 });
+
 const renderedHandler = throttle(function (this: echarts.ECharts) {
   renderOption.value = this.getOption() as EChartsOption;
 }, throttleTime);
@@ -246,29 +248,31 @@ function getItemStyleProperties(
   seriesIndex: number,
   dataItem: CustomDataItem
 ) {
-  let tempColor = dataItem?.serie?.itemStyle?.color as any;
-  tempColor =
-    typeof tempColor === "function"
-      ? tempColor({
-          dataIndex,
-          seriesIndex,
-          value: dataItem.serie?.data?.[dataIndex],
-          data: dataItem.serie?.data?.[dataIndex],
-          seriesType: dataItem.serie?.type,
-          name: dataItem.serie?.name,
-          seriesName: dataItem?.name,
-          color: null,
-          componentIndex: seriesIndex,
-          componentSubType: dataItem.serie?.type,
-          componentType: "customSeries",
-        })
-      : tempColor;
-  let color = [tempColor].filter(Boolean).concat(colors.value)[dataIndex];
+  let tempColor = dataItem?.serie?.itemStyle?.color;
+  const zrcolorOption = {
+    dataIndex,
+    seriesIndex,
+    value: dataItem.serie?.data?.[dataIndex],
+    data: dataItem.serie?.data?.[dataIndex],
+    seriesType: dataItem.serie?.type,
+    name: dataItem.serie?.name,
+    seriesName: dataItem?.name,
+    color: null,
+    componentIndex: seriesIndex,
+    componentSubType: dataItem.serie?.type,
+    componentType: "customSeries",
+  };
+  if (tempColor) {
+    colors.value.splice(dataIndex, 0, tempColor);
+  }
+  let color = colors.value[dataIndex];
   const textStyleProperties = {};
   const textStyle = dataItem?.textStyle ?? {};
   forPropertsEffect(textStyle, textStyleProperties, "textStyle", transformCss);
+  // @ts-ignore
+  const resultColor = typeof color === "function" ? color(zrcolorOption) : color;
   return {
-    "--item-color": color,
+    "--item-color": transfromState.transformGradientCss(resultColor),
     "--data-item-icon": dataItem.icon?.replaceAll("image://", ""),
     ...textStyleProperties,
   };

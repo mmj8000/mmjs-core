@@ -1,4 +1,4 @@
-import { LegendComponentOption, SeriesOption } from "echarts";
+import { LegendComponentOption, LinearGradientObject, PatternObject, RadialGradientObject, SeriesOption } from "echarts";
 
 export interface PieSeriesRecordDataType$1 {
   value: number;
@@ -137,9 +137,17 @@ export type FilterTemplate = {
   [key: string]: FilterTemplateFn;
 } & { default: FilterTemplateFn };
 
+export interface GradientColorStop {
+    offset: number;
+    color: string;
+}
+
 export type TransfromState = {
   transform(
     value: CssLegendPropValue,
     options: FilterTemplateFnParameters
   ): CssLegendPropValue;
+  transformGradientCss(
+    object: LinearGradientObject | RadialGradientObject | PatternObject | string
+  ): string;
 };

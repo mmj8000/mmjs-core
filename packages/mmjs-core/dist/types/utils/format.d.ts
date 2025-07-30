@@ -19,4 +19,4 @@ export declare function keepDecimals(num: number, count?: number, round?: boolea
  * normalizeNumUnit(12, 'rem') // 12rem
  * @returns
  */
-export declare function normalizeNumUnit(val: number | string, unit?: string): string;
+export declare function normalizeNumUnit(val: number | string, unit?: string): string | number;

@@ -16,14 +16,14 @@ import {
   shallowRef,
   useTemplateRef,
 } from "vue";
-import {
-  CssomLegend,
-  cssomLegendInjectKey,
-} from "../../../packages/mmjs-core/src/components/cssomLegend";
 // import {
 //   CssomLegend,
 //   cssomLegendInjectKey,
-// } from "mmjs-core/components/cssomLegend";
+// } from "../../../packages/mmjs-core/src/components/cssomLegend";
+import {
+  CssomLegend,
+  cssomLegendInjectKey,
+} from "mmjs-core/components/cssomLegend";
 function transformFn(val, options) {
   return val;
 }
@@ -56,7 +56,6 @@ onMounted(() => {
 });
 function setOption() {
   chartInstance.value!.setOption({
-    color: ["red"],
     series: [
       {
         data: [

@@ -4,7 +4,7 @@ export const pieOption: EChartsOption = {
   tooltip: {
     trigger: "item",
   },
-    legend: [
+  legend: [
     {
       show: false,
       top: "5%",
@@ -252,7 +252,7 @@ export const barOption: EChartsOption = {
     // left: "center",
     // left: '10%',
     // width: 'atuo',
-    left: 'center',
+    left: "center",
   },
   toolbox: {
     feature: {
@@ -288,8 +288,8 @@ export const barOption: EChartsOption = {
       // symbol: 'circle',
       data: [235, 132, 101, 134, 90, 230, 210],
       itemStyle: {
-        // color: 'red',
-      }
+        color: "red",
+      },
     },
     {
       name: "Union Ads",
@@ -305,7 +305,14 @@ export const barOption: EChartsOption = {
       name: "Video Ads",
       type: "bar",
       // stack: "Total",
-
+      itemStyle: {
+        color: {
+          type: "pattern",
+          image: "/setting.jpg",
+          imageHeight: 100,
+          imageWidth: 100,
+        },
+      },
       emphasis: {
         focus: "series",
       },
@@ -316,7 +323,23 @@ export const barOption: EChartsOption = {
       type: "bar",
       // stack: "Total",
       itemStyle: {
-        
+        color: {
+          type: "linear",
+          x: 0,
+          x2: 0,
+          y: 0,
+          y2: 1,
+          colorStops: [
+            {
+              color: "red",
+              offset: 0,
+            },
+            {
+              color: "blue",
+              offset: 1,
+            },
+          ],
+        },
       },
       emphasis: {
         focus: "series",
@@ -331,7 +354,24 @@ export const barOption: EChartsOption = {
         show: true,
         position: "top",
       },
-
+      itemStyle: {
+        color: {
+          type: "radial",
+          x: 0.5,
+          y: 0.5,
+          r: 0.5,
+          colorStops: [
+            {
+              color: "red",
+              offset: 0,
+            },
+            {
+              color: "blue",
+              offset: 1,
+            },
+          ],
+        },
+      },
       emphasis: {
         focus: "series",
       },
@@ -345,11 +385,6 @@ export const echartsOptions: EChartsOption = {
     {
       radius: ["50%", "33%"],
       center: ["center", "30%"],
-      itemStyle: {
-        color: () => {
-          return 'red';
-        }
-      }
     },
   ],
   legend: {
@@ -370,8 +405,8 @@ export const echartsOptions: EChartsOption = {
         name: {
           fontSize: 14,
           color: "#606266",
-           width: 70,
-          align: 'left',
+          width: 70,
+          align: "left",
         },
         value: {
           width: 70,
@@ -379,7 +414,7 @@ export const echartsOptions: EChartsOption = {
           fontSize: 20,
           lineHeight: 24,
           color: "#303133",
-          align: 'left',
+          align: "left",
         },
       },
     },
