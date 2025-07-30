@@ -357,9 +357,7 @@ onScopeDispose(() => {
     background-color: var(--backgroundColor);
 
     &--scroll {
-      max-width: calc(calc(100% - var(--left, 0px)) - var(--padding, 0));
       overflow: auto;
-      pointer-events: auto;
 
       &.legend_orient {
         &--horizontal {
@@ -415,6 +413,7 @@ onScopeDispose(() => {
 
     &--scroll {
       flex-wrap: nowrap;
+      pointer-events: auto;
     }
   }
 

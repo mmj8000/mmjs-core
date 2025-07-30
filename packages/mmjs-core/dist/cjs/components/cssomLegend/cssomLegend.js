@@ -1,1 +1,1 @@
-"use strict";require('../../../css/components/cssomLegend/cssomLegend.css');const e=require("./cssomLegend2.js");;/* empty css              */const s=require("../../_virtual/_plugin-vue_export-helper.js"),r=s(e,[["__scopeId","data-v-a6e13698"]]);module.exports=r;
+"use strict";require('../../../css/components/cssomLegend/cssomLegend.css');const e=require("./cssomLegend2.js");;/* empty css              */const s=require("../../_virtual/_plugin-vue_export-helper.js"),r=s(e,[["__scopeId","data-v-30894bb5"]]);module.exports=r;
