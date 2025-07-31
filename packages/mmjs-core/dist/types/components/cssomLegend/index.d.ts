@@ -1,6 +1,7 @@
 import { default as CssomLegend } from './cssomLegend';
 export * from './const';
 export type CssomLegendInstanceType = InstanceType<typeof CssomLegend>;
+export type * from './types';
 /**
  * @example
    <template>

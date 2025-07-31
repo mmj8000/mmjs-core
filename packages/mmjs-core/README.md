@@ -4,17 +4,24 @@
   ```shell
   pnpm add mmjs-core
   ```
-- **支持按需导入版本（^0.7.0-alpha.1 以上）**
 
-  - **components 在^0.11.0后已从全局导出去除**
+## 近期更新
+- Components
+  1. CssomLegend (`ECharts Option 转 Html 结构的Legend 很有用`)
+      - Add Function `transformFn` 用来转换Option To Css Var 的结果
+   2. parseUrlParams （supported parse `main`、 `hash` ）
 
-- Example
+
+- 推荐按需导入
+   - import Example
   ```ts
-  import {} from "mmjs-core/components/{组件名}";
-  import {} from "mmjs-core/client";
-  import {} from "mmjs-core/hooks";
-  import {} from "mmjs-core/utils";
+  import {} from "mmjs-core/components/*";
+  import {} from "mmjs-core/client/*";
+  import {} from "mmjs-core/hooks/*";
+  import {} from "mmjs-core/utils/*";
+  import type {} from "mmjs-core/types/*"; 
   ```
+  
 - tsconfig.json
   - （如果用 Vite/Webpack 等打包工具）
   ```json
@@ -22,12 +29,6 @@
     "moduleResolution": "Bundler"
   }
   ```
-
-## 近期更新
-- Components
-  1. CssomLegend (`ECharts Option 转 Html 结构的Legend 很有用`)
-      -  (`^0.13.0-alpha.1`) Add Function `transformFn` 用来转换Option To Css Var 的结果
-
 
 ## Client
 
@@ -214,7 +215,14 @@
    normalizeURL("/api/data"); // "http(s)://当前域名/api/data"
    normalizeURL("data.json"); // "http(s)://当前域名/当前路径/data.json"
    ```
-
+4. parseUrlParams (`^0.14.0-alpha.1`)
+   - 增强版URL参数解析，支持解析所有位置的查询参数
+   - Example
+   ```ts
+   const url = 'https://example.com/?test=has#/path?without=value';
+   parseUrlParams(url)  // {test: 'has', without: 'value'}
+   parseUrlParams(url, { includeHashParams: false }) // {test: 'has'}
+   ```
 
 
 ## Share

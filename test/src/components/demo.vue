@@ -24,7 +24,8 @@ import {
   CssomLegend,
   cssomLegendInjectKey,
 } from "mmjs-core/components/cssomLegend";
-function transformFn(val, options) {
+import type { FilterTemplateFnParameters } from 'mmjs-core/types/components'
+function transformFn(val, options: FilterTemplateFnParameters) {
   return val;
 }
 

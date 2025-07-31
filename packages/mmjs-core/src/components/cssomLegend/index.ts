@@ -1,7 +1,7 @@
 import CssomLegend from "./cssomLegend.vue";
 export * from "./const";
 export type CssomLegendInstanceType = InstanceType<typeof CssomLegend>;
-
+export type * from './types';
 /**
  * @example
    <template>
