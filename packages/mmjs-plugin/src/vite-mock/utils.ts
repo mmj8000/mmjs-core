@@ -1,4 +1,14 @@
-import { logLevelState } from "./options";
+import {
+  existsSync,
+  mkdirSync,
+  statSync,
+  writeFile,
+  WriteFileOptions,
+  writeFileSync,
+} from "node:fs";
+import { logLevelState, serverConfig } from "./options";
+import path from "node:path";
+import { appendFile } from "node:fs/promises";
 
 const styles = {
   // 文本颜色
@@ -44,17 +54,16 @@ function uniBeforeStrLog() {
     colorize("[Mock]", "cyan", "bold")
   );
 }
-export const logger = {
+
+export const non_write_loggger = {
   success(data) {
     return (
       logLevelState.isLogSuccess &&
-      console.log(`${uniBeforeStrLog()} `, colorize(data, "green"))
+      console.log(`${uniBeforeStrLog()}`, colorize(data, "green"))
     );
   },
   info(data) {
-    return (
-      logLevelState.isLogInfo && console.log(`${uniBeforeStrLog()} `, data)
-    );
+    return logLevelState.isLogInfo && console.log(`${uniBeforeStrLog()}`, data);
   },
   wran(data) {
     return (
@@ -66,3 +75,81 @@ export const logger = {
     return console.log(`${uniBeforeStrLog()}`, colorize(data, "red"));
   },
 };
+export const logger = {
+  success(data) {
+    non_write_loggger.success(data);
+  },
+  info(data) {
+    non_write_loggger.info(data);
+  },
+  wran(data) {
+    non_write_loggger.wran(data);
+  },
+  error(data) {
+    non_write_loggger.error(data);
+  },
+};
+
+export function existsSyncByMkdir(file: string) {
+  try {
+    const dirName = path.dirname(file);
+    if (!existsSync(dirName)) {
+      mkdirSync(dirName, { recursive: true });
+    }
+  } catch (err) {
+    non_write_loggger.error(err);
+  }
+}
+
+export function writeMockFile(
+  file: string,
+  data: string | NodeJS.ArrayBufferView,
+  options: WriteFileOptions,
+  print = true
+) {
+  existsSyncByMkdir(file);
+  writeFile(file, data, options, (err: NodeJS.ErrnoException | null) => {
+    if (!err) {
+      print && non_write_loggger.success(`💧 Write File Successify ${file}`);
+    } else {
+      non_write_loggger.wran(err);
+    }
+  });
+}
+
+export async function appendFileFn(
+  file: string,
+  data: string,
+  options: WriteFileOptions,
+  print = true
+) {
+  existsSyncByMkdir(file);
+  try {
+    await appendFile(file, data, options);
+    print && non_write_loggger.success(`💧 Append File Successify ${file}`);
+  } catch (err) {
+    non_write_loggger.wran(err);
+  }
+}
+
+export function safeUrlToFilename(url) {
+  // 基本验证和提取
+  const matches = url.match(/^(https?):\/\/([^\/:]+)(?::(\d+))?(\/.*)?$/i);
+  if (!matches) return "invalid_url";
+
+  const protocol = matches[1];
+  const hostname = matches[2];
+  const port = matches[3] || (protocol === "https" ? "443" : "80");
+  const path = (matches[4] || "").replace(/\//g, "_");
+
+  // 构建文件名并替换非法字符
+  let filename = `${hostname}_${port}`;
+  if (path && path !== "_") {
+    filename += path;
+  }
+
+  return filename
+    .replace(/[^a-z0-9_]/gi, "_")
+    .replace(/_+/g, "_")
+    .toLowerCase();
+}

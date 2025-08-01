@@ -8,7 +8,9 @@ const e = {
   scan: !1,
   scanOutput: "_output",
   _esm: !1,
-  _templateMimeType: []
+  _templateMimeType: [],
+  root: "",
+  encoding: "utf-8"
 }, s = {
   isLogWarn: !0,
   isLogInfo: !0,

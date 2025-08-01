@@ -1,6 +1,11 @@
 
 exports.enabled = true;
-exports.mock = (_, res) => {
+
+/**
+ * @param {import('http').IncomingMessage} req
+ * @param {import('http').ServerResponse<import('http').IncomingMessage>} res
+ */
+exports.mock = (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Credentials", true); // 允许携带凭证
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS"); // 按需调整

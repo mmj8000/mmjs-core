@@ -1,67 +1,56 @@
-import { logger as f } from "./utils.mjs";
-import { allowCharset as m, serverConfig as o } from "./options.mjs";
-import { existsSync as _, mkdirSync as j, writeFile as I } from "node:fs";
-import E from "node:path";
-import M from "mime-types";
-import { transformInnerCodeTempate as N } from "./parse.mjs";
-function z(e) {
-  var n;
-  const t = ((n = e.config.server) == null ? void 0 : n.proxy) ?? {};
-  for (let c in t)
+import { safeUrlToFilename as F, writeMockFile as I, logger as L } from "./utils.mjs";
+import { allowCharset as i, serverConfig as e } from "./options.mjs";
+import C from "node:path";
+import E from "mime-types";
+import { transformInnerCodeTempate as O } from "./parse.mjs";
+function N(c) {
+  var f;
+  const s = ((f = c.config.server) == null ? void 0 : f.proxy) ?? {};
+  for (let b in s)
     try {
-      const r = t[c];
-      if (typeof r != "object") continue;
-      const u = r.configure;
-      r.configure = (l, b) => {
-        l.on(
+      const t = s[b];
+      if (typeof t != "object") continue;
+      const a = t.configure;
+      t.configure = (m, p) => {
+        m.on(
           "proxyRes",
-          (p, v, B) => {
-            var d;
-            typeof u == "function" && u(l, b);
-            const h = (d = v._parsedUrl) == null ? void 0 : d.pathname;
-            if (h) {
+          (l, j, M) => {
+            var g;
+            typeof a == "function" && a(m, p);
+            const u = C.join(
+              F(p.target ?? ""),
+              ((g = j._parsedUrl) == null ? void 0 : g.pathname) ?? ""
+            );
+            if (u) {
               const y = [];
-              p.on("data", (a) => {
-                y.push(a);
-              }), p.on("end", () => {
-                var C;
-                const a = Buffer.concat(y), g = B.getHeaders()["content-type"];
-                let s = M.charset(g) || m[0];
-                s = s.toLocaleLowerCase();
-                const i = M.extension(g) || o.fileExt.slice(1), x = (C = o._templateMimeType) != null && C.length ? o._templateMimeType.some(
-                  (P) => (i == null ? void 0 : i.indexOf(P)) !== -1
+              l.on("data", (r) => {
+                y.push(r);
+              }), l.on("end", () => {
+                var w;
+                const r = Buffer.concat(y), d = M.getHeaders()["content-type"];
+                let n = E.charset(d) || i[0];
+                n = n.toLocaleLowerCase();
+                const o = E.extension(d) || e.fileExt.slice(1), h = (w = e._templateMimeType) != null && w.length ? e._templateMimeType.some(
+                  (B) => (o == null ? void 0 : o.indexOf(B)) !== -1
                 ) : !0;
-                let w = o.fileExt;
-                x || (w = i ? "." + i : o.fileExt);
-                const S = m.includes(s) ? s : m[0], k = a.toString(S), F = x ? N(k) : k, L = E.join(
-                  e.config.root,
-                  o.mockDir,
-                  o.scanOutput,
-                  h + w
+                let x = e.fileExt;
+                h || (x = o ? "." + o : e.fileExt);
+                const T = i.includes(n) ? n : i[0], k = r.toString(T), P = h ? O(k) : k, _ = C.join(
+                  c.config.root,
+                  e.mockDir,
+                  e.scanOutput,
+                  u + x
                 );
-                D(L, F, { encoding: S });
+                I(_, P, { encoding: T });
               });
             }
           }
         );
       };
-    } catch (r) {
-      f.error(r);
+    } catch (t) {
+      L.error(t);
     }
 }
-function O(e) {
-  try {
-    const t = E.dirname(e);
-    _(t) || j(t, { recursive: !0 });
-  } catch (t) {
-    f.error(t);
-  }
-}
-function D(e, t, n) {
-  O(e), I(e, t, n, (c) => {
-    c ? f.wran(c) : f.success(`💧 Save File Successify ${e}`);
-  });
-}
 export {
-  z as useProxyRes
+  N as useProxyRes
 };

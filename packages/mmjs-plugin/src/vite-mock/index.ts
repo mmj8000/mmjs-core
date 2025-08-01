@@ -23,6 +23,7 @@ export function createMockServer(config?: PluginOptions): Plugin {
     configureServer(server: ViteDevServer) {
       // 获取项目根目录
       const root = server.config.root;
+      serverConfig.root = root;
       const pkgPath = path.join(server.config.root, "package.json");
       const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
       serverConfig._esm = pkg.type === "module";

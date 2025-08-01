@@ -36,7 +36,7 @@
   ```
 ### 生成接口文件
   - 工作流
-    - 开启scan后，自动通过Vite server.proxy 配置，把经过对应proxy 的接口数据全部写入到_output 目录，可通过传入scanOutput修改写入目录；生成的文件结构`{root}/__mock__/_output/{接口url}.{文件后缀}`；文件后缀默认为.js，可通过传入fileExt 修改。
+    - 开启scan后，自动通过Vite server.proxy 配置，把经过对应proxy 的接口数据全部写入到_output 目录，可通过传入scanOutput修改写入目录；生成的文件结构`{root}/{proxy 配置的target}/__mock__/_output/{接口url}.{文件后缀}`；文件后缀默认为.js，可通过传入fileExt 修改。
   - 配置
   ```ts
   // vite.config.ts
@@ -56,12 +56,45 @@
   });
   ```
 
+### mock 文件
+  - Coomonjs 、ESM 取决 package.json 中的type
+  1. Commonjs
+      - 如：`/api/login` 转换文件路径为 `__mock__/api/login.js`
+  ```js
+  exports.enabled = true;
+  /**
+   * @param {import('http').IncomingMessage} req
+   * @param {import('http').ServerResponse<import('http').IncomingMessage>} res
+   */
+  exports.mock = (req, res) => {
+    return { 
+      code: 0, 
+      data: null
+     }
+  }
+  ```
+  2. ESM
+      - 如：`/api/userList` 转换为 `__mock__/api/userList.js`
+  ```js
+  export const enabled = true;
+  /**
+   * @param {import('http').IncomingMessage} req
+   * @param {import('http').ServerResponse<import('http').IncomingMessage>} res
+   */
+  export const mock = (req, res) => {
+    return {
+      code: 0,
+      data: [].filter(item => item.id === req.query.id)
+    }
+  }
+  ```
+
 ### 默认Config
 
 ```ts
 interface PluginOptions {
     /**
-     * @default "/mock"
+     * @default "/api"
      */
     apiPrefix?: string;
     /**

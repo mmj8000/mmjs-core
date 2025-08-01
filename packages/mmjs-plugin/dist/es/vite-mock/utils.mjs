@@ -1,5 +1,8 @@
-import { logLevelState as n } from "./options.mjs";
-const m = {
+import { existsSync as B, mkdirSync as x, writeFile as p } from "node:fs";
+import { logLevelState as m } from "./options.mjs";
+import f from "node:path";
+import { appendFile as d } from "node:fs/promises";
+const g = {
   // 文本颜色
   black: "\x1B[30m",
   red: "\x1B[31m",
@@ -29,27 +32,73 @@ const m = {
   reverse: "\x1B[7m",
   hidden: "\x1B[8m"
 };
-function o(e, ...l) {
-  return l.map((B) => m[B]).join("") + e + m.reset;
+function i(e, ...r) {
+  return r.map((o) => g[o]).join("") + e + g.reset;
 }
-function r() {
-  return o((/* @__PURE__ */ new Date()).toLocaleTimeString(), "gray") + " " + o("[Mock]", "cyan", "bold");
+function s() {
+  return i((/* @__PURE__ */ new Date()).toLocaleTimeString(), "gray") + " " + i("[Mock]", "cyan", "bold");
 }
-const t = {
+const n = {
   success(e) {
-    return n.isLogSuccess && console.log(`${r()} `, o(e, "green"));
+    return m.isLogSuccess && console.log(`${s()}`, i(e, "green"));
   },
   info(e) {
-    return n.isLogInfo && console.log(`${r()} `, e);
+    return m.isLogInfo && console.log(`${s()}`, e);
   },
   wran(e) {
-    return n.isLogWarn && console.log(`${r()}`, o(e, "yellow"));
+    return m.isLogWarn && console.log(`${s()}`, i(e, "yellow"));
   },
   error(e) {
-    return console.log(`${r()}`, o(e, "red"));
+    return console.log(`${s()}`, i(e, "red"));
+  }
+}, _ = {
+  success(e) {
+    n.success(e);
+  },
+  info(e) {
+    n.info(e);
+  },
+  wran(e) {
+    n.wran(e);
+  },
+  error(e) {
+    n.error(e);
   }
 };
+function u(e) {
+  try {
+    const r = f.dirname(e);
+    B(r) || x(r, { recursive: !0 });
+  } catch (r) {
+    n.error(r);
+  }
+}
+function S(e, r, o, c = !0) {
+  u(e), p(e, r, o, (t) => {
+    t ? n.wran(t) : c && n.success(`💧 Write File Successify ${e}`);
+  });
+}
+async function $(e, r, o, c = !0) {
+  u(e);
+  try {
+    await d(e, r, o), c && n.success(`💧 Append File Successify ${e}`);
+  } catch (t) {
+    n.wran(t);
+  }
+}
+function F(e) {
+  const r = e.match(/^(https?):\/\/([^\/:]+)(?::(\d+))?(\/.*)?$/i);
+  if (!r) return "invalid_url";
+  const o = r[1], c = r[2], t = r[3] || (o === "https" ? "443" : "80"), a = (r[4] || "").replace(/\//g, "_");
+  let l = `${c}_${t}`;
+  return a && a !== "_" && (l += a), l.replace(/[^a-z0-9_]/gi, "_").replace(/_+/g, "_").toLowerCase();
+}
 export {
-  o as colorize,
-  t as logger
+  $ as appendFileFn,
+  i as colorize,
+  u as existsSyncByMkdir,
+  _ as logger,
+  n as non_write_loggger,
+  F as safeUrlToFilename,
+  S as writeMockFile
 };

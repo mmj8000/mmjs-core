@@ -1,6 +1,6 @@
 export interface PluginOptions {
   /**
-   * @default "/mock"
+   * @default "/api"
    */
   apiPrefix?: string;
 
@@ -48,9 +48,16 @@ export interface PluginOptions {
    * ["application/json"]
    */
   _templateMimeType?: [];
+
+  /**
+   * @default 'utf-8'
+   */
+  encoding?: BufferEncoding;
 }
 
-export const serverConfig: Required<PluginOptions> = {
+export const serverConfig: Required<PluginOptions> & {
+  root: string;
+} = {
   apiPrefix: "/api",
   forceMock: false,
   mockDir: "__mock__",
@@ -61,6 +68,8 @@ export const serverConfig: Required<PluginOptions> = {
   scanOutput: "_output",
   _esm: false,
   _templateMimeType: [],
+  root: "",
+  encoding: 'utf-8',
 };
 
 export const logLevelState = {

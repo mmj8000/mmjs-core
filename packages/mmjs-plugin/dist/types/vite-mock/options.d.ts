@@ -1,6 +1,6 @@
 export interface PluginOptions {
     /**
-     * @default "/mock"
+     * @default "/api"
      */
     apiPrefix?: string;
     /**
@@ -43,8 +43,14 @@ export interface PluginOptions {
      * ["application/json"]
      */
     _templateMimeType?: [];
+    /**
+     * @default 'utf-8'
+     */
+    encoding?: BufferEncoding;
 }
-export declare const serverConfig: Required<PluginOptions>;
+export declare const serverConfig: Required<PluginOptions> & {
+    root: string;
+};
 export declare const logLevelState: {
     isLogWarn: boolean;
     isLogInfo: boolean;

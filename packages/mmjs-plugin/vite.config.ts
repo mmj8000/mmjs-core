@@ -43,6 +43,7 @@ export default defineConfig({
         'node:fs',
         'node:http',
         'node:querystring',
+        'node:fs/promises',
         'mime-types',
         'vite'
       ],
