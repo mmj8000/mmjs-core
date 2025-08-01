@@ -1,12 +1,12 @@
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
-import vue from "@vitejs/plugin-vue";
-import { libInjectCss } from "vite-plugin-lib-inject-css";
 
+const fileExt = {
+  es: 'mjs',
+  cjs: 'cjs',
+}
 export default defineConfig({
   plugins: [
-    vue(),
-    libInjectCss(),
     dts({
       entryRoot: "./src",
       root: "./",
@@ -23,11 +23,10 @@ export default defineConfig({
     outDir: "./dist",
     cssCodeSplit: false,
     lib: {
-      name: "MmjsCore",
-      entry: ["./src/index.ts", "./src/components/index.ts"],
+      entry: ["./src/index.ts"],
       formats: ["es", "cjs"],
-      fileName(fromat, entry) {
-        return `${fromat}/${entry.replace(".vue", "")}.js`;
+      fileName(format, entry) {
+        return `${format}/${entry.replace(".vue", "")}.${fileExt[format]}`;
       },
     },
     rollupOptions: {
@@ -39,17 +38,12 @@ export default defineConfig({
         assetFileNames: "[ext]/[name].[ext]",
       },
       external: [
-        "vue",
-        "axios",
-        "video.js",
-        "video.js/dist/video-js.css",
-        "lodash-es",
-        "@vueuse/core",
-        "raf-polyfill-es",
-        "@enhances/with-resolvers",
-        "echarts",
-        "mmjs-share",
-        "mmjs-share/parseUrlParams"
+        'node:path',
+        'node:url',
+        'node:fs',
+        'node:http',
+        'node:querystring',
+        'vite'
       ],
     },
   },

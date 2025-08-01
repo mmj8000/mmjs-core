@@ -9,7 +9,9 @@
   - （如果用 Vite/Webpack 等打包工具）
   ```json
   {
-    "moduleResolution": "Bundler"
+   "compilerOptions": {
+       "moduleResolution": "Bundler"
+   }
   }
   ```
 
@@ -21,6 +23,7 @@
   3. isObject
   4. isPlainObject
   5. structuredClonePolyfill
+  6. parseUrlParams
 
 ## Share
 
@@ -58,3 +61,15 @@
     isPlainObject({}) // true
     isPlainObject([]) // false
     ```
+
+5. structuredClonePolyfill
+    - deep clone
+
+6. parseUrlParams 
+   - 增强版URL参数解析，支持解析所有位置的查询参数
+   - Example
+   ```ts
+   const url = 'https://example.com/?test=has#/path?without=value';
+   parseUrlParams(url)  // {test: 'has', without: 'value'}
+   parseUrlParams(url, { includeHashParams: false }) // {test: 'has'}
+   ```

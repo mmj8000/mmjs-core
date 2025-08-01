@@ -26,7 +26,9 @@
   - （如果用 Vite/Webpack 等打包工具）
   ```json
   {
-    "moduleResolution": "Bundler"
+   "compilerOptions": {
+       "moduleResolution": "Bundler"
+   }
   }
   ```
 

@@ -9,11 +9,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "mmjs-core": "workspace:^"
-  },
   "devDependencies": {
     "@vitest/ui": "3.2.4",
+    "mmjs-plugin": "workspace:^",
     "vite": "^5.4.17",
     "vitest": "^3.2.4",
     "vue": "^3.5.17"

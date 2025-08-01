@@ -3,14 +3,14 @@
 </template>
 
 <script setup lang="ts">
-import DomLegend from "./components/dom_legend.vue";
+// import DomLegend from "./components/dom_legend.vue";
 // import { parseUrlParams } from '../../packages/mmjs-core/src/utils';
 // import { parseUrlParams } from 'mmjs-core/utils/parseUrlParams';
-import type {
-  CssomLegendInstanceType,
-  BandwidthOption,
-  FilterTemplateFnParameters,
-} from "mmjs-core/types/components";
+// import type {
+//   CssomLegendInstanceType,
+//   BandwidthOption,
+//   FilterTemplateFnParameters,
+// } from "mmjs-core/types/components";
 // // 测试用例
 // const testCases = [
 //   { url: "https://example.com/?test=has#/path?without=value", desc: "混合参数" },

@@ -1,0 +1,28 @@
+{
+  "name": "mmjs-plugin",
+  "version": "0.1.0-alpha.2",
+  "description": "",
+  "main": "dist/es/index.cjs",
+  "module": "dist/es/index.mjs",
+  "types": "dist/types/index.d.ts",
+  "scripts": {
+    "build": "vite build"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "keywords": [
+    "mmjs-plugin",
+    "plugin"
+  ],
+  "author": "",
+  "license": "ISC",
+  "exports": {
+    "./*": {
+      "types": "./dist/types/*/index.d.ts",
+      "import": "./dist/es/*/index.mjs",
+      "require": "./dist/cjs/*/index.cjs"
+    }
+  }
+}
