@@ -1,4 +1,5 @@
-const o = {
+import { logLevelState as n } from "./options.mjs";
+const m = {
   // 文本颜色
   black: "\x1B[30m",
   red: "\x1B[31m",
@@ -28,27 +29,27 @@ const o = {
   reverse: "\x1B[7m",
   hidden: "\x1B[8m"
 };
-function r(e, ...m) {
-  return m.map((B) => o[B]).join("") + e + o.reset;
+function o(e, ...l) {
+  return l.map((B) => m[B]).join("") + e + m.reset;
 }
-function n() {
-  return r((/* @__PURE__ */ new Date()).toLocaleTimeString(), "gray") + " " + r("[Mock]", "cyan", "bold");
+function r() {
+  return o((/* @__PURE__ */ new Date()).toLocaleTimeString(), "gray") + " " + o("[Mock]", "cyan", "bold");
 }
-const l = {
+const t = {
   success(e) {
-    return console.log(`${n()} `, r(e, "green"));
+    return n.isLogSuccess && console.log(`${r()} `, o(e, "green"));
   },
   info(e) {
-    return console.log(`${n()} `, e);
+    return n.isLogInfo && console.log(`${r()} `, e);
   },
   wran(e) {
-    return console.log(`${n()}`, r(e, "yellow"));
+    return n.isLogWarn && console.log(`${r()}`, o(e, "yellow"));
   },
   error(e) {
-    return console.log(`${n()}`, r(e, "red"));
+    return console.log(`${r()}`, o(e, "red"));
   }
 };
 export {
-  r as colorize,
-  l as logger
+  o as colorize,
+  t as logger
 };

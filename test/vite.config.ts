@@ -1,16 +1,18 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
-// import { createMockServer } from "../packages/mmjs-plugin/src";
+// import { createMockServer } from "../packages/mmjs-plugin/src/vite-mock";
 import { createMockServer } from "mmjs-plugin/vite-mock";
 
 export default defineConfig({
-  plugins: [vue(), createMockServer({})],
+  plugins: [vue(), createMockServer({
+    scan: false,
+  })],
   server: {
     proxy: {
-      "^/mock": {
+      "^/api": {
         target: "https://www.baidu.com",
         changeOrigin: true,
-        rewrite: (path: string) => path.replace(/^\/mock/, ""),
+        rewrite: (path: string) => path.replace(/^\/api\/test/, ""),
       },
     },
   },

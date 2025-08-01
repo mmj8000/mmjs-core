@@ -1,3 +1,5 @@
+import { logLevelState } from "./options";
+
 const styles = {
   // 文本颜色
   black: "\x1b[30m",
@@ -44,13 +46,21 @@ function uniBeforeStrLog() {
 }
 export const logger = {
   success(data) {
-    return console.log(`${uniBeforeStrLog()} `, colorize(data, "green"));
+    return (
+      logLevelState.isLogSuccess &&
+      console.log(`${uniBeforeStrLog()} `, colorize(data, "green"))
+    );
   },
   info(data) {
-    return console.log(`${uniBeforeStrLog()} `, data);
+    return (
+      logLevelState.isLogInfo && console.log(`${uniBeforeStrLog()} `, data)
+    );
   },
   wran(data) {
-    return console.log(`${uniBeforeStrLog()}`, colorize(data, "yellow"));
+    return (
+      logLevelState.isLogWarn &&
+      console.log(`${uniBeforeStrLog()}`, colorize(data, "yellow"))
+    );
   },
   error(data) {
     return console.log(`${uniBeforeStrLog()}`, colorize(data, "red"));

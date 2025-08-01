@@ -1,6 +1,6 @@
 {
   "name": "mmjs-plugin",
-  "version": "0.1.0-alpha.2",
+  "version": "0.1.0",
   "description": "",
   "main": "dist/es/index.cjs",
   "module": "dist/es/index.mjs",
@@ -24,5 +24,8 @@
       "import": "./dist/es/*/index.mjs",
       "require": "./dist/cjs/*/index.cjs"
     }
+  },
+  "dependencies": {
+    "mime-types": "^3.0.1"
   }
 }
