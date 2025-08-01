@@ -1,7 +1,7 @@
 {
   "name": "mmjs-plugin",
-  "version": "0.1.0",
-  "description": "",
+  "version": "0.1.1",
+  "description": "mmjs-plugin vite-plugin",
   "main": "dist/es/index.cjs",
   "module": "dist/es/index.mjs",
   "types": "dist/types/index.d.ts",
@@ -14,6 +14,7 @@
   ],
   "keywords": [
     "mmjs-plugin",
+    "vite-plugin",
     "plugin"
   ],
   "author": "",

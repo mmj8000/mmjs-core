@@ -32,7 +32,7 @@ export interface PluginOptions {
      */
     scanOutput?: string;
     /**
-     * inner use
+     * 强制esm， 默认动态读取 package.json type 字段
      */
     _esm?: boolean;
     /**

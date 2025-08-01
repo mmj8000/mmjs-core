@@ -1,10 +1,10 @@
 {
   "name": "mmjs-core",
-  "version": "0.14.0",
+  "version": "0.14.6",
   "description": "mmjs-core hooks component vue",
-  "main": "./dist/es/index.js",
+  "main": "dist/cjs/index.js",
+  "module": "dist/es/index.js",
   "types": "./dist/types/index.d.ts",
-  "type": "module",
   "scripts": {
     "build": "vite build"
   },
@@ -63,7 +63,7 @@
   "license": "ISC",
   "dependencies": {
     "@enhances/with-resolvers": "^0.0.5",
-    "mmjs-share": "^0.4.0",
+    "mmjs-share": "^0.4.1",
     "raf-polyfill-es": "^0.1.1"
   },
   "peerDependencies": {

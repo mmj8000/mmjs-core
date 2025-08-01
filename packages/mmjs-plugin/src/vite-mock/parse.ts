@@ -56,6 +56,7 @@ export async function useParseBody(req: IncomingMessage) {
 }
 
 export function transformInnerCodeTempate(body: string) {
+  if(!['.js', '.ts'].includes(serverConfig.fileExt)) return body;
   const newData = JSON.stringify(body || {}, void 0, 4);
   if (serverConfig._esm) {
     return `export const enabled = true;\nexport const mock = () => (${newData})\n`;

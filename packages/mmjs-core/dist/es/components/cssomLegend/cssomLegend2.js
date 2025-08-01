@@ -3,7 +3,7 @@ import { cssomLegendInjectKey as fe } from "./const.js";
 import { forPropertsEffect as pe, getCustomLegendProperty as de, getSelectStatus as K, getIconModified as ge, formatter as _e } from "./methods.js";
 import { normalizeLegendName as he, transformCss as ye } from "./filters.js";
 import { useLegendAction as ve } from "./legend-action.js";
-import { throttle as Se } from "mmjs-share";
+import { throttle as Se } from "mmjs-share/utils";
 import { scrollDirMap as j } from "./help.const.js";
 import { calculateViewBox as we } from "./tools.js";
 import { transfromState as F } from "./transform.js";

@@ -105,7 +105,7 @@ import {
 import { normalizeLegendName, transformCss } from "./filters";
 import { useLegendAction } from "./legend-action";
 import type { CustomDataItem, TransfromState } from "./types";
-import { throttle } from "mmjs-share";
+import { throttle } from "mmjs-share/utils";
 import { scrollDirMap } from "./help.const";
 import { calculateViewBox } from "./tools";
 import { transfromState } from "./transform";

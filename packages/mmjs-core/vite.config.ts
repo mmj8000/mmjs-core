@@ -49,6 +49,7 @@ export default defineConfig({
         "@enhances/with-resolvers",
         "echarts",
         "mmjs-share",
+        "mmjs-share/utils",
         "mmjs-share/parseUrlParams"
       ],
     },

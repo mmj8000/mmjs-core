@@ -1,7 +1,7 @@
 import { innerIocnNames as l } from "./help.const.js";
 import { transformTextStyle as m, transformCss as h } from "./filters.js";
 import { parseRichFormatString as S } from "./tools.js";
-import { isPlainObject as x } from "mmjs-share";
+import { isPlainObject as x } from "mmjs-share/utils";
 import { transfromState as $ } from "./transform.js";
 function A(t, s) {
   var r;

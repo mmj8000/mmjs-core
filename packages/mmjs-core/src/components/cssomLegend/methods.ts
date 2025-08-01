@@ -7,7 +7,7 @@ import type {
   FilterTemplate,
 } from "./types";
 import { parseRichFormatString } from "./tools";
-import { isPlainObject } from "mmjs-share";
+import { isPlainObject } from "mmjs-share/utils";
 import { transfromState } from "./transform";
 
 export function getSelectStatus(legend: LegendComponentOption, name: string) {
