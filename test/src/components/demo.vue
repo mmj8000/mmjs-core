@@ -16,14 +16,14 @@ import {
   shallowRef,
   useTemplateRef,
 } from "vue";
-import {
-  CssomLegend,
-  cssomLegendInjectKey,
-} from "../../../packages/mmjs-core/src/components/cssomLegend";
 // import {
 //   CssomLegend,
 //   cssomLegendInjectKey,
-// } from "mmjs-core/components/cssomLegend";
+// } from "../../../packages/mmjs-core/src/components/cssomLegend";
+import {
+  CssomLegend,
+  cssomLegendInjectKey,
+} from "mmjs-core/components/cssomLegend";
 import type { FilterTemplateFnParameters } from 'mmjs-core/types/components'
 function transformFn(val, options: FilterTemplateFnParameters) {
   return val;

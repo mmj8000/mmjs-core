@@ -4,7 +4,12 @@ import vue from "@vitejs/plugin-vue";
 import { createMockServer } from "mmjs-plugin/vite-mock";
 
 export default defineConfig({
-  plugins: [vue(), ],
+  plugins: [vue(), createMockServer({
+    apiPrefix: '/api',
+    forceMock: false,
+    scan: true,
+    fileExt: '.json',
+  })],
   server: {
     proxy: {
       "^/api": {
