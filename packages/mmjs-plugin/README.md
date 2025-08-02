@@ -36,7 +36,7 @@
   ```
 ### 生成接口文件
   - 工作流
-    - 开启scan后，自动通过Vite server.proxy 配置，把经过对应proxy 的接口数据全部写入到_output 目录，可通过传入scanOutput修改写入目录；生成的文件结构`{root}/{proxy 配置的target}/__mock__/_output/{接口url}.{文件后缀}`；文件后缀默认为.js，可通过传入fileExt 修改。
+    - 开启scan后，自动通过Vite server.proxy 配置，把经过对应proxy 的接口数据全部写入到_output 目录，可通过传入scanOutput修改写入目录；生成的文件结构`{root}/__mock__/_output/{proxy 配置的target}/{接口url}.{文件后缀}`；文件后缀默认为.js，可通过传入fileExt 修改。
   - 配置
   ```ts
   // vite.config.ts
