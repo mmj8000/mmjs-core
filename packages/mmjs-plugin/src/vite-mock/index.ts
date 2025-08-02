@@ -40,7 +40,6 @@ export function createMockServer(config?: PluginOptions): Plugin {
       }
     },
     configureServer(server: ViteDevServer) {
-      // 使用 body-parser 处理 POST 请求体
       // 获取项目根目录
       const root = server.config.root;
       serverConfig.root = root;
@@ -63,8 +62,7 @@ export function createMockServer(config?: PluginOptions): Plugin {
             logger.info("🔒 Browser URL not found mcok Keyword");
             return next();
           }
-          useParseQueryParams(req);
-          useParseBody(req);
+
           const pathname = req._parsedUrl?.pathname ?? "";
           req.headers["x-custom-request-header"] = "vite-plugin-mmjs-mock";
           readPath = path.join(root, mockDir, pathname + fileExt);
@@ -82,7 +80,6 @@ export function createMockServer(config?: PluginOptions): Plugin {
             }, timeout);
           }
           if (fileExt === '.json') {
-
             try {
               const json = readFileSync(readPath, { encoding: getCharset(req), });
               return response(JSON.parse(json));
@@ -90,31 +87,26 @@ export function createMockServer(config?: PluginOptions): Plugin {
               logger.wran(`${err}; ${readPath}`);
               return next();
             }
-
-          } else if (serverConfig._esm) {
-
+          }
+          if (serverConfig._esm) {
             mockState = await import(
               pathToFileURL(readPath).href + "?t=" + Date.now()
             );
-
           } else {
-
             require.cache && delete require.cache[readPath];
             mockState = await require(readPath);
-
           }
 
           if (!mockState?.enabled) {
             throw new Error(mockNoEnabledStr);
           }
-
+          useParseQueryParams(req);
+          useParseBody(req);
           let resp = mockState.mock(req, res);
           if (resp instanceof Promise) {
             resp = await resp;
           }
-          if (resp !== void 0) {
-            response(resp, "application/json");
-          }
+          response(resp, "application/json");
         } catch (err: any) {
           if (err?.message.indexOf(mockNoEnabledStr) !== -1) {
             logger.info(

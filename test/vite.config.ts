@@ -7,9 +7,9 @@ export default defineConfig({
   plugins: [vue(), createMockServer({
     apiPrefix: '/api',
     // forceMock: true,
-    scan: true,
+    // scan: true,
     templateMimeType: ['json'],
-    fileExt: '.ts',
+    // fileExt: '.ts',
   })],
   server: {
     proxy: {
