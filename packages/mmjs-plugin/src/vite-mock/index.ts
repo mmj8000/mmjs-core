@@ -7,10 +7,12 @@ import { readFileSync } from "node:fs";
 import { useProxyRes } from "./proxy";
 import { serverConfig, PluginOptions, updateLogLevelState } from "./options";
 import mime from "mime-types";
+import type { IncomingMessage, ServerResponse } from "node:http";
 
 const notFileErrMsg = ["no such file", "Cannot find module"];
-
 const mockNoEnabledStr = "Mock Not enabled";
+
+export declare function MockTemplate(req: IncomingMessage, res: ServerResponse<IncomingMessage>): Promise<any> | any;
 
 export function createMockServer(config?: PluginOptions): Plugin {
   const { scan, apiPrefix, forceMock, mockDir, timeout, fileExt } =
