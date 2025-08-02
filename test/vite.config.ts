@@ -6,8 +6,9 @@ import { createMockServer } from "mmjs-plugin/vite-mock";
 export default defineConfig({
   plugins: [vue(), createMockServer({
     apiPrefix: '/api',
-    forceMock: true,
+    // forceMock: true,
     // scan: true,
+    templateMimeType: ['html']
     // fileExt: '.json',
   })],
   server: {

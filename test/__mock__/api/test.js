@@ -1,8 +1,8 @@
 export const enabled = true;
 /**
- * @param {import('http').IncomingMessage} req
- * @param {import('http').ServerResponse<import('http').IncomingMessage>} res
+ * @type {import('mmjs-plugin/vite-mock').MockTemplate}
  */
-export const mock = (req, res) => {
+export const mock = async (req, res) => {
+    console.log(req.query, await req.body)
     return '4'
 }

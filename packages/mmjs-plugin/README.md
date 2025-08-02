@@ -129,12 +129,10 @@ interface PluginOptions {
     _esm?: boolean;
     /**
      * scan 启用生效
-     * 哪些mimetype 生成 .js or .ts 文件
-     * @default []
-     * @example
-     * ["application/json"]
+     * 哪些mimetype 生成 .js or .ts 文件, 如： json、html
+     * @default ["json"]
      */
-    _templateMimeType?: [];
+    templateMimeType?: [];
 }
 ```
 

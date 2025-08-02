@@ -45,6 +45,7 @@ export default defineConfig({
         'node:querystring',
         'node:fs/promises',
         'mime-types',
+        'raw-body',
         'vite'
       ],
     },

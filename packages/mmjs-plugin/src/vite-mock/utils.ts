@@ -1,12 +1,5 @@
-import {
-  existsSync,
-  mkdirSync,
-  statSync,
-  writeFile,
-  WriteFileOptions,
-  writeFileSync,
-} from "node:fs";
-import { logLevelState, serverConfig } from "./options";
+import { existsSync, mkdirSync, writeFile, WriteFileOptions } from "node:fs";
+import { logLevelState } from "./options";
 import path from "node:path";
 import { appendFile } from "node:fs/promises";
 
@@ -54,24 +47,32 @@ function uniBeforeStrLog() {
     colorize("[Mock]", "cyan", "bold")
   );
 }
-
+let parentLog = "";
 export const non_write_loggger = {
   success(data) {
+    if (parentLog === data) return;
+    parentLog = data;
     return (
       logLevelState.isLogSuccess &&
       console.log(`${uniBeforeStrLog()}`, colorize(data, "green"))
     );
   },
   info(data) {
+    if (parentLog === data) return;
+    parentLog = data;
     return logLevelState.isLogInfo && console.log(`${uniBeforeStrLog()}`, data);
   },
   wran(data) {
+    if (parentLog === data) return;
+    parentLog = data;
     return (
       logLevelState.isLogWarn &&
       console.log(`${uniBeforeStrLog()}`, colorize(data, "yellow"))
     );
   },
   error(data) {
+    if (parentLog === data) return;
+    parentLog = data;
     return console.log(`${uniBeforeStrLog()}`, colorize(data, "red"));
   },
 };

@@ -42,12 +42,10 @@ export interface PluginOptions {
 
   /**
    * scan 启用生效
-   * 哪些mimetype 生成 .js or .ts 文件
-   * @default []
-   * @example
-   * ["application/json"]
+   * 哪些mimetype 生成 .js or .ts 文件, 如： json、html
+   * @default ["json"]
    */
-  _templateMimeType?: [];
+  templateMimeType?: string[];
 
   /**
    * @default 'utf-8'
@@ -67,7 +65,7 @@ export const serverConfig: Required<PluginOptions> & {
   scan: false,
   scanOutput: "_output",
   _esm: false,
-  _templateMimeType: [],
+  templateMimeType: ["json"],
   root: "",
   encoding: 'utf-8',
 };

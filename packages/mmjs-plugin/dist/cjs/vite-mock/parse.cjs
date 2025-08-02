@@ -1,5 +1,8 @@
-"use strict";Object.defineProperty(exports,Symbol.toStringTag,{value:"Module"});const u=require("node:querystring"),o=require("./options.cjs");function i(e){if(!(e!=null&&e.url))return Reflect.set(e,"query",{});const s=new URL(e.url,`http://${e.headers.host||"localhost"}`);return Reflect.set(e,"query",Object.fromEntries(s.searchParams.entries())??{})}async function a(e){return new Promise((s,n)=>{let r="";e.on("data",t=>r+=t),e.on("end",()=>{try{r||s({});const t=e.headers["content-type"];t!=null&&t.includes("application/json")?s(JSON.parse(r)):t!=null&&t.includes("application/x-www-form-urlencoded")?s(u.parse(r)):s(r)}catch(t){n(t)}}),e.on("error",n)})}async function c(e){try{Reflect.set(e,"body",await a(e))}catch{Reflect.set(e,"body",{})}}function f(e){if(![".js",".ts"].includes(o.serverConfig.fileExt))return e;const s=JSON.stringify(e||{},void 0,4);return o.serverConfig._esm?`export const enabled = true;
-export const mock = () => (${s})
+"use strict";Object.defineProperty(exports,Symbol.toStringTag,{value:"Module"});const n=require("./options.cjs"),c=require("mime-types"),u=require("raw-body");function i(e){Object.defineProperty(e,"query",{get(){try{if(e.__params)return e.__params;if(!(e!=null&&e.url))return{};const r=new URL(e.url,`http://${e.headers.host||"localhost"}`),t=Object.fromEntries(r.searchParams.entries())??{};return e.__params=t,t}catch{return{}}}})}function a(e){const r=e.headers["content-type"];return(c.charset(r)||n.allowCharset[0]).toLocaleLowerCase()}async function m(e){Object.defineProperty(e,"body",{async get(){try{if(e.__body)return s;const r=a(e),t=await u(e,{encoding:r}),s=JSON.parse(t);return e.__body=s,s}catch{}return{}}})}const o=`/**
+* @type {import('mmjs-plugin/vite-mock').MockTemplate}
+*/
+`;function p(e,r){if(![".js",".ts"].includes(n.serverConfig.fileExt))return e;let t=e;try{r.includes("json")?t=e:t=JSON.stringify(e)}catch{t=e}return n.serverConfig._esm?`export const enabled = true;
+${o}export const mock = (req, res) => (${t})
 `:`exports.enabled = true;
-exports.mock = () => (${s})
-`}exports.parseRequestBody=a;exports.transformInnerCodeTempate=f;exports.useParseBody=c;exports.useParseQueryParams=i;
+${o}exports.mock = (req, res) => (${t})
+`}exports.getCharset=a;exports.transformInnerCodeTempate=p;exports.useParseBody=m;exports.useParseQueryParams=i;

@@ -40,24 +40,25 @@ export function useProxyRes(server: ViteDevServer) {
                 charset = charset.toLocaleLowerCase() as BufferEncoding;
                 const mimeType =
                   mime.extension(contentType) || serverConfig.fileExt.slice(1);
-
-                const isInnerTempType = !serverConfig._templateMimeType?.length
+                const isInnerTempType = !serverConfig.templateMimeType?.length
                   ? true
-                  : serverConfig._templateMimeType.some(
+                  : serverConfig.templateMimeType.some(
                       (type) => mimeType?.indexOf(type) !== -1
                     );
 
                 let fileExt: string = serverConfig.fileExt;
-                if (!isInnerTempType) {
-                  fileExt = mimeType ? "." + mimeType : serverConfig.fileExt;
-                }
-                const encoding = allowCharset.includes(charset)
+                let encoding = allowCharset.includes(charset)
                   ? charset
                   : allowCharset[0];
+                if (isInnerTempType) {
+                  encoding = allowCharset[0];
+                } else {
+                  fileExt = mimeType ? "." + mimeType : serverConfig.fileExt;
+                }
 
                 const bodyStr = body.toString(encoding);
                 const newBody = isInnerTempType
-                  ? transformInnerCodeTempate(bodyStr)
+                  ? transformInnerCodeTempate(bodyStr, mimeType)
                   : bodyStr;
                 const filePath = path.join(
                   server.config.root,

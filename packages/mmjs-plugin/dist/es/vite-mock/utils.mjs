@@ -1,8 +1,8 @@
-import { existsSync as B, mkdirSync as x, writeFile as p } from "node:fs";
-import { logLevelState as m } from "./options.mjs";
-import f from "node:path";
-import { appendFile as d } from "node:fs/promises";
-const g = {
+import { existsSync as x, mkdirSync as f, writeFile as p } from "node:fs";
+import { logLevelState as u } from "./options.mjs";
+import y from "node:path";
+import { appendFile as w } from "node:fs/promises";
+const a = {
   // 文本颜色
   black: "\x1B[30m",
   red: "\x1B[31m",
@@ -32,26 +32,31 @@ const g = {
   reverse: "\x1B[7m",
   hidden: "\x1B[8m"
 };
-function i(e, ...r) {
-  return r.map((o) => g[o]).join("") + e + g.reset;
+function s(e, ...r) {
+  return r.map((t) => a[t]).join("") + e + a.reset;
 }
-function s() {
-  return i((/* @__PURE__ */ new Date()).toLocaleTimeString(), "gray") + " " + i("[Mock]", "cyan", "bold");
+function m() {
+  return s((/* @__PURE__ */ new Date()).toLocaleTimeString(), "gray") + " " + s("[Mock]", "cyan", "bold");
 }
+let o = "";
 const n = {
   success(e) {
-    return m.isLogSuccess && console.log(`${s()}`, i(e, "green"));
+    if (o !== e)
+      return o = e, u.isLogSuccess && console.log(`${m()}`, s(e, "green"));
   },
   info(e) {
-    return m.isLogInfo && console.log(`${s()}`, e);
+    if (o !== e)
+      return o = e, u.isLogInfo && console.log(`${m()}`, e);
   },
   wran(e) {
-    return m.isLogWarn && console.log(`${s()}`, i(e, "yellow"));
+    if (o !== e)
+      return o = e, u.isLogWarn && console.log(`${m()}`, s(e, "yellow"));
   },
   error(e) {
-    return console.log(`${s()}`, i(e, "red"));
+    if (o !== e)
+      return o = e, console.log(`${m()}`, s(e, "red"));
   }
-}, _ = {
+}, S = {
   success(e) {
     n.success(e);
   },
@@ -65,40 +70,40 @@ const n = {
     n.error(e);
   }
 };
-function u(e) {
+function B(e) {
   try {
-    const r = f.dirname(e);
-    B(r) || x(r, { recursive: !0 });
+    const r = y.dirname(e);
+    x(r) || f(r, { recursive: !0 });
   } catch (r) {
     n.error(r);
   }
 }
-function S(e, r, o, c = !0) {
-  u(e), p(e, r, o, (t) => {
-    t ? n.wran(t) : c && n.success(`💧 Write File Successify ${e}`);
+function $(e, r, t, c = !0) {
+  B(e), p(e, r, t, (i) => {
+    i ? n.wran(i) : c && n.success(`💧 Write File Successify ${e}`);
   });
 }
-async function $(e, r, o, c = !0) {
-  u(e);
+async function F(e, r, t, c = !0) {
+  B(e);
   try {
-    await d(e, r, o), c && n.success(`💧 Append File Successify ${e}`);
-  } catch (t) {
-    n.wran(t);
+    await w(e, r, t), c && n.success(`💧 Append File Successify ${e}`);
+  } catch (i) {
+    n.wran(i);
   }
 }
-function F(e) {
+function L(e) {
   const r = e.match(/^(https?):\/\/([^\/:]+)(?::(\d+))?(\/.*)?$/i);
   if (!r) return "invalid_url";
-  const o = r[1], c = r[2], t = r[3] || (o === "https" ? "443" : "80"), a = (r[4] || "").replace(/\//g, "_");
-  let l = `${c}_${t}`;
-  return a && a !== "_" && (l += a), l.replace(/[^a-z0-9_]/gi, "_").replace(/_+/g, "_").toLowerCase();
+  const t = r[1], c = r[2], i = r[3] || (t === "https" ? "443" : "80"), l = (r[4] || "").replace(/\//g, "_");
+  let g = `${c}_${i}`;
+  return l && l !== "_" && (g += l), g.replace(/[^a-z0-9_]/gi, "_").replace(/_+/g, "_").toLowerCase();
 }
 export {
-  $ as appendFileFn,
-  i as colorize,
-  u as existsSyncByMkdir,
-  _ as logger,
+  F as appendFileFn,
+  s as colorize,
+  B as existsSyncByMkdir,
+  S as logger,
   n as non_write_loggger,
-  F as safeUrlToFilename,
-  S as writeMockFile
+  L as safeUrlToFilename,
+  $ as writeMockFile
 };

@@ -1,48 +1,62 @@
-import a from "node:querystring";
-import { serverConfig as o } from "./options.mjs";
-function f(t) {
-  if (!(t != null && t.url))
-    return Reflect.set(t, "query", {});
-  const n = new URL(t.url, `http://${t.headers.host || "localhost"}`);
-  return Reflect.set(
-    t,
-    "query",
-    Object.fromEntries(n.searchParams.entries()) ?? {}
-  );
-}
-async function i(t) {
-  return new Promise((n, s) => {
-    let r = "";
-    t.on("data", (e) => r += e), t.on("end", () => {
+import { allowCharset as a, serverConfig as s } from "./options.mjs";
+import c from "mime-types";
+import i from "raw-body";
+function l(t) {
+  Object.defineProperty(t, "query", {
+    get() {
       try {
-        r || n({});
-        const e = t.headers["content-type"];
-        e != null && e.includes("application/json") ? n(JSON.parse(r)) : e != null && e.includes("application/x-www-form-urlencoded") ? n(a.parse(r)) : n(r);
-      } catch (e) {
-        s(e);
+        if (t.__params) return t.__params;
+        if (!(t != null && t.url))
+          return {};
+        const r = new URL(
+          t.url,
+          `http://${t.headers.host || "localhost"}`
+        ), e = Object.fromEntries(r.searchParams.entries()) ?? {};
+        return t.__params = e, e;
+      } catch {
+        return {};
       }
-    }), t.on("error", s);
+    }
   });
 }
-async function l(t) {
-  try {
-    Reflect.set(t, "body", await i(t));
-  } catch {
-    Reflect.set(t, "body", {});
-  }
+function u(t) {
+  const r = t.headers["content-type"];
+  return (c.charset(r) || a[0]).toLocaleLowerCase();
 }
-function d(t) {
-  if (![".js", ".ts"].includes(o.fileExt)) return t;
-  const n = JSON.stringify(t || {}, void 0, 4);
-  return o._esm ? `export const enabled = true;
-export const mock = () => (${n})
+async function y(t) {
+  Object.defineProperty(t, "body", {
+    async get() {
+      try {
+        if (t.__body) return n;
+        const r = u(t), e = await i(t, { encoding: r }), n = JSON.parse(e);
+        return t.__body = n, n;
+      } catch {
+      }
+      return {};
+    }
+  });
+}
+const o = `/**
+* @type {import('mmjs-plugin/vite-mock').MockTemplate}
+*/
+`;
+function d(t, r) {
+  if (![".js", ".ts"].includes(s.fileExt)) return t;
+  let e = t;
+  try {
+    r.includes("json") ? e = t : e = JSON.stringify(t);
+  } catch {
+    e = t;
+  }
+  return s._esm ? `export const enabled = true;
+${o}export const mock = (req, res) => (${e})
 ` : `exports.enabled = true;
-exports.mock = () => (${n})
+${o}exports.mock = (req, res) => (${e})
 `;
 }
 export {
-  i as parseRequestBody,
+  u as getCharset,
   d as transformInnerCodeTempate,
-  l as useParseBody,
-  f as useParseQueryParams
+  y as useParseBody,
+  l as useParseQueryParams
 };

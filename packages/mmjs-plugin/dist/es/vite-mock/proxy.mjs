@@ -1,56 +1,56 @@
-import { safeUrlToFilename as F, writeMockFile as I, logger as L } from "./utils.mjs";
-import { allowCharset as i, serverConfig as e } from "./options.mjs";
+import { safeUrlToFilename as I, writeMockFile as L, logger as O } from "./utils.mjs";
+import { allowCharset as r, serverConfig as e } from "./options.mjs";
 import C from "node:path";
 import E from "mime-types";
-import { transformInnerCodeTempate as O } from "./parse.mjs";
-function N(c) {
-  var f;
-  const s = ((f = c.config.server) == null ? void 0 : f.proxy) ?? {};
-  for (let b in s)
+import { transformInnerCodeTempate as S } from "./parse.mjs";
+function R(s) {
+  var a;
+  const f = ((a = s.config.server) == null ? void 0 : a.proxy) ?? {};
+  for (let b in f)
     try {
-      const t = s[b];
-      if (typeof t != "object") continue;
-      const a = t.configure;
-      t.configure = (m, p) => {
+      const o = f[b];
+      if (typeof o != "object") continue;
+      const l = o.configure;
+      o.configure = (m, p) => {
         m.on(
           "proxyRes",
-          (l, j, M) => {
-            var g;
-            typeof a == "function" && a(m, p);
-            const u = C.join(
-              F(p.target ?? ""),
-              ((g = j._parsedUrl) == null ? void 0 : g.pathname) ?? ""
+          (u, j, M) => {
+            var y;
+            typeof l == "function" && l(m, p);
+            const g = C.join(
+              I(p.target ?? ""),
+              ((y = j._parsedUrl) == null ? void 0 : y.pathname) ?? ""
             );
-            if (u) {
-              const y = [];
-              l.on("data", (r) => {
-                y.push(r);
-              }), l.on("end", () => {
+            if (g) {
+              const d = [];
+              u.on("data", (i) => {
+                d.push(i);
+              }), u.on("end", () => {
                 var w;
-                const r = Buffer.concat(y), d = M.getHeaders()["content-type"];
-                let n = E.charset(d) || i[0];
+                const i = Buffer.concat(d), h = M.getHeaders()["content-type"];
+                let n = E.charset(h) || r[0];
                 n = n.toLocaleLowerCase();
-                const o = E.extension(d) || e.fileExt.slice(1), h = (w = e._templateMimeType) != null && w.length ? e._templateMimeType.some(
-                  (B) => (o == null ? void 0 : o.indexOf(B)) !== -1
+                const t = E.extension(h) || e.fileExt.slice(1), x = (w = e.templateMimeType) != null && w.length ? e.templateMimeType.some(
+                  (F) => (t == null ? void 0 : t.indexOf(F)) !== -1
                 ) : !0;
-                let x = e.fileExt;
-                h || (x = o ? "." + o : e.fileExt);
-                const T = i.includes(n) ? n : i[0], k = r.toString(T), P = h ? O(k) : k, _ = C.join(
-                  c.config.root,
+                let T = e.fileExt, c = r.includes(n) ? n : r[0];
+                x ? c = r[0] : T = t ? "." + t : e.fileExt;
+                const k = i.toString(c), P = x ? S(k, t) : k, B = C.join(
+                  s.config.root,
                   e.mockDir,
                   e.scanOutput,
-                  u + x
+                  g + T
                 );
-                I(_, P, { encoding: T });
+                L(B, P, { encoding: c });
               });
             }
           }
         );
       };
-    } catch (t) {
-      L.error(t);
+    } catch (o) {
+      O.error(o);
     }
 }
 export {
-  N as useProxyRes
+  R as useProxyRes
 };

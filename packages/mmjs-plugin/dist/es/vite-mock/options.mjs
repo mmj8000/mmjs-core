@@ -8,7 +8,7 @@ const e = {
   scan: !1,
   scanOutput: "_output",
   _esm: !1,
-  _templateMimeType: [],
+  templateMimeType: ["json"],
   root: "",
   encoding: "utf-8"
 }, s = {

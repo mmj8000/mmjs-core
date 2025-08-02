@@ -12,7 +12,10 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 const notFileErrMsg = ["no such file", "Cannot find module"];
 const mockNoEnabledStr = "Mock Not enabled";
 
-export declare function MockTemplate(req: IncomingMessage, res: ServerResponse<IncomingMessage>): Promise<any> | any;
+export declare function MockTemplate(
+  req: IncomingMessage,
+  res: ServerResponse<IncomingMessage>
+): Promise<any> | any;
 
 export function createMockServer(config?: PluginOptions): Plugin {
   const { scan, apiPrefix, forceMock, mockDir, timeout, fileExt } =
@@ -22,7 +25,22 @@ export function createMockServer(config?: PluginOptions): Plugin {
     name: "vite:mmjs:mock",
     apply: "serve",
     enforce: "post",
+    config(config, env) {
+      if (scan && env.command === "serve") {
+        return {
+          server: {
+            watch: {
+              ignored: [
+                "**/__mock__/**",
+                // 可扩展其他规则
+              ],
+            },
+          },
+        };
+      }
+    },
     configureServer(server: ViteDevServer) {
+      // 使用 body-parser 处理 POST 请求体
       // 获取项目根目录
       const root = server.config.root;
       serverConfig.root = root;
@@ -46,7 +64,7 @@ export function createMockServer(config?: PluginOptions): Plugin {
             return next();
           }
           useParseQueryParams(req);
-          await useParseBody(req);
+          useParseBody(req);
           const pathname = req._parsedUrl?.pathname ?? "";
           req.headers["x-custom-request-header"] = "vite-plugin-mmjs-mock";
           readPath = path.join(root, mockDir, pathname + fileExt);
@@ -62,18 +80,18 @@ export function createMockServer(config?: PluginOptions): Plugin {
             require.cache && delete require.cache[readPath];
             mockState = await require(readPath);
           }
-          function response() {
-            res.setHeader("Content-Type", mime.contentType(readPath));
+          function response(data, contentType = mime.contentType(readPath)) {
+            res.setHeader("Content-Type", contentType);
             logger.success(
               `✅ Mock Successify ${colorize(readPath, "underline")}`
             );
             setTimeout(() => {
-              res.end(JSON.stringify(resp));
+              res.end(JSON.stringify(data));
             }, timeout);
           }
 
           if (fileExt === ".json" && mockState) {
-            response();
+            response(mockState);
             return;
           }
 
@@ -86,7 +104,7 @@ export function createMockServer(config?: PluginOptions): Plugin {
             resp = await resp;
           }
           if (resp !== void 0) {
-            response();
+            response(resp, "application/json");
           }
         } catch (err: any) {
           if (err?.message.indexOf(mockNoEnabledStr) !== -1) {

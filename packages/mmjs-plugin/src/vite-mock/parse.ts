@@ -1,65 +1,82 @@
 import { type IncomingMessage } from "node:http";
-import querystring from "node:querystring";
-import { serverConfig } from "./options";
+import { allowCharset, serverConfig } from "./options";
+import mime from "mime-types";
+import getRawBody from "raw-body";
 
 declare module "http" {
   interface IncomingMessage {
     query: Record<string, any>;
-    body: Record<string, any>;
-    _parsedUrl?: URL
+    /**
+     * 注意：默认情况下只能被消费一次。读取了数据，后续中间件将无法再次获取 body，因为流已经被消耗。
+     */
+    body: Promise<any>;
+    _parsedUrl?: URL;
   }
 }
 export function useParseQueryParams(req: IncomingMessage) {
-  if (!req?.url) {
-    return Reflect.set(req, "query", {});
-  }
-  // 解析URL获取查询参数
-  const url = new URL(req.url, `http://${req.headers.host || "localhost"}`);
-  return Reflect.set(
-    req,
-    "query",
-    Object.fromEntries(url.searchParams.entries()) ?? {}
-  );
-}
-
-// 解析请求体的工具函数
-export async function parseRequestBody(req: IncomingMessage): Promise<any> {
-  return new Promise((resolve, reject) => {
-    let body = "";
-    req.on("data", (chunk) => (body += chunk));
-    req.on("end", () => {
+  Object.defineProperty(req, "query", {
+    get() {
       try {
-        if (!body) resolve({});
-        const contentType = req.headers["content-type"];
-        if (contentType?.includes("application/json")) {
-          resolve(JSON.parse(body));
-        } else if (contentType?.includes("application/x-www-form-urlencoded")) {
-          resolve(querystring.parse(body));
-        } else {
-          resolve(body);
+        // @ts-ignore
+        if (req.__params) return req.__params;
+        if (!req?.url) {
+          return {};
         }
-      } catch (e) {
-        reject(e);
+        // 解析URL获取查询参数
+        const url = new URL(
+          req.url,
+          `http://${req.headers.host || "localhost"}`
+        );
+        const params = Object.fromEntries(url.searchParams.entries()) ?? {};
+        // @ts-ignore
+        req.__params = params;
+        return params;
+      } catch {
+        return {};
       }
-    });
-    req.on("error", reject);
+    },
+  });
+}
+export function getCharset(req: IncomingMessage) {
+  const contentType = req.headers["content-type"];
+  let charset: BufferEncoding = mime.charset(contentType) || allowCharset[0];
+  return charset.toLocaleLowerCase() as BufferEncoding;
+}
+export async function useParseBody(req: IncomingMessage) {
+  Object.defineProperty(req, "body", {
+    async get() {
+      try {
+        // @ts-ignore
+        if (req.__body) return bodyObj;
+        const encoding = getCharset(req);
+        // 1. 读取并缓存 body
+        const body = await getRawBody(req, { encoding });
+        // 2. 挂载到 req.body（后续中间件直接访问）
+        const bodyObj = JSON.parse(body);
+        // @ts-ignore
+        req.__body = bodyObj;
+        return bodyObj;
+      } catch {}
+      return {};
+    },
   });
 }
 
-export async function useParseBody(req: IncomingMessage) {
+const typeJsDocsStr = `/**\n* @type {import('mmjs-plugin/vite-mock').MockTemplate}\n*\/\n`;
+export function transformInnerCodeTempate(body: string, mimeType: string) {
+  if (![".js", ".ts"].includes(serverConfig.fileExt)) return body;
+  let _body = body;
   try {
-    // 解析URL获取查询参数
-    Reflect.set(req, "body", await parseRequestBody(req));
+    if (mimeType.includes("json")) {
+      _body = body;
+    } else {
+      _body = JSON.stringify(body);
+    }
   } catch {
-    Reflect.set(req, "body", {});
+    _body = body;
   }
-}
-
-export function transformInnerCodeTempate(body: string) {
-  if(!['.js', '.ts'].includes(serverConfig.fileExt)) return body;
-  const newData = JSON.stringify(body || {}, void 0, 4);
   if (serverConfig._esm) {
-    return `export const enabled = true;\nexport const mock = () => (${newData})\n`;
+    return `export const enabled = true;\n${typeJsDocsStr}export const mock = (req, res) => (${_body})\n`;
   }
-  return `exports.enabled = true;\nexports.mock = () => (${newData})\n`;
+  return `exports.enabled = true;\n${typeJsDocsStr}exports.mock = (req, res) => (${_body})\n`;
 }
