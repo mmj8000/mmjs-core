@@ -3,7 +3,6 @@
   "version": "",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "test": "vitest"
   },
@@ -11,9 +10,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
     "@vitest/ui": "3.2.4",
-    "mmjs-plugin": "workspace:^",
+    "lodash-es": "^4.17.21",
     "mmjs-core": "workspace:^",
+    "mmjs-plugin": "workspace:^",
     "mmjs-share": "workspace:^",
     "vite": "^5.4.17",
     "vitest": "^3.2.4",

@@ -1,5 +1,5 @@
 import type { ViteDevServer, Plugin } from "vite";
-import { useParseBody, useParseQueryParams } from "./parse";
+import { getCharset, useParseBody, useParseQueryParams } from "./parse";
 import path from "node:path";
 import { colorize, logger } from "./utils";
 import { pathToFileURL } from "node:url";
@@ -31,7 +31,7 @@ export function createMockServer(config?: PluginOptions): Plugin {
           server: {
             watch: {
               ignored: [
-                "**/__mock__/**",
+                `**/${mockDir}/**`,
                 // 可扩展其他规则
               ],
             },
@@ -72,14 +72,6 @@ export function createMockServer(config?: PluginOptions): Plugin {
             enabled: boolean;
             mock: (req, res) => any;
           };
-          if (serverConfig._esm) {
-            mockState = await import(
-              pathToFileURL(readPath).href + "?t=" + Date.now()
-            );
-          } else {
-            require.cache && delete require.cache[readPath];
-            mockState = await require(readPath);
-          }
           function response(data, contentType = mime.contentType(readPath)) {
             res.setHeader("Content-Type", contentType);
             logger.success(
@@ -89,10 +81,27 @@ export function createMockServer(config?: PluginOptions): Plugin {
               res.end(JSON.stringify(data));
             }, timeout);
           }
+          if (fileExt === '.json') {
 
-          if (fileExt === ".json" && mockState) {
-            response(mockState);
-            return;
+            try {
+              const json = readFileSync(readPath, { encoding: getCharset(req), });
+              return response(JSON.parse(json));
+            } catch (err) {
+              logger.wran(`${err}; ${readPath}`);
+              return next();
+            }
+
+          } else if (serverConfig._esm) {
+
+            mockState = await import(
+              pathToFileURL(readPath).href + "?t=" + Date.now()
+            );
+
+          } else {
+
+            require.cache && delete require.cache[readPath];
+            mockState = await require(readPath);
+
           }
 
           if (!mockState?.enabled) {
