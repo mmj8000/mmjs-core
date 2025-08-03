@@ -1,9 +1,9 @@
-import { existsSync as y, mkdirSync as h, writeFile as w } from "node:fs";
-import { logLevelState as p, allowCharset as u, serverConfig as a } from "./options.mjs";
-import b from "node:path";
-import { appendFile as d } from "node:fs/promises";
-import x from "mime-types";
-const f = {
+import { existsSync as $, mkdirSync as b, writeFile as L, statSync as T } from "node:fs";
+import { logLevelState as x, allowCharset as g, serverConfig as u } from "./options.mjs";
+import _ from "node:path";
+import { appendFile as C } from "node:fs/promises";
+import B from "mime-types";
+const w = {
   // 文本颜色
   black: "\x1B[30m",
   red: "\x1B[31m",
@@ -33,96 +33,126 @@ const f = {
   reverse: "\x1B[7m",
   hidden: "\x1B[8m"
 };
-function m(e, ...r) {
-  return r.map((n) => f[n]).join("") + e + f.reset;
+function m(e, ...t) {
+  return t.map((r) => w[r]).join("") + e + w.reset;
 }
-function g() {
+function p() {
   return m((/* @__PURE__ */ new Date()).toLocaleTimeString(), "gray") + " " + m("[Mock]", "cyan", "bold");
 }
 let c = "";
-const o = {
+const s = {
   success(e) {
     if (c !== e)
-      return c = e, p.isLogSuccess && console.log(`${g()}`, m(e, "green"));
+      return c = e, x.isLogSuccess && console.log(`${p()}`, m(e, "green"));
   },
   info(e) {
     if (c !== e)
-      return c = e, p.isLogInfo && console.log(`${g()}`, e);
+      return c = e, x.isLogInfo && console.log(`${p()}`, e);
   },
   wran(e) {
     if (c !== e)
-      return c = e, p.isLogWarn && console.log(`${g()}`, m(e, "yellow"));
+      return c = e, x.isLogWarn && console.log(`${p()}`, m(e, "yellow"));
   },
   error(e) {
     if (c !== e)
-      return c = e, console.log(`${g()}`, m(e, "red"));
+      return c = e, console.log(`${p()}`, m(e, "red"));
   }
-}, F = {
+}, U = {
   success(e) {
-    o.success(e);
+    s.success(e);
   },
   info(e) {
-    o.info(e);
+    s.info(e);
   },
   wran(e) {
-    o.wran(e);
+    s.wran(e);
   },
   error(e) {
-    o.error(e);
+    s.error(e);
   }
 };
-function B(e) {
+function d(e) {
   try {
-    const r = b.dirname(e);
-    y(r) || h(r, { recursive: !0 });
-  } catch (r) {
-    o.error(r);
+    const t = _.dirname(e);
+    $(t) || b(t, { recursive: !0 });
+  } catch (t) {
+    s.error(t);
   }
 }
-function k(e, r, n, i = !0) {
-  B(e), w(e, r, n, (t) => {
-    t ? o.wran(t) : i && o.success(`💧 Write File Successify ${e}`);
+function E(e, t, r, n = !0) {
+  d(e), L(e, t, r, (o) => {
+    o ? s.wran(o) : n && s.success(`💧 Write File Successify ${e}`);
   });
 }
-async function C(e, r, n, i = !0) {
-  B(e);
+async function W(e, t, r, n = !0) {
+  d(e);
   try {
-    await d(e, r, n), i && o.success(`💧 Append File Successify ${e}`);
-  } catch (t) {
-    o.wran(t);
+    await C(e, t, r), n && s.success(`💧 Append File Successify ${e}`);
+  } catch (o) {
+    s.wran(o);
   }
 }
-function M(e) {
-  const r = e.match(/^(https?):\/\/([^\/:]+)(?::(\d+))?(\/.*)?$/i);
-  if (!r) return "invalid_url";
-  const n = r[1], i = r[2], t = r[3] || (n === "https" ? "443" : "80"), s = (r[4] || "").replace(/\//g, "_");
-  let l = `${i}_${t}`;
-  return s && s !== "_" && (l += s), l.replace(/[^a-z0-9_]/gi, "_").replace(/_+/g, "_").toLowerCase();
+function I(e) {
+  const t = e.match(/^(https?):\/\/([^\/:]+)(?::(\d+))?(\/.*)?$/i);
+  if (!t) return "invalid_url";
+  const r = t[1], n = t[2], o = t[3] || (r === "https" ? "443" : "80"), i = (t[4] || "").replace(/\//g, "_");
+  let l = `${n}_${o}`;
+  return i && i !== "_" && (l += i), l.replace(/[^a-z0-9_]/gi, "_").replace(/_+/g, "_").toLowerCase();
 }
-function v(e) {
+function j(e) {
   var l;
-  let r = x.charset(e) || u[0];
-  r = r.toLocaleLowerCase();
-  let n = x.extension(e) || a.fileExt.slice(1), i = !((l = a.templateMimeType) != null && l.length) || a.templateMimeType.includes(n), t = a.fileExt, s = u.includes(r) ? r : u[0];
-  return i ? s = u[0] : t = `.${n}`, {
-    charset: r,
-    encoding: s,
-    isInnerTempType: i,
-    fileExt: t,
-    mimeType: n
+  let t = B.charset(e) || g[0];
+  t = t.toLocaleLowerCase();
+  let r = B.extension(e) || u.fileExt.slice(1), n = !((l = u.templateMimeType) != null && l.length) || u.templateMimeType.includes(r), o = u.fileExt, i = g.includes(t) ? t : g[0];
+  return n ? i = g[0] : o = `.${r}`, {
+    charset: t,
+    encoding: i,
+    isInnerTempType: n,
+    fileExt: o,
+    mimeType: r
   };
 }
-function E(e) {
-  return x.contentType(e);
+function A(e) {
+  return B.contentType(e);
+}
+function D(e, t) {
+  const n = t.replace(/^[\\/]|[\\/]$/g, "").replace(/\\/g, "/").replace(/\.[^/.]+$/, "").split("/"), o = [...e].sort(
+    (i, l) => l.split(/[\\/]/).length - i.split(/[\\/]/).length
+  );
+  for (const i of o) {
+    const f = i.replace(/^[\\/]|[\\/]$/g, "").replace(/\\/g, "/").replace(/\.[^/.]+$/, "").split("/");
+    if (f.length !== n.length)
+      continue;
+    let h = !0;
+    for (let a = 0; a < f.length; a++) {
+      const y = f[a], S = n[a];
+      if (!/^\$[^/]+$/.test(y) && y.toLowerCase() !== S.toLowerCase()) {
+        h = !1;
+        break;
+      }
+    }
+    if (h)
+      return i;
+  }
+  return null;
+}
+function G(e) {
+  try {
+    return T(e), !0;
+  } catch {
+    return !1;
+  }
 }
 export {
-  C as appendFileFn,
+  W as appendFileFn,
   m as colorize,
-  B as existsSyncByMkdir,
-  E as getContentTypeByPath,
-  F as logger,
-  o as non_write_loggger,
-  M as safeUrlToFilename,
-  v as useContentType,
-  k as writeMockFile
+  d as existsSyncByMkdir,
+  G as fileExists,
+  D as findMatchingTemplatePath,
+  A as getContentTypeByPath,
+  U as logger,
+  s as non_write_loggger,
+  I as safeUrlToFilename,
+  j as useContentType,
+  E as writeMockFile
 };

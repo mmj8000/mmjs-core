@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, writeFile, WriteFileOptions } from "node:fs";
+import { existsSync, mkdirSync, statSync, writeFile, WriteFileOptions } from "node:fs";
 import { allowCharset, allowExt, logLevelState, serverConfig } from "./options";
 import path from "node:path";
 import { appendFile } from "node:fs/promises";
@@ -184,4 +184,63 @@ export function useContentType(contentType: string | undefined) {
 
 export function getContentTypeByPath(readPath: string) {
   return mime.contentType(readPath);
+}
+
+export function findMatchingTemplatePath(paths: string[], userUrl: string): string | null {
+    // 标准化用户URL（统一使用正斜杠，移除开头/结尾分隔符和扩展名）
+    const normalizedUserUrl = userUrl.replace(/^[\\/]|[\\/]$/g, '')
+                                   .replace(/\\/g, '/')
+                                   .replace(/\.[^/.]+$/, '');
+    const userSegments = normalizedUserUrl.split('/');
+    
+    // 按路径深度排序，优先匹配更长的路径
+    const sortedPaths = [...paths].sort((a, b) => 
+        b.split(/[\\/]/).length - a.split(/[\\/]/).length
+    );
+    
+    for (const templatePath of sortedPaths) {
+        // 标准化模板路径（统一使用正斜杠，移除扩展名）
+        const normalizedTemplate = templatePath.replace(/^[\\/]|[\\/]$/g, '')
+                                            .replace(/\\/g, '/')
+                                            .replace(/\.[^/.]+$/, '');
+        const templateSegments = normalizedTemplate.split('/');
+        
+        // 如果段数不匹配，跳过
+        if (templateSegments.length !== userSegments.length) {
+            continue;
+        }
+        
+        let isMatch = true;
+        
+        // 逐段比较
+        for (let i = 0; i < templateSegments.length; i++) {
+            const templateSeg = templateSegments[i];
+            const userSeg = userSegments[i];
+            
+            // 检查是否是参数段（$开头的）
+            const isParamSegment = /^\$[^/]+$/.test(templateSeg);
+            
+            // 如果是固定段，必须完全匹配（不区分大小写）
+            if (!isParamSegment && templateSeg.toLowerCase() !== userSeg.toLowerCase()) {
+                isMatch = false;
+                break;
+            }
+        }
+        
+        if (isMatch) {
+            return templatePath; // 返回原始模板路径
+        }
+    }
+    
+    return null;
+}
+
+
+export function fileExists(filePath: string) {
+  try {
+    statSync(filePath);
+    return true;
+  } catch (err) {
+    return false;
+  }
 }

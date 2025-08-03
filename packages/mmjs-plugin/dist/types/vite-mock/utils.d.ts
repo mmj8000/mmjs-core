@@ -24,3 +24,5 @@ export declare function useContentType(contentType: string | undefined): {
     mimeType: any;
 };
 export declare function getContentTypeByPath(readPath: string): any;
+export declare function findMatchingTemplatePath(paths: string[], userUrl: string): string | null;
+export declare function fileExists(filePath: string): boolean;

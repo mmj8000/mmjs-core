@@ -1,13 +1,13 @@
 import type { ViteDevServer, Plugin } from "vite";
 import { useParseBody, useParseQueryParams } from "./parse";
 import path from "node:path";
-import { colorize, getContentTypeByPath, logger, useContentType } from "./utils";
+import { colorize, fileExists, findMatchingTemplatePath, getContentTypeByPath, logger, useContentType } from "./utils";
 import { pathToFileURL } from "node:url";
-import { createReadStream, readFileSync } from "node:fs";
+import { createReadStream, readdirSync, readFileSync, watchFile, } from "node:fs";
 import { useProxyRes } from "./proxy";
 import { serverConfig, PluginOptions, updateLogLevelState, allowExt } from "./options";
-import mime from "mime-types";
 import type { IncomingMessage, ServerResponse } from "node:http";
+import { enhancedFindFiles } from "./ndos";
 
 const notFileErrMsg = ["no such file", "Cannot find module"];
 const mockNoEnabledStr = "Mock Not enabled";
@@ -17,7 +17,12 @@ export declare function MockTemplate(
   res: ServerResponse<IncomingMessage>
 ): Promise<any> | any;
 
-export function createMockServer(config?: PluginOptions): Plugin {
+export type CreateMockServer = {
+  (config?: PluginOptions): Plugin;
+  __dyMatchPaths: string[];
+};
+
+export const createMockServer: CreateMockServer = (config) => {
   const { scan, apiPrefix, forceMock, mockDir, timeout } =
     Object.assign(serverConfig, config ?? {});
   updateLogLevelState();
@@ -50,6 +55,19 @@ export function createMockServer(config?: PluginOptions): Plugin {
         logger.info("⏳ Scan Watching...");
         return useProxyRes(server);
       }
+      ; (async () => {
+        try {
+          const mockFileList = await enhancedFindFiles(
+            path.join(root, mockDir),
+            {
+              recursive: true,
+              exclude: /node_modules|\.git/
+            });
+          createMockServer.__dyMatchPaths = mockFileList;
+        } catch (err) {
+          logger.error(err);
+        }
+      })();
       server.middlewares.use(apiPrefix, async (req, res, next) => {
         let readPath = "";
         let remote = "";
@@ -102,6 +120,13 @@ export function createMockServer(config?: PluginOptions): Plugin {
             });
             return;
           }
+
+          const isExistFile = fileExists(readPath);
+          if (!isExistFile) {
+            const newUrl = path.join(root, mockDir, pathname);
+            const matchPath = findMatchingTemplatePath(createMockServer.__dyMatchPaths, newUrl);
+            readPath = matchPath || readPath;
+          }
           if (fileExt === '.json') {
             try {
               const json = readFileSync(readPath, { encoding, });
@@ -150,3 +175,5 @@ export function createMockServer(config?: PluginOptions): Plugin {
     },
   };
 }
+
+createMockServer.__dyMatchPaths = [];
