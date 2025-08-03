@@ -1,6 +1,6 @@
 import type { ViteDevServer } from "vite";
 import { type ServerResponse, type IncomingMessage } from "node:http";
-import { colorize, logger, safeUrlToFilename, useContentType, writeMockFile } from "./utils";
+import { colorize, existsSyncByMkdir, logger, safeUrlToFilename, useContentType, writeMockFile } from "./utils";
 import { serverConfig } from "./options";
 import path from "node:path";
 import { transformInnerCodeTempate } from "./parse";
@@ -36,6 +36,7 @@ export function useProxyRes(server: ViteDevServer) {
                 outputPathName! + fileExt
               );
               if (!isInnerTempType) {
+                existsSyncByMkdir(filePath);
                 const writeStream = createWriteStream(filePath);
                 writeStream.on('error', (err) => {
                   logger.error(err);

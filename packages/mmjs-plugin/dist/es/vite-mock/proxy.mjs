@@ -1,9 +1,9 @@
-import { safeUrlToFilename as P, useContentType as B, logger as i, colorize as E, writeMockFile as F } from "./utils.mjs";
+import { safeUrlToFilename as C, useContentType as P, existsSyncByMkdir as x, logger as i, colorize as E, writeMockFile as F } from "./utils.mjs";
 import { serverConfig as l } from "./options.mjs";
 import g from "node:path";
 import { transformInnerCodeTempate as I } from "./parse.mjs";
-import { createWriteStream as U } from "node:fs";
-function O(c) {
+import { createWriteStream as M } from "node:fs";
+function W(c) {
   var f;
   const s = ((f = c.config.server) == null ? void 0 : f.proxy) ?? {};
   for (let h in s)
@@ -14,30 +14,31 @@ function O(c) {
       t.configure = (m, d) => {
         m.on(
           "proxyRes",
-          (n, T, v) => {
+          (n, T, U) => {
             var u;
             typeof a == "function" && a(m, d);
             const p = g.join(
-              P(d.target ?? ""),
+              C(d.target ?? ""),
               ((u = T._parsedUrl) == null ? void 0 : u.pathname) ?? ""
             );
             if (p) {
-              const w = n.headers["content-type"], { encoding: y, isInnerTempType: S, mimeType: b, fileExt: k } = B(w), r = g.join(
+              const S = n.headers["content-type"], { encoding: y, isInnerTempType: k, mimeType: w, fileExt: b } = P(S), r = g.join(
                 c.config.root,
                 l.mockDir,
                 l.scanOutput,
-                p + k
+                p + b
               );
-              if (S) {
+              if (k) {
                 const e = [];
                 n.on("data", (o) => {
                   e.push(o);
                 }), n.on("end", () => {
-                  const j = Buffer.concat(e).toString(y), C = I(j, b);
-                  F(r, C, { encoding: y });
+                  const j = Buffer.concat(e).toString(y), B = I(j, w);
+                  F(r, B, { encoding: y });
                 });
               } else {
-                const e = U(r);
+                x(r);
+                const e = M(r);
                 e.on("error", (o) => {
                   i.error(o), e.destroy();
                 }), e.on("close", () => {
@@ -59,5 +60,5 @@ function O(c) {
     }
 }
 export {
-  O as useProxyRes
+  W as useProxyRes
 };

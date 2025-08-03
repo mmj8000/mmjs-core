@@ -1,4 +1,4 @@
-const o = {
+const s = {
   apiPrefix: "/api",
   forceMock: !1,
   mockDir: "__mock__",
@@ -12,15 +12,15 @@ const o = {
   root: "",
   encoding: "utf-8",
   watchDynamicFile: !1
-}, e = Object.assign({}, o), s = {
+}, e = Object.assign({}, s), t = {
   isLogWarn: !0,
   isLogInfo: !0,
   isLogSuccess: !0
 };
-function t() {
-  s.isLogWarn = e.logLevel.includes("wran"), s.isLogInfo = e.logLevel.includes("info"), s.isLogSuccess = e.logLevel.includes("succes");
+function o() {
+  t.isLogWarn = e.logLevel.includes("wran"), t.isLogInfo = e.logLevel.includes("info"), t.isLogSuccess = e.logLevel.includes("succes");
 }
-const i = [
+const n = [
   "utf-8",
   "ascii",
   "utf8",
@@ -33,16 +33,19 @@ const i = [
   "latin1",
   "binary",
   "hex"
-], n = [
+], c = [
   ".js",
   ".ts",
   ".json"
-];
+], i = {
+  "text/event-stream": "text"
+};
 export {
-  o as _initServerConfig,
-  i as allowCharset,
-  n as allowExt,
-  s as logLevelState,
+  s as _initServerConfig,
+  n as allowCharset,
+  c as allowExt,
+  i as customContentTypeToExt,
+  t as logLevelState,
   e as serverConfig,
-  t as updateLogLevelState
+  o as updateLogLevelState
 };

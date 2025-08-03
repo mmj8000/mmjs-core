@@ -113,3 +113,7 @@ export const allowExt = [
   '.ts',
   '.json'
 ] as const;
+
+export const customContentTypeToExt = {
+  'text/event-stream': 'text'
+}

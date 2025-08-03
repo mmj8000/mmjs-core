@@ -66,3 +66,6 @@ export declare const logLevelState: {
 export declare function updateLogLevelState(): void;
 export declare const allowCharset: BufferEncoding[];
 export declare const allowExt: readonly [".js", ".ts", ".json"];
+export declare const customContentTypeToExt: {
+    'text/event-stream': string;
+};

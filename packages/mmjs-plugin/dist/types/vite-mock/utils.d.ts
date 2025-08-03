@@ -1,4 +1,5 @@
 import { WriteFileOptions } from 'node:fs';
+import { IncomingMessage } from 'node:http';
 export declare function colorize(text: any, ...stylesToApply: any[]): string;
 export declare const non_write_loggger: {
     success(data: any): false | void;
@@ -26,3 +27,4 @@ export declare function useContentType(contentType: string | undefined): {
 export declare function getContentTypeByPath(readPath: string): any;
 export declare function findMatchingTemplatePath(paths: string[], userUrl: string): string | null;
 export declare function fileExists(filePath: string): boolean;
+export declare function getHeaderMimeTypeKey(req: IncomingMessage): "content-type" | "accept";

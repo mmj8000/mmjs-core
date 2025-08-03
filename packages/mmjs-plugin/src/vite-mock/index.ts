@@ -1,7 +1,7 @@
 import type { ViteDevServer, Plugin } from "vite";
 import { useParseBody, useParseQueryParams } from "./parse";
 import path from "node:path";
-import { colorize, fileExists, findMatchingTemplatePath, getContentTypeByPath, logger, useContentType } from "./utils";
+import { colorize, fileExists, findMatchingTemplatePath, getContentTypeByPath, getHeaderMimeTypeKey, logger, useContentType } from "./utils";
 import { pathToFileURL } from "node:url";
 import { createReadStream, readFileSync, } from "node:fs";
 import { useProxyRes } from "./proxy";
@@ -88,7 +88,7 @@ export const createMockServer: CreateMockServer = (config) => {
             logger.info("🔒 Browser URL not found mcok Keyword");
             return next();
           }
-          const contentType = req.headers["content-type"];
+          const contentType = req.headers[getHeaderMimeTypeKey(req)];
           const { encoding, fileExt } = useContentType(contentType);
           const pathname = req._parsedUrl?.pathname ?? "";
           req.headers["x-custom-request-header"] = "vite-plugin-mmjs-mock";

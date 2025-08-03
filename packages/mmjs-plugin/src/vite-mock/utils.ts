@@ -1,8 +1,9 @@
 import { existsSync, mkdirSync, statSync, writeFile, WriteFileOptions } from "node:fs";
-import { allowCharset, allowExt, logLevelState, serverConfig } from "./options";
+import { allowCharset, allowExt, customContentTypeToExt, logLevelState, serverConfig } from "./options";
 import path from "node:path";
 import { appendFile } from "node:fs/promises";
 import mime from "mime-types";
+import { IncomingMessage } from "node:http";
 
 const styles = {
   // 文本颜色
@@ -160,7 +161,7 @@ export function safeUrlToFilename(url) {
 export function useContentType(contentType: string | undefined) {
   let charset: BufferEncoding = mime.charset(contentType) || allowCharset[0];
   charset = charset.toLocaleLowerCase() as BufferEncoding;
-  let mimeType = mime.extension(contentType) || serverConfig.fileExt.slice(1);
+  let mimeType = mime.extension(contentType) || customContentTypeToExt[contentType!] || serverConfig.fileExt.slice(1);
   let isInnerTempType = !(serverConfig.templateMimeType?.length) || serverConfig.templateMimeType.includes(mimeType);
   let fileExt: string = serverConfig.fileExt;
   let encoding = allowCharset.includes(charset)
@@ -187,52 +188,52 @@ export function getContentTypeByPath(readPath: string) {
 }
 
 export function findMatchingTemplatePath(paths: string[], userUrl: string): string | null {
-    // 标准化用户URL（统一使用正斜杠，移除开头/结尾分隔符和扩展名）
-    const normalizedUserUrl = userUrl.replace(/^[\\/]|[\\/]$/g, '')
-                                   .replace(/\\/g, '/')
-                                   .replace(/\.[^/.]+$/, '');
-    const userSegments = normalizedUserUrl.split('/');
-    
-    // 按路径深度排序，优先匹配更长的路径
-    const sortedPaths = [...paths].sort((a, b) => 
-        b.split(/[\\/]/).length - a.split(/[\\/]/).length
-    );
-    
-    for (const templatePath of sortedPaths) {
-        // 标准化模板路径（统一使用正斜杠，移除扩展名）
-        const normalizedTemplate = templatePath.replace(/^[\\/]|[\\/]$/g, '')
-                                            .replace(/\\/g, '/')
-                                            .replace(/\.[^/.]+$/, '');
-        const templateSegments = normalizedTemplate.split('/');
-        
-        // 如果段数不匹配，跳过
-        if (templateSegments.length !== userSegments.length) {
-            continue;
-        }
-        
-        let isMatch = true;
-        
-        // 逐段比较
-        for (let i = 0; i < templateSegments.length; i++) {
-            const templateSeg = templateSegments[i];
-            const userSeg = userSegments[i];
-            
-            // 检查是否是参数段（$开头的）
-            const isParamSegment = /^\$[^/]+$/.test(templateSeg);
-            
-            // 如果是固定段，必须完全匹配（不区分大小写）
-            if (!isParamSegment && templateSeg.toLowerCase() !== userSeg.toLowerCase()) {
-                isMatch = false;
-                break;
-            }
-        }
-        
-        if (isMatch) {
-            return templatePath; // 返回原始模板路径
-        }
+  // 标准化用户URL（统一使用正斜杠，移除开头/结尾分隔符和扩展名）
+  const normalizedUserUrl = userUrl.replace(/^[\\/]|[\\/]$/g, '')
+    .replace(/\\/g, '/')
+    .replace(/\.[^/.]+$/, '');
+  const userSegments = normalizedUserUrl.split('/');
+
+  // 按路径深度排序，优先匹配更长的路径
+  const sortedPaths = [...paths].sort((a, b) =>
+    b.split(/[\\/]/).length - a.split(/[\\/]/).length
+  );
+
+  for (const templatePath of sortedPaths) {
+    // 标准化模板路径（统一使用正斜杠，移除扩展名）
+    const normalizedTemplate = templatePath.replace(/^[\\/]|[\\/]$/g, '')
+      .replace(/\\/g, '/')
+      .replace(/\.[^/.]+$/, '');
+    const templateSegments = normalizedTemplate.split('/');
+
+    // 如果段数不匹配，跳过
+    if (templateSegments.length !== userSegments.length) {
+      continue;
     }
-    
-    return null;
+
+    let isMatch = true;
+
+    // 逐段比较
+    for (let i = 0; i < templateSegments.length; i++) {
+      const templateSeg = templateSegments[i];
+      const userSeg = userSegments[i];
+
+      // 检查是否是参数段（$开头的）
+      const isParamSegment = /^\$[^/]+$/.test(templateSeg);
+
+      // 如果是固定段，必须完全匹配（不区分大小写）
+      if (!isParamSegment && templateSeg.toLowerCase() !== userSeg.toLowerCase()) {
+        isMatch = false;
+        break;
+      }
+    }
+
+    if (isMatch) {
+      return templatePath; // 返回原始模板路径
+    }
+  }
+
+  return null;
 }
 
 
@@ -243,4 +244,9 @@ export function fileExists(filePath: string) {
   } catch (err) {
     return false;
   }
+}
+
+
+export function getHeaderMimeTypeKey(req: IncomingMessage) {
+  return req.method === 'GET' ? 'accept' : "content-type";
 }
