@@ -137,6 +137,14 @@ interface PluginOptions {
      * @default ["json"]
      */
     templateMimeType?: [];
+
+      /**
+     * （动态参数的mock文件相关、只有普通类型接口文件设置false 即可）
+     * @desc 动态文件$id相关，需要监测动态参数文件变化就开启，否则新增删除mock服务无法实时知道
+     * 但动态参数接口不常用，建议关闭， 关闭后每次新增、删除动态参数文件（xxx/$id.js）,需要重新启动vite server 
+     * @default false
+     */
+    watchDynamicFile?: boolean;
 }
 ```
 

@@ -3,7 +3,7 @@ import { useParseBody, useParseQueryParams } from "./parse";
 import path from "node:path";
 import { colorize, fileExists, findMatchingTemplatePath, getContentTypeByPath, logger, useContentType } from "./utils";
 import { pathToFileURL } from "node:url";
-import { createReadStream, readdirSync, readFileSync, watchFile, } from "node:fs";
+import { createReadStream, readFileSync, } from "node:fs";
 import { useProxyRes } from "./proxy";
 import { serverConfig, PluginOptions, updateLogLevelState, allowExt, _initServerConfig } from "./options";
 import type { IncomingMessage, ServerResponse } from "node:http";
@@ -45,7 +45,7 @@ export const createMockServer: CreateMockServer = (config) => {
       }
     },
     configureServer(server: ViteDevServer) {
-      const { scan, apiPrefix, forceMock, mockDir, timeout } = serverConfig;
+      const { scan, watchDynamicFile, apiPrefix, forceMock, mockDir, timeout } = serverConfig;
       // 获取项目根目录
       const root = server.config.root;
       serverConfig.root = root;
@@ -57,21 +57,20 @@ export const createMockServer: CreateMockServer = (config) => {
         return useProxyRes(server);
       }
       const mockRootDir = path.join(root, mockDir);
-      server.watcher.off(mockDir, initDynamicFileList);
-      const mockWatcher = server.watcher.add(mockRootDir);
-
-      mockWatcher.on('add', initDynamicFileList);
-      mockWatcher.on('unlink', initDynamicFileList);
-      mockWatcher.on('unlinkDir', initDynamicFileList);
+      if (watchDynamicFile) {
+        server.watcher.off(mockDir, initDynamicFileList);
+        const mockWatcher = server.watcher.add(mockRootDir);
+        mockWatcher.on('add', initDynamicFileList);
+        mockWatcher.on('unlink', initDynamicFileList);
+        mockWatcher.on('unlinkDir', initDynamicFileList);
+      }
       initDynamicFileList();
       async function initDynamicFileList() {
         try {
-          const mockFileList = await enhancedFindFiles(
-            path.join(root, mockDir),
-            {
-              recursive: true,
-              exclude: /node_modules|\.git/
-            });
+          const mockFileList = await enhancedFindFiles(mockRootDir, {
+            recursive: true,
+            exclude: /node_modules|\.git/
+          });
           createMockServer.__dyMatchPaths = mockFileList;
         } catch (err) {
           logger.error(err);
@@ -136,7 +135,8 @@ export const createMockServer: CreateMockServer = (config) => {
             const matchPath = findMatchingTemplatePath(createMockServer.__dyMatchPaths, newUrl);
             readPath = matchPath || readPath;
           }
-          if (fileExt === '.json') {
+          let isJsonExt = readPath.endsWith('.json');
+          if (isJsonExt) {
             try {
               const json = readFileSync(readPath, { encoding, });
               return response(JSON.parse(json));

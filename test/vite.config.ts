@@ -10,6 +10,7 @@ export default defineConfig({
     // scan: true,
     templateMimeType: ['json'],
     // fileExt: '.ts',
+    // watchDynamicFile: true,
   })],
   server: {
     proxy: {

@@ -10,7 +10,8 @@ const o = {
   _esm: !1,
   templateMimeType: ["json"],
   root: "",
-  encoding: "utf-8"
+  encoding: "utf-8",
+  watchDynamicFile: !1
 }, e = Object.assign({}, o), s = {
   isLogWarn: !0,
   isLogInfo: !0,
@@ -19,7 +20,7 @@ const o = {
 function t() {
   s.isLogWarn = e.logLevel.includes("wran"), s.isLogInfo = e.logLevel.includes("info"), s.isLogSuccess = e.logLevel.includes("succes");
 }
-const n = [
+const i = [
   "utf-8",
   "ascii",
   "utf8",
@@ -32,15 +33,15 @@ const n = [
   "latin1",
   "binary",
   "hex"
-], i = [
+], n = [
   ".js",
   ".ts",
   ".json"
 ];
 export {
   o as _initServerConfig,
-  n as allowCharset,
-  i as allowExt,
+  i as allowCharset,
+  n as allowExt,
   s as logLevelState,
   e as serverConfig,
   t as updateLogLevelState
