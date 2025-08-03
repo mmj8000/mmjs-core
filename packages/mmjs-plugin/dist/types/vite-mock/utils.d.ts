@@ -16,3 +16,11 @@ export declare function existsSyncByMkdir(file: string): void;
 export declare function writeMockFile(file: string, data: string | NodeJS.ArrayBufferView, options: WriteFileOptions, print?: boolean): void;
 export declare function appendFileFn(file: string, data: string, options: WriteFileOptions, print?: boolean): Promise<void>;
 export declare function safeUrlToFilename(url: any): string;
+export declare function useContentType(contentType: string | undefined): {
+    charset: BufferEncoding;
+    encoding: BufferEncoding;
+    isInnerTempType: boolean;
+    fileExt: string;
+    mimeType: any;
+};
+export declare function getContentTypeByPath(readPath: string): any;

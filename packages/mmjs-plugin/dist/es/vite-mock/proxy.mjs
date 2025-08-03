@@ -1,56 +1,63 @@
-import { safeUrlToFilename as I, writeMockFile as L, logger as O } from "./utils.mjs";
-import { allowCharset as r, serverConfig as e } from "./options.mjs";
-import C from "node:path";
-import E from "mime-types";
-import { transformInnerCodeTempate as S } from "./parse.mjs";
-function R(s) {
-  var a;
-  const f = ((a = s.config.server) == null ? void 0 : a.proxy) ?? {};
-  for (let b in f)
+import { safeUrlToFilename as P, useContentType as B, logger as i, colorize as E, writeMockFile as F } from "./utils.mjs";
+import { serverConfig as l } from "./options.mjs";
+import g from "node:path";
+import { transformInnerCodeTempate as I } from "./parse.mjs";
+import { createWriteStream as U } from "node:fs";
+function O(c) {
+  var f;
+  const s = ((f = c.config.server) == null ? void 0 : f.proxy) ?? {};
+  for (let h in s)
     try {
-      const o = f[b];
-      if (typeof o != "object") continue;
-      const l = o.configure;
-      o.configure = (m, p) => {
+      const t = s[h];
+      if (typeof t != "object") continue;
+      const a = t.configure;
+      t.configure = (m, d) => {
         m.on(
           "proxyRes",
-          (u, j, M) => {
-            var y;
-            typeof l == "function" && l(m, p);
-            const g = C.join(
-              I(p.target ?? ""),
-              ((y = j._parsedUrl) == null ? void 0 : y.pathname) ?? ""
+          (n, T, v) => {
+            var u;
+            typeof a == "function" && a(m, d);
+            const p = g.join(
+              P(d.target ?? ""),
+              ((u = T._parsedUrl) == null ? void 0 : u.pathname) ?? ""
             );
-            if (g) {
-              const d = [];
-              u.on("data", (i) => {
-                d.push(i);
-              }), u.on("end", () => {
-                var w;
-                const i = Buffer.concat(d), h = M.getHeaders()["content-type"];
-                let n = E.charset(h) || r[0];
-                n = n.toLocaleLowerCase();
-                const t = E.extension(h) || e.fileExt.slice(1), x = (w = e.templateMimeType) != null && w.length ? e.templateMimeType.some(
-                  (F) => (t == null ? void 0 : t.indexOf(F)) !== -1
-                ) : !0;
-                let T = e.fileExt, c = r.includes(n) ? n : r[0];
-                x ? c = r[0] : T = t ? "." + t : e.fileExt;
-                const k = i.toString(c), P = x ? S(k, t) : k, B = C.join(
-                  s.config.root,
-                  e.mockDir,
-                  e.scanOutput,
-                  g + T
-                );
-                L(B, P, { encoding: c });
-              });
+            if (p) {
+              const w = n.headers["content-type"], { encoding: y, isInnerTempType: S, mimeType: b, fileExt: k } = B(w), r = g.join(
+                c.config.root,
+                l.mockDir,
+                l.scanOutput,
+                p + k
+              );
+              if (S) {
+                const e = [];
+                n.on("data", (o) => {
+                  e.push(o);
+                }), n.on("end", () => {
+                  const j = Buffer.concat(e).toString(y), C = I(j, b);
+                  F(r, C, { encoding: y });
+                });
+              } else {
+                const e = U(r);
+                e.on("error", (o) => {
+                  i.error(o), e.destroy();
+                }), e.on("close", () => {
+                  i.success(
+                    `✅ writeStream End ${E(r, "underline")}`
+                  ), e.destroyed || e.destroy();
+                }), n.on("data", (o) => {
+                  e.write(o);
+                }), n.on("end", () => {
+                  e.end();
+                });
+              }
             }
           }
         );
       };
-    } catch (o) {
-      O.error(o);
+    } catch (t) {
+      i.error(t);
     }
 }
 export {
-  R as useProxyRes
+  O as useProxyRes
 };

@@ -1,7 +1,8 @@
 import { existsSync, mkdirSync, writeFile, WriteFileOptions } from "node:fs";
-import { logLevelState } from "./options";
+import { allowCharset, allowExt, logLevelState, serverConfig } from "./options";
 import path from "node:path";
 import { appendFile } from "node:fs/promises";
+import mime from "mime-types";
 
 const styles = {
   // 文本颜色
@@ -153,4 +154,34 @@ export function safeUrlToFilename(url) {
     .replace(/[^a-z0-9_]/gi, "_")
     .replace(/_+/g, "_")
     .toLowerCase();
+}
+
+
+export function useContentType(contentType: string | undefined) {
+  let charset: BufferEncoding = mime.charset(contentType) || allowCharset[0];
+  charset = charset.toLocaleLowerCase() as BufferEncoding;
+  let mimeType = mime.extension(contentType) || serverConfig.fileExt.slice(1);
+  let isInnerTempType = !(serverConfig.templateMimeType?.length) || serverConfig.templateMimeType.includes(mimeType);
+  let fileExt: string = serverConfig.fileExt;
+  let encoding = allowCharset.includes(charset)
+    ? charset
+    : allowCharset[0];
+
+  if (isInnerTempType) {
+    encoding = allowCharset[0];
+  } else {
+    fileExt = `.${mimeType}`;
+  }
+
+  return {
+    charset,
+    encoding,
+    isInnerTempType,
+    fileExt,
+    mimeType,
+  }
+}
+
+export function getContentTypeByPath(readPath: string) {
+  return mime.contentType(readPath);
 }

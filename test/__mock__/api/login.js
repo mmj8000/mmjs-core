@@ -6,5 +6,7 @@ exports.mock = async (req, res) =>{
     res.body
     console.log(req.query, await req.body)
 
-    return '2132'
+    return {
+        t: Date.now(),
+    }
 }

@@ -29,5 +29,9 @@
   "dependencies": {
     "mime-types": "^3.0.1",
     "raw-body": "^3.0.0"
+  },
+  "devDependencies": {
+    "vite": "^5.4.17",
+    "vite-plugin-dts": "^4.5.3"
   }
 }

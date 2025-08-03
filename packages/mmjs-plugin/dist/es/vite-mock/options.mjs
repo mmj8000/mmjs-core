@@ -32,9 +32,14 @@ const t = [
   "latin1",
   "binary",
   "hex"
+], l = [
+  ".js",
+  ".ts",
+  ".json"
 ];
 export {
   t as allowCharset,
+  l as allowExt,
   s as logLevelState,
   e as serverConfig,
   o as updateLogLevelState

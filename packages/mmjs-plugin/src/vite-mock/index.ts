@@ -1,11 +1,11 @@
 import type { ViteDevServer, Plugin } from "vite";
-import { getCharset, useParseBody, useParseQueryParams } from "./parse";
+import { useParseBody, useParseQueryParams } from "./parse";
 import path from "node:path";
-import { colorize, logger } from "./utils";
+import { colorize, getContentTypeByPath, logger, useContentType } from "./utils";
 import { pathToFileURL } from "node:url";
-import { readFileSync } from "node:fs";
+import { createReadStream, readFileSync } from "node:fs";
 import { useProxyRes } from "./proxy";
-import { serverConfig, PluginOptions, updateLogLevelState } from "./options";
+import { serverConfig, PluginOptions, updateLogLevelState, allowExt } from "./options";
 import mime from "mime-types";
 import type { IncomingMessage, ServerResponse } from "node:http";
 
@@ -18,7 +18,7 @@ export declare function MockTemplate(
 ): Promise<any> | any;
 
 export function createMockServer(config?: PluginOptions): Plugin {
-  const { scan, apiPrefix, forceMock, mockDir, timeout, fileExt } =
+  const { scan, apiPrefix, forceMock, mockDir, timeout } =
     Object.assign(serverConfig, config ?? {});
   updateLogLevelState();
   return {
@@ -62,7 +62,8 @@ export function createMockServer(config?: PluginOptions): Plugin {
             logger.info("🔒 Browser URL not found mcok Keyword");
             return next();
           }
-
+          const contentType = req.headers["content-type"];
+          const { encoding, fileExt } = useContentType(contentType);
           const pathname = req._parsedUrl?.pathname ?? "";
           req.headers["x-custom-request-header"] = "vite-plugin-mmjs-mock";
           readPath = path.join(root, mockDir, pathname + fileExt);
@@ -70,8 +71,8 @@ export function createMockServer(config?: PluginOptions): Plugin {
             enabled: boolean;
             mock: (req, res) => any;
           };
-          function response(data, contentType = mime.contentType(readPath)) {
-            res.setHeader("Content-Type", contentType);
+          function response(data, contentType = getContentTypeByPath(readPath)) {
+            contentType && res.setHeader("Content-Type", contentType);
             logger.success(
               `✅ Mock Successify ${colorize(readPath, "underline")}`
             );
@@ -79,9 +80,31 @@ export function createMockServer(config?: PluginOptions): Plugin {
               res.end(JSON.stringify(data));
             }, timeout);
           }
+          if (!allowExt.includes(fileExt as any)) {
+            const readStream = createReadStream(readPath);
+            const contentType = getContentTypeByPath(readPath);
+            contentType && res.setHeader("Content-Type", contentType);
+            readStream.pipe(res);
+            readStream.on('error', (err) => {
+              logger.error(err);
+              readStream.destroy();
+              next();
+            });
+            readStream.on('end', () => {
+              logger.success(
+                `✅ ReadStream End ${colorize(readPath, "underline")}`
+              );
+            });
+            readStream.on('close', () => {
+              if (!readStream.destroyed) {
+                readStream.destroy();
+              }
+            });
+            return;
+          }
           if (fileExt === '.json') {
             try {
-              const json = readFileSync(readPath, { encoding: getCharset(req), });
+              const json = readFileSync(readPath, { encoding, });
               return response(JSON.parse(json));
             } catch (err) {
               logger.wran(`${err}; ${readPath}`);

@@ -1,8 +1,9 @@
-import { existsSync as x, mkdirSync as f, writeFile as p } from "node:fs";
-import { logLevelState as u } from "./options.mjs";
-import y from "node:path";
-import { appendFile as w } from "node:fs/promises";
-const a = {
+import { existsSync as y, mkdirSync as h, writeFile as w } from "node:fs";
+import { logLevelState as p, allowCharset as u, serverConfig as a } from "./options.mjs";
+import b from "node:path";
+import { appendFile as d } from "node:fs/promises";
+import x from "mime-types";
+const f = {
   // 文本颜色
   black: "\x1B[30m",
   red: "\x1B[31m",
@@ -32,78 +33,96 @@ const a = {
   reverse: "\x1B[7m",
   hidden: "\x1B[8m"
 };
-function s(e, ...r) {
-  return r.map((t) => a[t]).join("") + e + a.reset;
+function m(e, ...r) {
+  return r.map((n) => f[n]).join("") + e + f.reset;
 }
-function m() {
-  return s((/* @__PURE__ */ new Date()).toLocaleTimeString(), "gray") + " " + s("[Mock]", "cyan", "bold");
+function g() {
+  return m((/* @__PURE__ */ new Date()).toLocaleTimeString(), "gray") + " " + m("[Mock]", "cyan", "bold");
 }
-let o = "";
-const n = {
+let c = "";
+const o = {
   success(e) {
-    if (o !== e)
-      return o = e, u.isLogSuccess && console.log(`${m()}`, s(e, "green"));
+    if (c !== e)
+      return c = e, p.isLogSuccess && console.log(`${g()}`, m(e, "green"));
   },
   info(e) {
-    if (o !== e)
-      return o = e, u.isLogInfo && console.log(`${m()}`, e);
+    if (c !== e)
+      return c = e, p.isLogInfo && console.log(`${g()}`, e);
   },
   wran(e) {
-    if (o !== e)
-      return o = e, u.isLogWarn && console.log(`${m()}`, s(e, "yellow"));
+    if (c !== e)
+      return c = e, p.isLogWarn && console.log(`${g()}`, m(e, "yellow"));
   },
   error(e) {
-    if (o !== e)
-      return o = e, console.log(`${m()}`, s(e, "red"));
+    if (c !== e)
+      return c = e, console.log(`${g()}`, m(e, "red"));
   }
-}, S = {
+}, F = {
   success(e) {
-    n.success(e);
+    o.success(e);
   },
   info(e) {
-    n.info(e);
+    o.info(e);
   },
   wran(e) {
-    n.wran(e);
+    o.wran(e);
   },
   error(e) {
-    n.error(e);
+    o.error(e);
   }
 };
 function B(e) {
   try {
-    const r = y.dirname(e);
-    x(r) || f(r, { recursive: !0 });
+    const r = b.dirname(e);
+    y(r) || h(r, { recursive: !0 });
   } catch (r) {
-    n.error(r);
+    o.error(r);
   }
 }
-function $(e, r, t, c = !0) {
-  B(e), p(e, r, t, (i) => {
-    i ? n.wran(i) : c && n.success(`💧 Write File Successify ${e}`);
+function k(e, r, n, i = !0) {
+  B(e), w(e, r, n, (t) => {
+    t ? o.wran(t) : i && o.success(`💧 Write File Successify ${e}`);
   });
 }
-async function F(e, r, t, c = !0) {
+async function C(e, r, n, i = !0) {
   B(e);
   try {
-    await w(e, r, t), c && n.success(`💧 Append File Successify ${e}`);
-  } catch (i) {
-    n.wran(i);
+    await d(e, r, n), i && o.success(`💧 Append File Successify ${e}`);
+  } catch (t) {
+    o.wran(t);
   }
 }
-function L(e) {
+function M(e) {
   const r = e.match(/^(https?):\/\/([^\/:]+)(?::(\d+))?(\/.*)?$/i);
   if (!r) return "invalid_url";
-  const t = r[1], c = r[2], i = r[3] || (t === "https" ? "443" : "80"), l = (r[4] || "").replace(/\//g, "_");
-  let g = `${c}_${i}`;
-  return l && l !== "_" && (g += l), g.replace(/[^a-z0-9_]/gi, "_").replace(/_+/g, "_").toLowerCase();
+  const n = r[1], i = r[2], t = r[3] || (n === "https" ? "443" : "80"), s = (r[4] || "").replace(/\//g, "_");
+  let l = `${i}_${t}`;
+  return s && s !== "_" && (l += s), l.replace(/[^a-z0-9_]/gi, "_").replace(/_+/g, "_").toLowerCase();
+}
+function v(e) {
+  var l;
+  let r = x.charset(e) || u[0];
+  r = r.toLocaleLowerCase();
+  let n = x.extension(e) || a.fileExt.slice(1), i = !((l = a.templateMimeType) != null && l.length) || a.templateMimeType.includes(n), t = a.fileExt, s = u.includes(r) ? r : u[0];
+  return i ? s = u[0] : t = `.${n}`, {
+    charset: r,
+    encoding: s,
+    isInnerTempType: i,
+    fileExt: t,
+    mimeType: n
+  };
+}
+function E(e) {
+  return x.contentType(e);
 }
 export {
-  F as appendFileFn,
-  s as colorize,
+  C as appendFileFn,
+  m as colorize,
   B as existsSyncByMkdir,
-  S as logger,
-  n as non_write_loggger,
-  L as safeUrlToFilename,
-  $ as writeMockFile
+  E as getContentTypeByPath,
+  F as logger,
+  o as non_write_loggger,
+  M as safeUrlToFilename,
+  v as useContentType,
+  k as writeMockFile
 };

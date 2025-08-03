@@ -96,3 +96,9 @@ export const allowCharset: BufferEncoding[] = [
   "binary",
   "hex",
 ] as const;
+
+export const allowExt = [
+  '.js',
+  '.ts',
+  '.json'
+] as const;

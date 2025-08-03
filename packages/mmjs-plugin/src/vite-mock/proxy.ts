@@ -1,10 +1,10 @@
 import type { ViteDevServer } from "vite";
 import { type ServerResponse, type IncomingMessage } from "node:http";
-import { logger, safeUrlToFilename, writeMockFile } from "./utils";
-import { allowCharset, serverConfig } from "./options";
+import { colorize, logger, safeUrlToFilename, useContentType, writeMockFile } from "./utils";
+import { serverConfig } from "./options";
 import path from "node:path";
-import mime from "mime-types";
 import { transformInnerCodeTempate } from "./parse";
+import { createWriteStream } from "node:fs";
 
 export function useProxyRes(server: ViteDevServer) {
   const proxys = server.config.server?.proxy ?? {};
@@ -27,47 +27,51 @@ export function useProxyRes(server: ViteDevServer) {
               req._parsedUrl?.pathname ?? ""
             );
             if (outputPathName) {
-              const chunks: any[] = [];
-              proxyRes.on("data", (chunk) => {
-                chunks.push(chunk);
-              });
+              const contentType = proxyRes.headers["content-type"];
+              const { encoding, isInnerTempType, mimeType, fileExt } = useContentType(contentType);
+              const filePath = path.join(
+                server.config.root,
+                serverConfig.mockDir,
+                serverConfig.scanOutput,
+                outputPathName! + fileExt
+              );
+              if (!isInnerTempType) {
+                const writeStream = createWriteStream(filePath);
+                writeStream.on('error', (err) => {
+                  logger.error(err);
+                  writeStream.destroy();
+                });
+                writeStream.on('close', () => {
+                  logger.success(
+                    `✅ writeStream End ${colorize(filePath, "underline")}`
+                  );
+                  if (!writeStream.destroyed) {
+                    writeStream.destroy();
+                  }
+                })
+                proxyRes.on("data", (chunk) => {
+                  writeStream.write(chunk);
+                });
 
-              proxyRes.on("end", () => {
-                const body = Buffer.concat(chunks);
-                const contentType = res.getHeaders()["content-type"];
-                let charset: BufferEncoding =
-                  mime.charset(contentType) || allowCharset[0];
-                charset = charset.toLocaleLowerCase() as BufferEncoding;
-                const mimeType =
-                  mime.extension(contentType) || serverConfig.fileExt.slice(1);
-                const isInnerTempType = !serverConfig.templateMimeType?.length
-                  ? true
-                  : serverConfig.templateMimeType.some(
-                      (type) => mimeType?.indexOf(type) !== -1
-                    );
+                proxyRes.on("end", () => {
+                  writeStream.end();
 
-                let fileExt: string = serverConfig.fileExt;
-                let encoding = allowCharset.includes(charset)
-                  ? charset
-                  : allowCharset[0];
-                if (isInnerTempType) {
-                  encoding = allowCharset[0];
-                } else {
-                  fileExt = mimeType ? "." + mimeType : serverConfig.fileExt;
-                }
+                });
+              } else {
+                const chunks: any[] = [];
+                proxyRes.on("data", (chunk) => {
+                  chunks.push(chunk);
+                });
 
-                const bodyStr = body.toString(encoding);
-                const newBody = isInnerTempType
-                  ? transformInnerCodeTempate(bodyStr, mimeType)
-                  : bodyStr;
-                const filePath = path.join(
-                  server.config.root,
-                  serverConfig.mockDir,
-                  serverConfig.scanOutput,
-                  outputPathName! + fileExt
-                );
-                writeMockFile(filePath, newBody, { encoding });
-              });
+                proxyRes.on("end", () => {
+                  const body = Buffer.concat(chunks);
+                  const bodyStr = body.toString(encoding);
+                  const newBody = transformInnerCodeTempate(bodyStr, mimeType)
+
+                  writeMockFile(filePath, newBody, { encoding });
+                });
+              }
+
             }
           }
         );
