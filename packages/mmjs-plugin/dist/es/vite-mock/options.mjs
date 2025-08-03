@@ -1,4 +1,4 @@
-const e = {
+const o = {
   apiPrefix: "/api",
   forceMock: !1,
   mockDir: "__mock__",
@@ -11,15 +11,15 @@ const e = {
   templateMimeType: ["json"],
   root: "",
   encoding: "utf-8"
-}, s = {
+}, e = Object.assign({}, o), s = {
   isLogWarn: !0,
   isLogInfo: !0,
   isLogSuccess: !0
 };
-function o() {
+function t() {
   s.isLogWarn = e.logLevel.includes("wran"), s.isLogInfo = e.logLevel.includes("info"), s.isLogSuccess = e.logLevel.includes("succes");
 }
-const t = [
+const n = [
   "utf-8",
   "ascii",
   "utf8",
@@ -32,15 +32,16 @@ const t = [
   "latin1",
   "binary",
   "hex"
-], l = [
+], i = [
   ".js",
   ".ts",
   ".json"
 ];
 export {
-  t as allowCharset,
-  l as allowExt,
+  o as _initServerConfig,
+  n as allowCharset,
+  i as allowExt,
   s as logLevelState,
   e as serverConfig,
-  o as updateLogLevelState
+  t as updateLogLevelState
 };

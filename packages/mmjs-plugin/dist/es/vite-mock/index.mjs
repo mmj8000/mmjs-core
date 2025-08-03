@@ -1,109 +1,112 @@
-import { useParseQueryParams as R, useParseBody as b } from "./parse.mjs";
-import p from "node:path";
-import { logger as n, getContentTypeByPath as M, colorize as h, useContentType as U, fileExists as B, findMatchingTemplatePath as J } from "./utils.mjs";
-import { pathToFileURL as D } from "node:url";
-import { readFileSync as _, createReadStream as H } from "node:fs";
-import { useProxyRes as z } from "./proxy.mjs";
-import { serverConfig as y, updateLogLevelState as K, allowExt as Q } from "./options.mjs";
-import { enhancedFindFiles as W } from "./ndos.mjs";
-const A = ["no such file", "Cannot find module"], x = "Mock Not enabled", P = (T) => {
-  const { scan: k, apiPrefix: v, forceMock: N, mockDir: d, timeout: $ } = Object.assign(y, T ?? {});
-  return K(), {
-    name: "vite:mmjs:mock",
-    apply: "serve",
-    enforce: "post",
-    config(c, s) {
-      if (k && s.command === "serve")
-        return {
-          server: {
-            watch: {
-              ignored: [
-                `**/${d}/**`
-                // 可扩展其他规则
-              ]
-            }
+import { useParseQueryParams as U, useParseBody as B } from "./parse.mjs";
+import u from "node:path";
+import { logger as r, getContentTypeByPath as C, colorize as g, useContentType as J, fileExists as H, findMatchingTemplatePath as W } from "./utils.mjs";
+import { pathToFileURL as z } from "node:url";
+import { readFileSync as L, createReadStream as K } from "node:fs";
+import { useProxyRes as Q } from "./proxy.mjs";
+import { serverConfig as c, _initServerConfig as A, updateLogLevelState as G, allowExt as I } from "./options.mjs";
+import { enhancedFindFiles as V } from "./ndos.mjs";
+const X = ["no such file", "Cannot find module"], N = "Mock Not enabled", _ = (R) => (Object.assign(c, A, R ?? {}), G(), {
+  name: "vite:mmjs:mock",
+  apply: "serve",
+  enforce: "post",
+  config(i, k) {
+    const { scan: w, mockDir: P } = c;
+    if (w && k.command === "serve")
+      return {
+        server: {
+          watch: {
+            ignored: [
+              `**/${P}/**`
+              // 可扩展其他规则
+            ]
           }
-        };
-    },
-    configureServer(c) {
-      const s = c.config.root;
-      y.root = s;
-      const C = p.join(c.config.root, "package.json"), L = JSON.parse(_(C, "utf-8"));
-      if (y._esm = L.type === "module", k)
-        return n.info("⏳ Scan Watching..."), z(c);
-      (async () => {
-        try {
-          const t = await W(
-            p.join(s, d),
-            {
-              recursive: !0,
-              exclude: /node_modules|\.git/
-            }
-          );
-          P.__dyMatchPaths = t;
-        } catch (t) {
-          n.error(t);
         }
-      })(), c.middlewares.use(v, async (t, m, f) => {
-        var j, E;
-        let e = "", S = "";
-        try {
-          let r = function(o, a = M(e)) {
-            a && m.setHeader("Content-Type", a), n.success(
-              `✅ Mock Successify ${h(e, "underline")}`
-            ), setTimeout(() => {
-              m.end(JSON.stringify(o));
-            }, $);
-          };
-          if (t.headers.referer && (S = new URL((j = t.headers) == null ? void 0 : j.referer).searchParams.get("remote") ?? ""), S !== "mock" && !N)
-            return n.info("🔒 Browser URL not found mcok Keyword"), f();
-          const g = t.headers["content-type"], { encoding: l, fileExt: w } = U(g), F = ((E = t._parsedUrl) == null ? void 0 : E.pathname) ?? "";
-          t.headers["x-custom-request-header"] = "vite-plugin-mmjs-mock", e = p.join(s, d, F + w);
-          let i;
-          if (!Q.includes(w)) {
-            const o = H(e), a = M(e);
-            a && m.setHeader("Content-Type", a), o.pipe(m), o.on("error", (O) => {
-              n.error(O), o.destroy(), f();
-            }), o.on("end", () => {
-              n.success(
-                `✅ ReadStream End ${h(e, "underline")}`
-              );
-            }), o.on("close", () => {
-              o.destroyed || o.destroy();
-            });
-            return;
+      };
+  },
+  configureServer(i) {
+    const { scan: k, apiPrefix: w, forceMock: P, mockDir: m, timeout: $ } = c, d = i.config.root;
+    c.root = d;
+    const v = u.join(i.config.root, "package.json"), D = JSON.parse(L(v, "utf-8"));
+    if (c._esm = D.type === "module", k)
+      return r.info("⏳ Scan Watching..."), Q(i);
+    const O = u.join(d, m);
+    i.watcher.off(m, f);
+    const S = i.watcher.add(O);
+    S.on("add", f), S.on("unlink", f), S.on("unlinkDir", f), f();
+    async function f() {
+      try {
+        const t = await V(
+          u.join(d, m),
+          {
+            recursive: !0,
+            exclude: /node_modules|\.git/
           }
-          if (!B(e)) {
-            const o = p.join(s, d, F);
-            e = J(P.__dyMatchPaths, o) || e;
-          }
-          if (w === ".json")
-            try {
-              const o = _(e, { encoding: l });
-              return r(JSON.parse(o));
-            } catch (o) {
-              return n.wran(`${o}; ${e}`), f();
-            }
-          if (y._esm ? i = await import(D(e).href + "?t=" + Date.now()) : (require.cache && delete require.cache[e], i = await require(e)), !(i != null && i.enabled))
-            throw new Error(x);
-          R(t), b(t);
-          let u = i.mock(t, m);
-          u instanceof Promise && (u = await u), r(u, "application/json");
-        } catch (r) {
-          (r == null ? void 0 : r.message.indexOf(x)) !== -1 ? n.info(
-            `🔒 Mock Not Enabled! ${h(e, "underline")}`
-          ) : A.some((g) => {
-            var l;
-            return ((l = r == null ? void 0 : r.message) == null ? void 0 : l.indexOf(g)) !== -1;
-          }) ? n.wran(
-            `❌ File Not Found! ${h(e, "underline")}`
-          ) : console.error(r), f();
-        }
-      });
+        );
+        _.__dyMatchPaths = t;
+      } catch (t) {
+        r.error(t);
+      }
     }
-  };
-};
-P.__dyMatchPaths = [];
+    i.middlewares.use(w, async (t, l, p) => {
+      var M, x;
+      let e = "", E = "";
+      try {
+        let n = function(o, s = C(e)) {
+          s && l.setHeader("Content-Type", s), r.success(
+            `✅ Mock Successify ${g(e, "underline")}`
+          ), setTimeout(() => {
+            l.end(JSON.stringify(o));
+          }, $);
+        };
+        if (t.headers.referer && (E = new URL((M = t.headers) == null ? void 0 : M.referer).searchParams.get("remote") ?? ""), E !== "mock" && !P)
+          return r.info("🔒 Browser URL not found mcok Keyword"), p();
+        const j = t.headers["content-type"], { encoding: h, fileExt: F } = J(j), T = ((x = t._parsedUrl) == null ? void 0 : x.pathname) ?? "";
+        t.headers["x-custom-request-header"] = "vite-plugin-mmjs-mock", e = u.join(d, m, T + F);
+        let a;
+        if (!I.includes(F)) {
+          const o = K(e), s = C(e);
+          s && l.setHeader("Content-Type", s), o.pipe(l), o.on("error", (b) => {
+            r.error(b), o.destroy(), p();
+          }), o.on("end", () => {
+            r.success(
+              `✅ ReadStream End ${g(e, "underline")}`
+            );
+          }), o.on("close", () => {
+            o.destroyed || o.destroy();
+          });
+          return;
+        }
+        if (!H(e)) {
+          const o = u.join(d, m, T);
+          e = W(_.__dyMatchPaths, o) || e;
+        }
+        if (F === ".json")
+          try {
+            const o = L(e, { encoding: h });
+            return n(JSON.parse(o));
+          } catch (o) {
+            return r.wran(`${o}; ${e}`), p();
+          }
+        if (c._esm ? a = await import(z(e).href + "?t=" + Date.now()) : (require.cache && delete require.cache[e], a = await require(e)), !(a != null && a.enabled))
+          throw new Error(N);
+        U(t), B(t);
+        let y = a.mock(t, l);
+        y instanceof Promise && (y = await y), n(y, "application/json");
+      } catch (n) {
+        (n == null ? void 0 : n.message.indexOf(N)) !== -1 ? r.info(
+          `🔒 Mock Not Enabled! ${g(e, "underline")}`
+        ) : X.some((j) => {
+          var h;
+          return ((h = n == null ? void 0 : n.message) == null ? void 0 : h.indexOf(j)) !== -1;
+        }) ? r.wran(
+          `❌ File Not Found! ${g(e, "underline")}`
+        ) : console.error(n), p();
+      }
+    });
+  }
+});
+_.__dyMatchPaths = [];
 export {
-  P as createMockServer
+  _ as createMockServer
 };

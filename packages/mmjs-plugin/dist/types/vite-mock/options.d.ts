@@ -46,9 +46,11 @@ export interface PluginOptions {
      */
     encoding?: BufferEncoding;
 }
-export declare const serverConfig: Required<PluginOptions> & {
+export type InitServerConfig = Required<PluginOptions> & {
     root: string;
 };
+export declare const _initServerConfig: InitServerConfig;
+export declare const serverConfig: InitServerConfig;
 export declare const logLevelState: {
     isLogWarn: boolean;
     isLogInfo: boolean;

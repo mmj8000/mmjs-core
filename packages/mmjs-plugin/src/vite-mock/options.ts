@@ -52,10 +52,10 @@ export interface PluginOptions {
    */
   encoding?: BufferEncoding;
 }
-
-export const serverConfig: Required<PluginOptions> & {
+export type InitServerConfig = Required<PluginOptions> & {
   root: string;
-} = {
+}
+export const _initServerConfig: InitServerConfig = {
   apiPrefix: "/api",
   forceMock: false,
   mockDir: "__mock__",
@@ -69,6 +69,8 @@ export const serverConfig: Required<PluginOptions> & {
   root: "",
   encoding: 'utf-8',
 };
+
+export const serverConfig: InitServerConfig = Object.assign({}, _initServerConfig);
 
 export const logLevelState = {
   isLogWarn: true,

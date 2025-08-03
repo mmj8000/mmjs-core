@@ -5,7 +5,7 @@ import { colorize, fileExists, findMatchingTemplatePath, getContentTypeByPath, l
 import { pathToFileURL } from "node:url";
 import { createReadStream, readdirSync, readFileSync, watchFile, } from "node:fs";
 import { useProxyRes } from "./proxy";
-import { serverConfig, PluginOptions, updateLogLevelState, allowExt } from "./options";
+import { serverConfig, PluginOptions, updateLogLevelState, allowExt, _initServerConfig } from "./options";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { enhancedFindFiles } from "./ndos";
 
@@ -23,14 +23,14 @@ export type CreateMockServer = {
 };
 
 export const createMockServer: CreateMockServer = (config) => {
-  const { scan, apiPrefix, forceMock, mockDir, timeout } =
-    Object.assign(serverConfig, config ?? {});
+  Object.assign(serverConfig, _initServerConfig, config ?? {});
   updateLogLevelState();
   return {
     name: "vite:mmjs:mock",
     apply: "serve",
     enforce: "post",
     config(config, env) {
+      const { scan, mockDir } = serverConfig;
       if (scan && env.command === "serve") {
         return {
           server: {
@@ -45,6 +45,7 @@ export const createMockServer: CreateMockServer = (config) => {
       }
     },
     configureServer(server: ViteDevServer) {
+      const { scan, apiPrefix, forceMock, mockDir, timeout } = serverConfig;
       // 获取项目根目录
       const root = server.config.root;
       serverConfig.root = root;
@@ -55,7 +56,15 @@ export const createMockServer: CreateMockServer = (config) => {
         logger.info("⏳ Scan Watching...");
         return useProxyRes(server);
       }
-      ; (async () => {
+      const mockRootDir = path.join(root, mockDir);
+      server.watcher.off(mockDir, initDynamicFileList);
+      const mockWatcher = server.watcher.add(mockRootDir);
+
+      mockWatcher.on('add', initDynamicFileList);
+      mockWatcher.on('unlink', initDynamicFileList);
+      mockWatcher.on('unlinkDir', initDynamicFileList);
+      initDynamicFileList();
+      async function initDynamicFileList() {
         try {
           const mockFileList = await enhancedFindFiles(
             path.join(root, mockDir),
@@ -67,7 +76,7 @@ export const createMockServer: CreateMockServer = (config) => {
         } catch (err) {
           logger.error(err);
         }
-      })();
+      }
       server.middlewares.use(apiPrefix, async (req, res, next) => {
         let readPath = "";
         let remote = "";
