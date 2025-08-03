@@ -26,7 +26,7 @@
     server: {
       proxy: {
         "^/api": {
-          target: "https://www.baidu.com",
+          target: "https://www.xxx.com",
           changeOrigin: true,
           rewrite: (path: string) => path.replace(/^\/api/, ""),
         },
@@ -47,7 +47,7 @@
     server: {
       proxy: {
         "^/api": {
-          target: "https://www.baidu.com",
+          target: "http://www.xxx.com",
           changeOrigin: true,
           rewrite: (path: string) => path.replace(/^\/api/, ""),
         },
