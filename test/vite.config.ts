@@ -9,7 +9,7 @@ export default defineConfig({
     // forceMock: true,
     // scan: true,
     templateMimeType: ['html'],
-    fileExt: '.ts',
+    // fileExt: '.ts',
     // watchDynamicFile: true,
   })],
   server: {

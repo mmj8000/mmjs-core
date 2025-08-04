@@ -42,7 +42,7 @@ export function colorize(text, ...stylesToApply) {
   return stylesToApply.map((s) => styles[s]).join("") + text + styles.reset;
 }
 
-function uniBeforeStrLog() {
+export function uniBeforeStrLog() {
   return (
     colorize(new Date().toLocaleTimeString(), "gray") +
     " " +

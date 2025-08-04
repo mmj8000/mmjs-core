@@ -1,6 +1,7 @@
 import { WriteFileOptions } from 'node:fs';
 import { IncomingMessage } from 'node:http';
 export declare function colorize(text: any, ...stylesToApply: any[]): string;
+export declare function uniBeforeStrLog(): string;
 export declare const non_write_loggger: {
     success(data: any): false | void;
     info(data: any): false | void;

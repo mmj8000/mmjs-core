@@ -1,7 +1,7 @@
 import type { ViteDevServer, Plugin } from "vite";
 import { useParseBody, useParseQueryParams } from "./parse";
 import path from "node:path";
-import { colorize, fileExists, findMatchingTemplatePath, getContentTypeByPath, getHeaderMimeTypeKey, logger, useContentType } from "./utils";
+import { colorize, fileExists, findMatchingTemplatePath, getContentTypeByPath, getHeaderMimeTypeKey, logger, uniBeforeStrLog, useContentType } from "./utils";
 import { pathToFileURL } from "node:url";
 import { createReadStream, readFileSync, } from "node:fs";
 import { useProxyRes } from "./proxy";
@@ -176,7 +176,7 @@ export const createMockServer: CreateMockServer = (config) => {
               `❌ File Not Found! ${colorize(readPath, "underline")}`
             );
           } else {
-            console.error(err);
+            console.error(uniBeforeStrLog(), err?.message || err);
           }
           next();
         }
