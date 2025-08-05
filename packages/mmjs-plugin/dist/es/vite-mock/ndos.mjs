@@ -1,31 +1,34 @@
 import { promises as u } from "node:fs";
 import f from "node:path";
-async function d(e, i = {}) {
+import { fileExists as m } from "./utils.mjs";
+async function p(r, s = {}) {
   const {
-    filter: o = p,
+    filter: o = d,
     recursive: l = !1,
-    exclude: a
-  } = i;
+    exclude: n
+  } = s;
   try {
-    const s = await u.readdir(e, { withFileTypes: !0 }), t = [];
-    return await Promise.all(s.map(async (r) => {
-      const n = f.join(e, r.name);
-      if (!(a && a.test(r.name))) {
-        if (r.isFile() && o(r, n))
-          t.push(n);
-        else if (r.isDirectory() && l) {
-          const c = await d(n, i);
-          t.push(...c);
+    const e = [];
+    if (!m(r)) return e;
+    const a = await u.readdir(r, { withFileTypes: !0 });
+    return await Promise.all(a.map(async (i) => {
+      const t = f.join(r, i.name);
+      if (!(n && n.test(i.name))) {
+        if (i.isFile() && o(i, t))
+          e.push(t);
+        else if (i.isDirectory() && l) {
+          const c = await p(t, s);
+          e.push(...c);
         }
       }
-    })), t;
-  } catch (s) {
-    return console.error(`Error reading directory ${e}:`, s), [];
+    })), e;
+  } catch (e) {
+    return console.error(`Error reading directory ${r}:`, e), [];
   }
 }
-function p(e, i) {
-  return e.name.includes("$id");
+function d(r, s) {
+  return r.name.includes("$id");
 }
 export {
-  d as enhancedFindFiles
+  p as enhancedFindFiles
 };

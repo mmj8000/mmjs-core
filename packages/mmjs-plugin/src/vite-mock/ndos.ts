@@ -1,5 +1,6 @@
 import { Dirent, promises as fs } from 'node:fs';
 import path from 'node:path';
+import { fileExists } from './utils';
 
 type FileFilter = (dirent: Dirent, fullPath: string) => boolean;
 
@@ -29,9 +30,12 @@ export async function enhancedFindFiles(
     } = options;
 
     try {
-        const items = await fs.readdir(dirPath, { withFileTypes: true });
-        const files: string[] = [];
 
+        const files: string[] = [];
+        const isTrue = fileExists(dirPath);
+        if (!isTrue) return files;
+
+        const items = await fs.readdir(dirPath, { withFileTypes: true });
         await Promise.all(items.map(async (item) => {
             const fullPath = path.join(dirPath, item.name);
 
