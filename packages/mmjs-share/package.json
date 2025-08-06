@@ -1,6 +1,6 @@
 {
   "name": "mmjs-share",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "mmjs-share share",
   "main": "dist/cjs/index.js",
   "module": "dist/es/index.js",

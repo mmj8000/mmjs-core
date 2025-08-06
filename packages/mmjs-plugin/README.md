@@ -7,7 +7,8 @@
   
 - tsconfig.json
   - （如果用 Vite/Webpack 等打包工具）
-  - moduleResolution set node 先 // @ts-ignore 将就一下， 不想改了
+  - moduleResolution set "node" 先 // @ts-ignore 将就一下， 不想改了
+  - 考虑更新到 "node16"、"nodenext" 或 "bundler"
   ```json
   {
    "compilerOptions": {
