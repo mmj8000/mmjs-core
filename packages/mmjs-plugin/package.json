@@ -1,6 +1,6 @@
 {
   "name": "mmjs-plugin",
-  "version": "0.2.21",
+  "version": "0.2.22",
   "description": "mmjs-plugin vite-plugin",
   "main": "dist/es/index.cjs",
   "module": "dist/es/index.mjs",
@@ -19,7 +19,7 @@
   ],
   "author": "",
   "license": "ISC",
-  "homepage": "https://github.com/mmj8000/mmjs-core/tree/dev",
+  "homepage": "https://github.com/mmj8000/mmjs-core/tree/dev/packages/mmjs-plugin",
   "repository": {
     "type": "github",
     "url": "https://github.com/mmj8000/mmjs-core.git"

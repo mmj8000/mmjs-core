@@ -4,6 +4,17 @@
   ```shell
   pnpm add mmjs-plugin
   ```
+  
+- tsconfig.json
+  - （如果用 Vite/Webpack 等打包工具）
+  - moduleResolution set node 先 // @ts-ignore 将就一下， 不想改了
+  ```json
+  {
+   "compilerOptions": {
+       "moduleResolution": "Bundler"
+   }
+  }
+  ```
 
 ## vite-mock
   ### 默认用法

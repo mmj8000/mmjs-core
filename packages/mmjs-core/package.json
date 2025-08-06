@@ -1,6 +1,6 @@
 {
   "name": "mmjs-core",
-  "version": "0.14.7",
+  "version": "0.14.8",
   "description": "mmjs-core hooks component vue",
   "main": "dist/cjs/index.js",
   "module": "dist/es/index.js",
@@ -59,7 +59,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "homepage": "https://github.com/mmj8000/mmjs-core/tree/dev",
+  "homepage": "https://github.com/mmj8000/mmjs-core/tree/dev/packages/mmjs-core",
   "repository": {
     "type": "github",
     "url": "https://github.com/mmj8000/mmjs-core.git"
