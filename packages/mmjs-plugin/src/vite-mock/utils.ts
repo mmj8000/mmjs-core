@@ -159,7 +159,7 @@ export function safeUrlToFilename(url) {
 
 
 export function useContentType(contentType: string | undefined) {
-  let charset: BufferEncoding = mime.charset(contentType) || allowCharset[0];
+  let charset: BufferEncoding = mime.charset(contentType) || serverConfig.encoding || allowCharset[0];
   charset = charset.toLocaleLowerCase() as BufferEncoding;
   let mimeType = mime.extension(contentType) || customContentTypeToExt[contentType!] || serverConfig.fileExt.slice(1);
   let isInnerTempType = !(serverConfig.templateMimeType?.length) || serverConfig.templateMimeType.includes(mimeType);

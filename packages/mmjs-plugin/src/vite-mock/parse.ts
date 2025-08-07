@@ -39,7 +39,7 @@ export function useParseQueryParams(req: IncomingMessage) {
 }
 export function getCharset(req: IncomingMessage) {
   const contentType = req.headers["content-type"];
-  let charset: BufferEncoding = mime.charset(contentType) || allowCharset[0];
+  let charset: BufferEncoding = mime.charset(contentType) || serverConfig.encoding || allowCharset[0];
   return charset.toLocaleLowerCase() as BufferEncoding;
 }
 export async function useParseBody(req: IncomingMessage) {

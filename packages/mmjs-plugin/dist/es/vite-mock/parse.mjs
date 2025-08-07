@@ -1,5 +1,5 @@
-import { allowCharset as a, serverConfig as s } from "./options.mjs";
-import c from "mime-types";
+import { serverConfig as o, allowCharset as c } from "./options.mjs";
+import a from "mime-types";
 import i from "raw-body";
 function l(t) {
   Object.defineProperty(t, "query", {
@@ -21,7 +21,7 @@ function l(t) {
 }
 function u(t) {
   const r = t.headers["content-type"];
-  return (c.charset(r) || a[0]).toLocaleLowerCase();
+  return (a.charset(r) || o.encoding || c[0]).toLocaleLowerCase();
 }
 async function y(t) {
   Object.defineProperty(t, "body", {
@@ -36,22 +36,22 @@ async function y(t) {
     }
   });
 }
-const o = `/**
+const s = `/**
 * @type {import('mmjs-plugin/vite-mock').MockTemplate}
 */
 `;
 function d(t, r) {
-  if (![".js", ".ts"].includes(s.fileExt)) return t;
+  if (![".js", ".ts"].includes(o.fileExt)) return t;
   let e = t;
   try {
     r.includes("json") ? e = t : e = JSON.stringify(t);
   } catch {
     e = t;
   }
-  return s._esm ? `export const enabled = true;
-${o}export const mock = (req, res) => (${e})
+  return o._esm ? `export const enabled = true;
+${s}export const mock = (req, res) => (${e})
 ` : `exports.enabled = true;
-${o}exports.mock = (req, res) => (${e})
+${s}exports.mock = (req, res) => (${e})
 `;
 }
 export {

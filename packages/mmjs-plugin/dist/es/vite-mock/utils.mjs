@@ -1,5 +1,5 @@
 import { existsSync as $, mkdirSync as T, writeFile as b, statSync as L } from "node:fs";
-import { logLevelState as x, allowCharset as u, customContentTypeToExt as C, serverConfig as g } from "./options.mjs";
+import { logLevelState as x, serverConfig as m, allowCharset as g, customContentTypeToExt as C } from "./options.mjs";
 import _ from "node:path";
 import { appendFile as M } from "node:fs/promises";
 import h from "mime-types";
@@ -33,17 +33,17 @@ const d = {
   reverse: "\x1B[7m",
   hidden: "\x1B[8m"
 };
-function m(e, ...t) {
+function a(e, ...t) {
   return t.map((r) => d[r]).join("") + e + d.reset;
 }
 function p() {
-  return m((/* @__PURE__ */ new Date()).toLocaleTimeString(), "gray") + " " + m("[Mock]", "cyan", "bold");
+  return a((/* @__PURE__ */ new Date()).toLocaleTimeString(), "gray") + " " + a("[Mock]", "cyan", "bold");
 }
 let l = "";
 const s = {
   success(e) {
     if (l !== e)
-      return l = e, x.isLogSuccess && console.log(`${p()}`, m(e, "green"));
+      return l = e, x.isLogSuccess && console.log(`${p()}`, a(e, "green"));
   },
   info(e) {
     if (l !== e)
@@ -51,11 +51,11 @@ const s = {
   },
   wran(e) {
     if (l !== e)
-      return l = e, x.isLogWarn && console.log(`${p()}`, m(e, "yellow"));
+      return l = e, x.isLogWarn && console.log(`${p()}`, a(e, "yellow"));
   },
   error(e) {
     if (l !== e)
-      return l = e, console.log(`${p()}`, m(e, "red"));
+      return l = e, console.log(`${p()}`, a(e, "red"));
   }
 }, U = {
   success(e) {
@@ -101,10 +101,10 @@ function I(e) {
 }
 function j(e) {
   var c;
-  let t = h.charset(e) || u[0];
+  let t = h.charset(e) || m.encoding || g[0];
   t = t.toLocaleLowerCase();
-  let r = h.extension(e) || C[e] || g.fileExt.slice(1), n = !((c = g.templateMimeType) != null && c.length) || g.templateMimeType.includes(r), o = g.fileExt, i = u.includes(t) ? t : u[0];
-  return n ? i = u[0] : o = `.${r}`, {
+  let r = h.extension(e) || C[e] || m.fileExt.slice(1), n = !((c = m.templateMimeType) != null && c.length) || m.templateMimeType.includes(r), o = m.fileExt, i = g.includes(t) ? t : g[0];
+  return n ? i = g[0] : o = `.${r}`, {
     charset: t,
     encoding: i,
     isInnerTempType: n,
@@ -124,8 +124,8 @@ function D(e, t) {
     if (f.length !== n.length)
       continue;
     let B = !0;
-    for (let a = 0; a < f.length; a++) {
-      const y = f[a], S = n[a];
+    for (let u = 0; u < f.length; u++) {
+      const y = f[u], S = n[u];
       if (!/^\$[^/]+$/.test(y) && y.toLowerCase() !== S.toLowerCase()) {
         B = !1;
         break;
@@ -148,7 +148,7 @@ function K(e) {
 }
 export {
   G as appendFileFn,
-  m as colorize,
+  a as colorize,
   w as existsSyncByMkdir,
   H as fileExists,
   D as findMatchingTemplatePath,
