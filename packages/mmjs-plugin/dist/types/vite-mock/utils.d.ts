@@ -1,5 +1,5 @@
 import { WriteFileOptions } from 'node:fs';
-import { IncomingMessage } from 'node:http';
+import { IncomingMessage, ServerResponse } from 'node:http';
 export declare function colorize(text: any, ...stylesToApply: any[]): string;
 export declare function uniBeforeStrLog(): string;
 export declare const non_write_loggger: {
@@ -28,4 +28,8 @@ export declare function useContentType(contentType: string | undefined): {
 export declare function getContentTypeByPath(readPath: string): any;
 export declare function findMatchingTemplatePath(paths: string[], userUrl: string): string | null;
 export declare function fileExists(filePath: string): boolean;
-export declare function getHeaderMimeTypeKey(req: IncomingMessage): "content-type" | "accept";
+export declare function getHeaderMimeTypeKey(req: IncomingMessage): "accept" | "content-type";
+export declare let dynamicImport: (readPath: string) => Promise<{
+    enabled: boolean;
+    mock: (req: IncomingMessage, res: ServerResponse) => any;
+} | any>;

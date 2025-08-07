@@ -1,6 +1,13 @@
 import type { ViteDevServer } from "vite";
 import { type ServerResponse, type IncomingMessage } from "node:http";
-import { colorize, existsSyncByMkdir, logger, safeUrlToFilename, useContentType, writeMockFile } from "./utils";
+import {
+  colorize,
+  existsSyncByMkdir,
+  logger,
+  safeUrlToFilename,
+  useContentType,
+  writeMockFile,
+} from "./utils";
 import { serverConfig } from "./options";
 import path from "node:path";
 import { transformInnerCodeTempate } from "./parse";
@@ -28,7 +35,8 @@ export function useProxyRes(server: ViteDevServer) {
             );
             if (outputPathName) {
               const contentType = proxyRes.headers["content-type"];
-              const { encoding, isInnerTempType, mimeType, fileExt } = useContentType(contentType);
+              const { encoding, isInnerTempType, mimeType, fileExt } =
+                useContentType(contentType);
               const filePath = path.join(
                 server.config.root,
                 serverConfig.mockDir,
@@ -38,25 +46,24 @@ export function useProxyRes(server: ViteDevServer) {
               if (!isInnerTempType) {
                 existsSyncByMkdir(filePath);
                 const writeStream = createWriteStream(filePath);
-                writeStream.on('error', (err) => {
+                writeStream.on("error", (err) => {
                   logger.error(err);
                   writeStream.destroy();
                 });
-                writeStream.on('close', () => {
+                writeStream.on("close", () => {
                   logger.success(
                     `✅ writeStream End ${colorize(filePath, "underline")}`
                   );
                   if (!writeStream.destroyed) {
                     writeStream.destroy();
                   }
-                })
+                });
                 proxyRes.on("data", (chunk) => {
                   writeStream.write(chunk);
                 });
 
                 proxyRes.on("end", () => {
                   writeStream.end();
-
                 });
               } else {
                 const chunks: any[] = [];
@@ -64,15 +71,20 @@ export function useProxyRes(server: ViteDevServer) {
                   chunks.push(chunk);
                 });
 
-                proxyRes.on("end", () => {
+                proxyRes.on("end", async () => {
                   const body = Buffer.concat(chunks);
                   const bodyStr = body.toString(encoding);
-                  const newBody = transformInnerCodeTempate(bodyStr, mimeType)
-
+                  const newBody = await transformInnerCodeTempate(
+                    bodyStr,
+                    mimeType,
+                    {
+                      query: req._parsedUrl?.query ?? null,
+                      filePath,
+                    }
+                  );
                   writeMockFile(filePath, newBody, { encoding });
                 });
               }
-
             }
           }
         );

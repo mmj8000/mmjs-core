@@ -1,9 +1,10 @@
-import { existsSync as $, mkdirSync as T, writeFile as b, statSync as L } from "node:fs";
-import { logLevelState as x, serverConfig as m, allowCharset as g, customContentTypeToExt as C } from "./options.mjs";
-import _ from "node:path";
+import { existsSync as $, mkdirSync as b, writeFile as L, statSync as _ } from "node:fs";
+import { logLevelState as x, serverConfig as m, allowCharset as p, customContentTypeToExt as C } from "./options.mjs";
+import F from "node:path";
 import { appendFile as M } from "node:fs/promises";
-import h from "mime-types";
-const d = {
+import y from "mime-types";
+import { pathToFileURL as k } from "node:url";
+const w = {
   // 文本颜色
   black: "\x1B[30m",
   red: "\x1B[31m",
@@ -34,30 +35,30 @@ const d = {
   hidden: "\x1B[8m"
 };
 function a(e, ...t) {
-  return t.map((r) => d[r]).join("") + e + d.reset;
+  return t.map((r) => w[r]).join("") + e + w.reset;
 }
-function p() {
+function g() {
   return a((/* @__PURE__ */ new Date()).toLocaleTimeString(), "gray") + " " + a("[Mock]", "cyan", "bold");
 }
 let l = "";
 const s = {
   success(e) {
     if (l !== e)
-      return l = e, x.isLogSuccess && console.log(`${p()}`, a(e, "green"));
+      return l = e, x.isLogSuccess && console.log(`${g()}`, a(e, "green"));
   },
   info(e) {
     if (l !== e)
-      return l = e, x.isLogInfo && console.log(`${p()}`, e);
+      return l = e, x.isLogInfo && console.log(`${g()}`, e);
   },
   wran(e) {
     if (l !== e)
-      return l = e, x.isLogWarn && console.log(`${p()}`, a(e, "yellow"));
+      return l = e, x.isLogWarn && console.log(`${g()}`, a(e, "yellow"));
   },
   error(e) {
     if (l !== e)
-      return l = e, console.log(`${p()}`, a(e, "red"));
+      return l = e, console.log(`${g()}`, a(e, "red"));
   }
-}, U = {
+}, W = {
   success(e) {
     s.success(e);
   },
@@ -71,40 +72,40 @@ const s = {
     s.error(e);
   }
 };
-function w(e) {
+function S(e) {
   try {
-    const t = _.dirname(e);
-    $(t) || T(t, { recursive: !0 });
+    const t = F.dirname(e);
+    $(t) || b(t, { recursive: !0 });
   } catch (t) {
     s.error(t);
   }
 }
-function W(e, t, r, n = !0) {
-  w(e), b(e, t, r, (o) => {
+function j(e, t, r, n = !0) {
+  S(e), L(e, t, r, (o) => {
     o ? s.wran(o) : n && s.success(`💧 Write File Successify ${e}`);
   });
 }
-async function G(e, t, r, n = !0) {
-  w(e);
+async function D(e, t, r, n = !0) {
+  S(e);
   try {
     await M(e, t, r), n && s.success(`💧 Append File Successify ${e}`);
   } catch (o) {
     s.wran(o);
   }
 }
-function I(e) {
+function G(e) {
   const t = e.match(/^(https?):\/\/([^\/:]+)(?::(\d+))?(\/.*)?$/i);
   if (!t) return "invalid_url";
   const r = t[1], n = t[2], o = t[3] || (r === "https" ? "443" : "80"), i = (t[4] || "").replace(/\//g, "_");
   let c = `${n}_${o}`;
   return i && i !== "_" && (c += i), c.replace(/[^a-z0-9_]/gi, "_").replace(/_+/g, "_").toLowerCase();
 }
-function j(e) {
+function R(e) {
   var c;
-  let t = h.charset(e) || m.encoding || g[0];
+  let t = y.charset(e) || m.encoding || p[0];
   t = t.toLocaleLowerCase();
-  let r = h.extension(e) || C[e] || m.fileExt.slice(1), n = !((c = m.templateMimeType) != null && c.length) || m.templateMimeType.includes(r), o = m.fileExt, i = g.includes(t) ? t : g[0];
-  return n ? i = g[0] : o = `.${r}`, {
+  let r = y.extension(e) || C[e] || m.fileExt.slice(1), n = !((c = m.templateMimeType) != null && c.length) || m.templateMimeType.includes(r), o = m.fileExt, i = p.includes(t) ? t : p[0];
+  return n ? i = p[0] : o = `.${r}`, {
     charset: t,
     encoding: i,
     isInnerTempType: n,
@@ -113,9 +114,9 @@ function j(e) {
   };
 }
 function A(e) {
-  return h.contentType(e);
+  return y.contentType(e);
 }
-function D(e, t) {
+function H(e, t) {
   const n = t.replace(/^[\\/]|[\\/]$/g, "").replace(/\\/g, "/").replace(/\.[^/.]+$/, "").split("/"), o = [...e].sort(
     (i, c) => c.split(/[\\/]/).length - i.split(/[\\/]/).length
   );
@@ -123,41 +124,51 @@ function D(e, t) {
     const f = i.replace(/^[\\/]|[\\/]$/g, "").replace(/\\/g, "/").replace(/\.[^/.]+$/, "").split("/");
     if (f.length !== n.length)
       continue;
-    let B = !0;
+    let h = !0;
     for (let u = 0; u < f.length; u++) {
-      const y = f[u], S = n[u];
-      if (!/^\$[^/]+$/.test(y) && y.toLowerCase() !== S.toLowerCase()) {
-        B = !1;
+      const B = f[u], T = n[u];
+      if (!/^\$[^/]+$/.test(B) && B.toLowerCase() !== T.toLowerCase()) {
+        h = !1;
         break;
       }
     }
-    if (B)
+    if (h)
       return i;
   }
   return null;
 }
-function H(e) {
+function K(e) {
   try {
-    return L(e), !0;
+    return _(e), !0;
   } catch {
     return !1;
   }
 }
-function K(e) {
+function N(e) {
   return e.method === "GET" ? "accept" : "content-type";
 }
+let d = async (e) => {
+  async function t() {
+    return await import(k(e).href + "?t=" + Date.now());
+  }
+  async function r() {
+    return require.cache && delete require.cache[e], await require(e);
+  }
+  return m._esm ? (d = t, t()) : (d = r, r());
+};
 export {
-  G as appendFileFn,
+  D as appendFileFn,
   a as colorize,
-  w as existsSyncByMkdir,
-  H as fileExists,
-  D as findMatchingTemplatePath,
+  d as dynamicImport,
+  S as existsSyncByMkdir,
+  K as fileExists,
+  H as findMatchingTemplatePath,
   A as getContentTypeByPath,
-  K as getHeaderMimeTypeKey,
-  U as logger,
+  N as getHeaderMimeTypeKey,
+  W as logger,
   s as non_write_loggger,
-  I as safeUrlToFilename,
-  p as uniBeforeStrLog,
-  j as useContentType,
-  W as writeMockFile
+  G as safeUrlToFilename,
+  g as uniBeforeStrLog,
+  R as useContentType,
+  j as writeMockFile
 };

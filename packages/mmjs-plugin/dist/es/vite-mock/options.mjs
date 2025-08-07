@@ -11,8 +11,12 @@ const s = {
   templateMimeType: ["json"],
   root: "",
   encoding: "utf-8",
-  watchDynamicFile: !1
-}, e = Object.assign({}, s), t = {
+  watchDynamicFile: !1,
+  multiParameter: "none"
+}, e = Object.assign(
+  {},
+  s
+), t = {
   isLogWarn: !0,
   isLogInfo: !0,
   isLogSuccess: !0
@@ -33,11 +37,7 @@ const n = [
   "latin1",
   "binary",
   "hex"
-], c = [
-  ".js",
-  ".ts",
-  ".json"
-], i = {
+], c = [".js", ".ts", ".json"], i = {
   "text/event-stream": "text"
 };
 export {
