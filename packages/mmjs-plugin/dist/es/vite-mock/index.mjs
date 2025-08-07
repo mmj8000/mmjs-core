@@ -1,17 +1,17 @@
-import { useParseQueryParams as C, useParseBody as T } from "./parse.mjs";
+import { useParseQueryParams as T, useParseBody as v } from "./parse.mjs";
 import S from "node:path";
-import { logger as s, getContentTypeByPath as j, colorize as y, getHeaderMimeTypeKey as v, useContentType as D, fileExists as L, findMatchingTemplatePath as $, dynamicImport as O, uniBeforeStrLog as R } from "./utils.mjs";
-import { readFileSync as _, createReadStream as b } from "node:fs";
-import { useProxyRes as J } from "./proxy.mjs";
-import { serverConfig as l, _initServerConfig as B, updateLogLevelState as U, allowExt as A } from "./options.mjs";
-import { enhancedFindFiles as H } from "./ndos.mjs";
-const W = ["no such file", "Cannot find module"], F = "Mock Not enabled", E = (i) => (Object.assign(l, B, i ?? {}), U(), {
+import { logger as s, getContentTypeByPath as F, colorize as y, getHeaderMimeTypeKey as C, useContentType as D, fileExists as L, findMatchingTemplatePath as $, dynamicImport as O, uniBeforeStrLog as R } from "./utils.mjs";
+import { readFileSync as _, createReadStream as J } from "node:fs";
+import { useProxyRes as b } from "./proxy.mjs";
+import { serverConfig as l, _initServerConfig as B, updateLogLevelState as U, allowExt as A, mockNoEnabledStr as M, notFileErrMsg as H } from "./options.mjs";
+import { enhancedFindFiles as W } from "./ndos.mjs";
+const E = (i) => (Object.assign(l, B, i ?? {}), U(), {
   name: "vite:mmjs:mock",
   apply: "serve",
   enforce: "post",
   config(n, a) {
-    const { scan: m, mockDir: c } = l;
-    if (m && a.command === "serve")
+    const { scan: d, mockDir: c } = l;
+    if (d && a.command === "serve")
       return {
         server: {
           watch: {
@@ -24,21 +24,21 @@ const W = ["no such file", "Cannot find module"], F = "Mock Not enabled", E = (i
       };
   },
   configureServer(n) {
-    const { scan: a, watchDynamicFile: m, apiPrefix: c, mockDir: u } = l, g = n.config.root;
+    const { scan: a, watchDynamicFile: d, apiPrefix: c, mockDir: u } = l, g = n.config.root;
     l.root = g;
     const e = S.join(n.config.root, "package.json"), k = JSON.parse(_(e, "utf-8"));
     if (l._esm = k.type === "module", a)
-      return s.info("⏳ Scan Watching..."), J(n);
+      return s.info("⏳ Scan Watching..."), b(n);
     const p = S.join(g, u);
-    if (m) {
-      n.watcher.off(u, d);
+    if (d) {
+      n.watcher.off(u, m);
       const r = n.watcher.add(p);
-      r.on("add", d), r.on("unlink", d), r.on("unlinkDir", d);
+      r.on("add", m), r.on("unlink", m), r.on("unlinkDir", m);
     }
-    d();
-    async function d() {
+    m();
+    async function m() {
       try {
-        const r = await H(p, {
+        const r = await W(p, {
           recursive: !0,
           exclude: /node_modules|\.git/
         });
@@ -63,22 +63,22 @@ const W = ["no such file", "Cannot find module"], F = "Mock Not enabled", E = (i
 });
 E.__dyMatchPaths = [];
 async function z(i, n, a) {
-  var p, d;
-  const { root: m, forceMock: c, mockDir: u, timeout: g } = l;
+  var p, m;
+  const { root: d, forceMock: c, mockDir: u, timeout: g } = l;
   let e = "", k = "";
   try {
-    let o = function(t, f = j(e)) {
+    let o = function(t, f = F(e)) {
       f && n.setHeader("Content-Type", f), s.success(`✅ Mock Successify ${y(e, "underline")}`), setTimeout(() => {
         n.end(JSON.stringify(t));
       }, g);
     };
     if (i.headers.referer && (k = new URL((p = i.headers) == null ? void 0 : p.referer).searchParams.get("remote") ?? ""), k !== "mock" && !c)
       return s.info("🔒 Browser URL not found mcok Keyword"), a();
-    const r = i.headers[v(i)], { encoding: w, fileExt: x } = D(r), M = ((d = i._parsedUrl) == null ? void 0 : d.pathname) ?? "";
-    i.headers["x-custom-request-header"] = "vite-plugin-mmjs-mock", e = S.join(m, u, M + x);
+    const r = i.headers[C(i)], { encoding: w, fileExt: x } = D(r), j = ((m = i._parsedUrl) == null ? void 0 : m.pathname) ?? "";
+    i.headers["x-custom-request-header"] = "vite-plugin-mmjs-mock", e = S.join(d, u, j + x);
     let h;
     if (!A.includes(x)) {
-      const t = b(e), f = j(e);
+      const t = J(e), f = F(e);
       f && n.setHeader("Content-Type", f), t.pipe(n), t.on("error", (N) => {
         s.error(N), t.destroy(), a();
       }), t.on("end", () => {
@@ -89,7 +89,7 @@ async function z(i, n, a) {
       return;
     }
     if (!L(e)) {
-      const t = S.join(m, u, M);
+      const t = S.join(d, u, j);
       e = $(
         E.__dyMatchPaths,
         t
@@ -103,12 +103,12 @@ async function z(i, n, a) {
         return s.wran(`${t}; ${e}`), a();
       }
     if (h = await O(e), !(h != null && h.enabled))
-      throw new Error(F);
-    C(i), T(i);
+      throw new Error(M);
+    T(i), v(i);
     let P = h.mock(i, n);
     P instanceof Promise && (P = await P), o(P, "application/json");
   } catch (o) {
-    (o == null ? void 0 : o.message.indexOf(F)) !== -1 ? s.info(`🔒 Mock Not Enabled! ${y(e, "underline")}`) : W.some((r) => {
+    (o == null ? void 0 : o.message.indexOf(M)) !== -1 ? s.info(`🔒 Mock Not Enabled! ${y(e, "underline")}`) : H.some((r) => {
       var w;
       return ((w = o == null ? void 0 : o.message) == null ? void 0 : w.indexOf(r)) !== -1;
     }) ? s.wran(`❌ File Not Found! ${y(e, "underline")}`) : console.error(R(), (o == null ? void 0 : o.message) || o, y(e, "underline")), a();

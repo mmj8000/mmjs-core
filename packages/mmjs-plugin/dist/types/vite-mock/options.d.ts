@@ -74,3 +74,5 @@ export declare const allowExt: readonly [".js", ".ts", ".json"];
 export declare const customContentTypeToExt: {
     "text/event-stream": string;
 };
+export declare const notFileErrMsg: string[];
+export declare const mockNoEnabledStr = "Mock Not enabled";

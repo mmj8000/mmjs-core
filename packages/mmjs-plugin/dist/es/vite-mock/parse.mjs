@@ -1,8 +1,8 @@
-import { serverConfig as i, allowCharset as u } from "./options.mjs";
-import l from "mime-types";
-import y from "raw-body";
-import { dynamicImport as f, logger as d } from "./utils.mjs";
-function x(t) {
+import { serverConfig as m, allowCharset as f, notFileErrMsg as y } from "./options.mjs";
+import g from "mime-types";
+import h from "raw-body";
+import { dynamicImport as d, logger as O } from "./utils.mjs";
+function $(t) {
   Object.defineProperty(t, "query", {
     get() {
       try {
@@ -20,61 +20,79 @@ function x(t) {
     }
   });
 }
-function h(t) {
+function _(t) {
   const r = t.headers["content-type"];
-  return (l.charset(r) || i.encoding || u[0]).toLocaleLowerCase();
+  return (g.charset(r) || m.encoding || f[0]).toLocaleLowerCase();
 }
-async function P(t) {
+async function j(t) {
   Object.defineProperty(t, "body", {
     async get() {
       try {
-        if (t.__body) return s;
-        const r = h(t), e = await y(t, { encoding: r }), s = JSON.parse(e);
-        return t.__body = s, s;
+        if (t.__body) return n;
+        const r = _(t), e = await h(t, { encoding: r }), n = JSON.parse(e);
+        return t.__body = n, n;
       } catch {
       }
       return {};
     }
   });
 }
-const p = `/**
+const l = `/**
 * @type {import('mmjs-plugin/vite-mock').MockTemplate}
 */
-`, g = "parameters[JSON.stringify(req._parsedUrl?.query ?? null)]";
-async function $(t, r, e) {
-  const { fileExt: s, multiParameter: m } = i;
-  if (![".js", ".ts"].includes(s)) return t;
-  let n = t;
+`, b = "parameters[JSON.stringify(req._parsedUrl?.query ?? null)]";
+function w(t) {
+  let r = !1, e = t;
   try {
-    r.includes("json") ? n = t : n = JSON.stringify(t);
+    e = JSON.parse(t), r = !0;
   } catch {
-    n = t;
   }
-  let o = {}, a = n;
-  try {
-    switch (m) {
-      case "get":
-        const c = await f(e.filePath);
-        Object.assign(o, c.parameters ?? {}, {
-          [JSON.stringify(e.query)]: n
-        }), a = g;
-        break;
-    }
-    o = JSON.stringify(o, null, 4);
-  } catch (c) {
-    d.error(`${c} ${e.filePath}`);
+  return {
+    tryResolve: r,
+    newData: e
+  };
+}
+async function N(t, r, e) {
+  const { fileExt: n, multiParameter: u } = m;
+  if (![".js", ".ts"].includes(n)) return t;
+  let a = t;
+  if (r.includes("json")) {
+    const { newData: s, tryResolve: i } = w(t);
+    a = i ? s : JSON.stringify(t);
+  } else
+    a = JSON.stringify(t);
+  let o = {}, c = "";
+  switch (u) {
+    case "get":
+      try {
+        const s = await d(e.filePath);
+        Object.assign(o, (s == null ? void 0 : s.parameters) ?? {}, {
+          [JSON.stringify(e.query)]: a
+        });
+      } catch (s) {
+        y.some((i) => {
+          var p;
+          return ((p = s == null ? void 0 : s.message) == null ? void 0 : p.indexOf(i)) !== -1;
+        }) || O.error(`${s} ${e.filePath}`);
+      }
+      c = b;
+      break;
+    default:
+      c = JSON.stringify(a);
+      break;
   }
-  return i._esm ? `export const enabled = true;
+  return o = JSON.stringify(o, null, 4), m._esm ? `export const enabled = true;
 export const parameters = ${o};
-${p}export const mock = (req, res) => (${a})
+${l}export const mock = (req, res) => (${c})
 ` : `exports.enabled = true;
-exports.parameters = ${o};
-${p}exports.mock = (req, res) => (exports.${a})
+const parameters = ${o};
+exports.parameters = parameters;
+${l}exports.mock = (req, res) => (${c})
 `;
 }
 export {
-  h as getCharset,
-  $ as transformInnerCodeTempate,
-  P as useParseBody,
-  x as useParseQueryParams
+  _ as getCharset,
+  N as transformInnerCodeTempate,
+  j as useParseBody,
+  $ as useParseQueryParams
 };

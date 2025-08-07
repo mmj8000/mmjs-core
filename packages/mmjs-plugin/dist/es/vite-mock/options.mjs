@@ -1,4 +1,4 @@
-const s = {
+const o = {
   apiPrefix: "/api",
   forceMock: !1,
   mockDir: "__mock__",
@@ -15,13 +15,13 @@ const s = {
   multiParameter: "none"
 }, e = Object.assign(
   {},
-  s
+  o
 ), t = {
   isLogWarn: !0,
   isLogInfo: !0,
   isLogSuccess: !0
 };
-function o() {
+function s() {
   t.isLogWarn = e.logLevel.includes("wran"), t.isLogInfo = e.logLevel.includes("info"), t.isLogSuccess = e.logLevel.includes("succes");
 }
 const n = [
@@ -39,13 +39,15 @@ const n = [
   "hex"
 ], c = [".js", ".ts", ".json"], i = {
   "text/event-stream": "text"
-};
+}, l = ["no such file", "Cannot find module"], a = "Mock Not enabled";
 export {
-  s as _initServerConfig,
+  o as _initServerConfig,
   n as allowCharset,
   c as allowExt,
   i as customContentTypeToExt,
   t as logLevelState,
+  a as mockNoEnabledStr,
+  l as notFileErrMsg,
   e as serverConfig,
-  o as updateLogLevelState
+  s as updateLogLevelState
 };

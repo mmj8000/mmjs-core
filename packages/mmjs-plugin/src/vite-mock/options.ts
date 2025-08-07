@@ -121,3 +121,6 @@ export const allowExt = [".js", ".ts", ".json"] as const;
 export const customContentTypeToExt = {
   "text/event-stream": "text",
 };
+
+export const notFileErrMsg = ["no such file", "Cannot find module"];
+export const mockNoEnabledStr = "Mock Not enabled";

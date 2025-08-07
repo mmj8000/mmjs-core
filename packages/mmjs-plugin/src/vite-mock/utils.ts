@@ -271,7 +271,13 @@ export function fileExists(filePath: string) {
 export function getHeaderMimeTypeKey(req: IncomingMessage) {
   return req.method === "GET" ? "accept" : "content-type";
 }
-
+export async function esmImport(readPath: string) {
+  return await import(pathToFileURL(readPath).href + "?t=" + Date.now());
+}
+export async function cjsImport(readPath: string) {
+  require.cache && delete require.cache[readPath];
+  return await require(readPath);
+}
 export let dynamicImport = async (
   readPath: string
 ): Promise<
@@ -281,18 +287,13 @@ export let dynamicImport = async (
     }
   | any
 > => {
-  async function esmImport() {
-    return await import(pathToFileURL(readPath).href + "?t=" + Date.now());
-  }
-  async function cjsImport() {
-    require.cache && delete require.cache[readPath];
-    return await require(readPath);
-  }
+  let data;
   if (serverConfig._esm) {
     dynamicImport = esmImport;
-    return esmImport();
+    data = await esmImport(readPath);
   } else {
     dynamicImport = cjsImport;
-    return cjsImport();
+    data = await cjsImport(readPath);
   }
+  return data;
 };
