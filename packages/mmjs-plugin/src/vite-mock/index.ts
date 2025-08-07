@@ -3,6 +3,7 @@ import { useParseBody, useParseQueryParams } from "./parse";
 import path from "node:path";
 import {
   colorize,
+  dynamicImport,
   fileExists,
   findMatchingTemplatePath,
   getContentTypeByPath,
@@ -11,7 +12,6 @@ import {
   uniBeforeStrLog,
   useContentType,
 } from "./utils";
-import { pathToFileURL } from "node:url";
 import { createReadStream, readFileSync } from "node:fs";
 import { useProxyRes } from "./proxy";
 import {
@@ -181,14 +181,7 @@ async function useCustomServerMiddleware(
         return next();
       }
     }
-    if (serverConfig._esm) {
-      mockState = await import(
-        pathToFileURL(readPath).href + "?t=" + Date.now()
-      );
-    } else {
-      require.cache && delete require.cache[readPath];
-      mockState = await require(readPath);
-    }
+    mockState = await dynamicImport(readPath);
 
     if (!mockState?.enabled) {
       throw new Error(mockNoEnabledStr);
@@ -208,7 +201,7 @@ async function useCustomServerMiddleware(
     ) {
       logger.wran(`❌ File Not Found! ${colorize(readPath, "underline")}`);
     } else {
-      console.error(uniBeforeStrLog(), err?.message || err);
+      console.error(uniBeforeStrLog(), err?.message || err, colorize(readPath, "underline"));
     }
     next();
   }

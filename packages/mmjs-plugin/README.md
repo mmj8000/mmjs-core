@@ -20,9 +20,10 @@
 ## vite-mock
   ### 默认用法
   - exmaple
-  - 启用
+  - 启用&参数
     1. 检测浏览器location.search 是否存在 remote=mock; ` http://localhost:5173/?remote=mock#/`
     2. 传入参数强制mock `createMockServer({ forceMock: true })`
+    3. 同一个接口多个参数区分传入配置 `createMockServer({ multiParameter: 'get' })`， 默认 “none”; 目前只区分get请求参数
   - mock 工作流
     - 默认会读取 {项目root}/__mock__/{接口url}，读取失败则走vite server.proxy， 如果希望读取本地mock失败后继续转发请求线上api， 那server.proxy 至少要有一个和 apiPrefix 设置一样的前缀才会继续流转，否则读取失败即结束本次读取
   - 配置
@@ -32,7 +33,7 @@
   import { createMockServer } from "mmjs-plugin/vite-mock";
   export default defineConfig({
     plugins: [createMockServer({
-      // 接口 /api 开头才会走mock，一般和server.proxy 至少一个前缀匹配server.proxy即可使用线上代理，扫描原理
+      // 接口 /api 开头才会走mock，一般和server.proxy 至少一个前缀匹配server.proxy即可使用线上代理，扫描同理
       apiPrefix: ['/api'],
     })], 
     server: {
@@ -100,8 +101,9 @@
   ```
 
   3. 动态参数
+
     - 动态参数用$id代表文件、文件夹名称 如：`__mock__/api/$id.js` 对应接口 `/api/123`
-  
+
 
 ### 默认Config
 
@@ -115,6 +117,11 @@ interface PluginOptions {
      * @default false
      */
     forceMock?: boolean;
+    /**
+     * 单个接口多个参数区分，帮助于（扫描、读取）多类型返回值， 默认不开启。
+     * @default 'none'
+     */
+    multiParameter?: 'get' | 'none',
     /**
      * @default "__mock__"
      */
@@ -139,10 +146,6 @@ interface PluginOptions {
      * @default '_output'
      */
     scanOutput?: string;
-    /**
-     * 强制esm， 默认动态读取 package.json type 字段
-     */
-    _esm?: boolean;
     /**
      * scan 启用生效
      * 哪些mimetype 生成 .js or .ts 文件, 如： json、html

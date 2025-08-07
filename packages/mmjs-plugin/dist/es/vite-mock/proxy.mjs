@@ -1,40 +1,48 @@
-import { safeUrlToFilename as C, useContentType as P, existsSyncByMkdir as x, logger as i, colorize as E, writeMockFile as F } from "./utils.mjs";
-import { serverConfig as l } from "./options.mjs";
-import g from "node:path";
+import { safeUrlToFilename as P, useContentType as U, existsSyncByMkdir as x, logger as i, colorize as E, writeMockFile as F } from "./utils.mjs";
+import { serverConfig as h } from "./options.mjs";
+import T from "node:path";
 import { transformInnerCodeTempate as I } from "./parse.mjs";
 import { createWriteStream as M } from "node:fs";
-function W(c) {
-  var f;
-  const s = ((f = c.config.server) == null ? void 0 : f.proxy) ?? {};
-  for (let h in s)
+function O(c) {
+  var a;
+  const s = ((a = c.config.server) == null ? void 0 : a.proxy) ?? {};
+  for (let w in s)
     try {
-      const t = s[h];
+      const t = s[w];
       if (typeof t != "object") continue;
-      const a = t.configure;
+      const f = t.configure;
       t.configure = (m, d) => {
         m.on(
           "proxyRes",
-          (n, T, U) => {
-            var u;
-            typeof a == "function" && a(m, d);
-            const p = g.join(
-              C(d.target ?? ""),
-              ((u = T._parsedUrl) == null ? void 0 : u.pathname) ?? ""
+          (n, u, _) => {
+            var p;
+            typeof f == "function" && f(m, d);
+            const y = T.join(
+              P(d.target ?? ""),
+              ((p = u._parsedUrl) == null ? void 0 : p.pathname) ?? ""
             );
-            if (p) {
-              const S = n.headers["content-type"], { encoding: y, isInnerTempType: k, mimeType: w, fileExt: b } = P(S), r = g.join(
+            if (y) {
+              const S = n.headers["content-type"], { encoding: l, isInnerTempType: k, mimeType: b, fileExt: j } = U(S), r = T.join(
                 c.config.root,
-                l.mockDir,
-                l.scanOutput,
-                p + b
+                h.mockDir,
+                h.scanOutput,
+                y + j
               );
               if (k) {
                 const e = [];
                 n.on("data", (o) => {
                   e.push(o);
-                }), n.on("end", () => {
-                  const j = Buffer.concat(e).toString(y), B = I(j, w);
-                  F(r, B, { encoding: y });
+                }), n.on("end", async () => {
+                  var g;
+                  const B = Buffer.concat(e).toString(l), C = await I(
+                    B,
+                    b,
+                    {
+                      query: ((g = u._parsedUrl) == null ? void 0 : g.query) ?? null,
+                      filePath: r
+                    }
+                  );
+                  F(r, C, { encoding: l });
                 });
               } else {
                 x(r);
@@ -60,5 +68,5 @@ function W(c) {
     }
 }
 export {
-  W as useProxyRes
+  O as useProxyRes
 };

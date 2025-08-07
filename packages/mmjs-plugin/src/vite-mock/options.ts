@@ -36,11 +36,6 @@ export interface PluginOptions {
   scanOutput?: string;
 
   /**
-   * 强制esm， 默认动态读取 package.json type 字段
-   */
-  _esm?: boolean;
-
-  /**
    * scan 启用生效
    * 哪些mimetype 生成 .js or .ts 文件, 如： json、html
    * @default ["json"]
@@ -55,14 +50,23 @@ export interface PluginOptions {
   /**
    * （动态参数的mock文件相关、只有普通类型接口文件设置false 即可）
    * @desc 动态文件$id相关，需要监测动态参数文件变化就开启，否则新增删除mock服务无法实时知道
-   * 但动态参数接口不常用，建议关闭， 关闭后每次新增、删除动态参数文件（xxx/$id.js）,需要重新启动vite server 
+   * 但动态参数接口不常用，建议关闭， 关闭后每次新增、删除动态参数文件（xxx/$id.js）,需要重新启动vite server
    * @default false
    */
   watchDynamicFile?: boolean;
+  /**
+   * 单个接口多个参数区分，帮助于（扫描、读取）多类型返回值， 默认不开启。
+   * @default 'none'
+   */
+  multiParameter?: "get" | "none";
 }
 export type InitServerConfig = Required<PluginOptions> & {
   root: string;
-}
+  /**
+   * 强制esm， 默认动态读取 package.json type 字段
+   */
+  _esm?: boolean;
+};
 export const _initServerConfig: InitServerConfig = {
   apiPrefix: "/api",
   forceMock: false,
@@ -75,11 +79,15 @@ export const _initServerConfig: InitServerConfig = {
   _esm: false,
   templateMimeType: ["json"],
   root: "",
-  encoding: 'utf-8',
+  encoding: "utf-8",
   watchDynamicFile: false,
+  multiParameter: "none",
 };
 
-export const serverConfig: InitServerConfig = Object.assign({}, _initServerConfig);
+export const serverConfig: InitServerConfig = Object.assign(
+  {},
+  _initServerConfig
+);
 
 export const logLevelState = {
   isLogWarn: true,
@@ -108,12 +116,8 @@ export const allowCharset: BufferEncoding[] = [
   "hex",
 ] as const;
 
-export const allowExt = [
-  '.js',
-  '.ts',
-  '.json'
-] as const;
+export const allowExt = [".js", ".ts", ".json"] as const;
 
 export const customContentTypeToExt = {
-  'text/event-stream': 'text'
-}
+  "text/event-stream": "text",
+};

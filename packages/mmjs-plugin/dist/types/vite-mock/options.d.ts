@@ -32,10 +32,6 @@ export interface PluginOptions {
      */
     scanOutput?: string;
     /**
-     * 强制esm， 默认动态读取 package.json type 字段
-     */
-    _esm?: boolean;
-    /**
      * scan 启用生效
      * 哪些mimetype 生成 .js or .ts 文件, 如： json、html
      * @default ["json"]
@@ -52,9 +48,18 @@ export interface PluginOptions {
      * @default false
      */
     watchDynamicFile?: boolean;
+    /**
+     * 单个接口多个参数区分，帮助于（扫描、读取）多类型返回值， 默认不开启。
+     * @default 'none'
+     */
+    multiParameter?: "get" | "none";
 }
 export type InitServerConfig = Required<PluginOptions> & {
     root: string;
+    /**
+     * 强制esm， 默认动态读取 package.json type 字段
+     */
+    _esm?: boolean;
 };
 export declare const _initServerConfig: InitServerConfig;
 export declare const serverConfig: InitServerConfig;
@@ -67,5 +72,5 @@ export declare function updateLogLevelState(): void;
 export declare const allowCharset: BufferEncoding[];
 export declare const allowExt: readonly [".js", ".ts", ".json"];
 export declare const customContentTypeToExt: {
-    'text/event-stream': string;
+    "text/event-stream": string;
 };

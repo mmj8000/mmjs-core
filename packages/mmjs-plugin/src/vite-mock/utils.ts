@@ -1,9 +1,21 @@
-import { existsSync, mkdirSync, statSync, writeFile, WriteFileOptions } from "node:fs";
-import { allowCharset, allowExt, customContentTypeToExt, logLevelState, serverConfig } from "./options";
+import {
+  existsSync,
+  mkdirSync,
+  statSync,
+  writeFile,
+  WriteFileOptions,
+} from "node:fs";
+import {
+  allowCharset,
+  customContentTypeToExt,
+  logLevelState,
+  serverConfig,
+} from "./options";
 import path from "node:path";
 import { appendFile } from "node:fs/promises";
 import mime from "mime-types";
-import { IncomingMessage } from "node:http";
+import type { IncomingMessage, ServerResponse } from "node:http";
+import { pathToFileURL } from "node:url";
 
 const styles = {
   // 文本颜色
@@ -157,16 +169,19 @@ export function safeUrlToFilename(url) {
     .toLowerCase();
 }
 
-
 export function useContentType(contentType: string | undefined) {
-  let charset: BufferEncoding = mime.charset(contentType) || allowCharset[0];
+  let charset: BufferEncoding =
+    mime.charset(contentType) || serverConfig.encoding || allowCharset[0];
   charset = charset.toLocaleLowerCase() as BufferEncoding;
-  let mimeType = mime.extension(contentType) || customContentTypeToExt[contentType!] || serverConfig.fileExt.slice(1);
-  let isInnerTempType = !(serverConfig.templateMimeType?.length) || serverConfig.templateMimeType.includes(mimeType);
+  let mimeType =
+    mime.extension(contentType) ||
+    customContentTypeToExt[contentType!] ||
+    serverConfig.fileExt.slice(1);
+  let isInnerTempType =
+    !serverConfig.templateMimeType?.length ||
+    serverConfig.templateMimeType.includes(mimeType);
   let fileExt: string = serverConfig.fileExt;
-  let encoding = allowCharset.includes(charset)
-    ? charset
-    : allowCharset[0];
+  let encoding = allowCharset.includes(charset) ? charset : allowCharset[0];
 
   if (isInnerTempType) {
     encoding = allowCharset[0];
@@ -180,31 +195,36 @@ export function useContentType(contentType: string | undefined) {
     isInnerTempType,
     fileExt,
     mimeType,
-  }
+  };
 }
 
 export function getContentTypeByPath(readPath: string) {
   return mime.contentType(readPath);
 }
 
-export function findMatchingTemplatePath(paths: string[], userUrl: string): string | null {
+export function findMatchingTemplatePath(
+  paths: string[],
+  userUrl: string
+): string | null {
   // 标准化用户URL（统一使用正斜杠，移除开头/结尾分隔符和扩展名）
-  const normalizedUserUrl = userUrl.replace(/^[\\/]|[\\/]$/g, '')
-    .replace(/\\/g, '/')
-    .replace(/\.[^/.]+$/, '');
-  const userSegments = normalizedUserUrl.split('/');
+  const normalizedUserUrl = userUrl
+    .replace(/^[\\/]|[\\/]$/g, "")
+    .replace(/\\/g, "/")
+    .replace(/\.[^/.]+$/, "");
+  const userSegments = normalizedUserUrl.split("/");
 
   // 按路径深度排序，优先匹配更长的路径
-  const sortedPaths = [...paths].sort((a, b) =>
-    b.split(/[\\/]/).length - a.split(/[\\/]/).length
+  const sortedPaths = [...paths].sort(
+    (a, b) => b.split(/[\\/]/).length - a.split(/[\\/]/).length
   );
 
   for (const templatePath of sortedPaths) {
     // 标准化模板路径（统一使用正斜杠，移除扩展名）
-    const normalizedTemplate = templatePath.replace(/^[\\/]|[\\/]$/g, '')
-      .replace(/\\/g, '/')
-      .replace(/\.[^/.]+$/, '');
-    const templateSegments = normalizedTemplate.split('/');
+    const normalizedTemplate = templatePath
+      .replace(/^[\\/]|[\\/]$/g, "")
+      .replace(/\\/g, "/")
+      .replace(/\.[^/.]+$/, "");
+    const templateSegments = normalizedTemplate.split("/");
 
     // 如果段数不匹配，跳过
     if (templateSegments.length !== userSegments.length) {
@@ -222,7 +242,10 @@ export function findMatchingTemplatePath(paths: string[], userUrl: string): stri
       const isParamSegment = /^\$[^/]+$/.test(templateSeg);
 
       // 如果是固定段，必须完全匹配（不区分大小写）
-      if (!isParamSegment && templateSeg.toLowerCase() !== userSeg.toLowerCase()) {
+      if (
+        !isParamSegment &&
+        templateSeg.toLowerCase() !== userSeg.toLowerCase()
+      ) {
         isMatch = false;
         break;
       }
@@ -236,7 +259,6 @@ export function findMatchingTemplatePath(paths: string[], userUrl: string): stri
   return null;
 }
 
-
 export function fileExists(filePath: string) {
   try {
     statSync(filePath);
@@ -246,7 +268,31 @@ export function fileExists(filePath: string) {
   }
 }
 
-
 export function getHeaderMimeTypeKey(req: IncomingMessage) {
-  return req.method === 'GET' ? 'accept' : "content-type";
+  return req.method === "GET" ? "accept" : "content-type";
 }
+
+export let dynamicImport = async (
+  readPath: string
+): Promise<
+  | {
+      enabled: boolean;
+      mock: (req: IncomingMessage, res: ServerResponse) => any;
+    }
+  | any
+> => {
+  async function esmImport() {
+    return await import(pathToFileURL(readPath).href + "?t=" + Date.now());
+  }
+  async function cjsImport() {
+    require.cache && delete require.cache[readPath];
+    return await require(readPath);
+  }
+  if (serverConfig._esm) {
+    dynamicImport = esmImport;
+    return esmImport();
+  } else {
+    dynamicImport = cjsImport;
+    return cjsImport();
+  }
+};
