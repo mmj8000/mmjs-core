@@ -20,12 +20,13 @@ import {
   updateLogLevelState,
   allowExt,
   _initServerConfig,
+  mockNoEnabledStr,
+  notFileErrMsg,
 } from "./options";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { enhancedFindFiles } from "./ndos";
 
-const notFileErrMsg = ["no such file", "Cannot find module"];
-const mockNoEnabledStr = "Mock Not enabled";
+
 
 export declare function MockTemplate(
   req: IncomingMessage,

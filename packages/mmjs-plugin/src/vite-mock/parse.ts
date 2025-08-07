@@ -1,5 +1,5 @@
 import { type IncomingMessage } from "node:http";
-import { allowCharset, serverConfig } from "./options";
+import { allowCharset, notFileErrMsg, serverConfig } from "./options";
 import mime from "mime-types";
 import getRawBody from "raw-body";
 import { dynamicImport, logger } from "./utils";
@@ -66,6 +66,19 @@ export async function useParseBody(req: IncomingMessage) {
 
 const typeJsDocsStr = `/**\n* @type {import('mmjs-plugin/vite-mock').MockTemplate}\n*\/\n`;
 const switchRespStr = `parameters[JSON.stringify(req._parsedUrl?.query ?? null)]`;
+
+function tryToJsonFromString(data: string) {
+  let tryResolve = false;
+  let newData = data;
+  try {
+    newData = JSON.parse(data);
+    tryResolve = true;
+  } catch {}
+  return {
+    tryResolve,
+    newData,
+  };
+}
 export async function transformInnerCodeTempate(
   body: string,
   mimeType: string,
@@ -77,33 +90,39 @@ export async function transformInnerCodeTempate(
   const { fileExt, multiParameter } = serverConfig;
   if (![".js", ".ts"].includes(fileExt)) return body;
   let _body = body;
-  try {
-    if (mimeType.includes("json")) {
-      _body = body;
-    } else {
-      _body = JSON.stringify(body);
-    }
-  } catch {
-    _body = body;
+
+  if (mimeType.includes("json")) {
+    const { newData, tryResolve } = tryToJsonFromString(body);
+    _body = tryResolve ? newData : JSON.stringify(body);
+  } else {
+    _body = JSON.stringify(body);
   }
   let parameters = {};
-  let writeBody = _body;
-  try {
-    switch (multiParameter) {
-      case "get":
+  let writeBody = "";
+
+  switch (multiParameter) {
+    case "get":
+      try {
         const readResult = await dynamicImport(meta.filePath);
-        Object.assign(parameters, readResult.parameters ?? {}, {
+        Object.assign(parameters, readResult?.parameters ?? {}, {
           [JSON.stringify(meta.query)]: _body,
         });
-        writeBody = switchRespStr;
-        break;
-    }
-    parameters = JSON.stringify(parameters, null, 4);
-  } catch (err) {
-    logger.error(`${err} ${meta.filePath}`);
+      } catch (err) {
+        // @ts-ignore
+        if (!notFileErrMsg.some((text) => err?.message?.indexOf(text) !== -1)) {
+          logger.error(`${err} ${meta.filePath}`);
+        }
+      }
+      writeBody = switchRespStr;
+      break;
+    default:
+      writeBody = JSON.stringify(_body);
+      break;
   }
+
+  parameters = JSON.stringify(parameters, null, 4);
   if (serverConfig._esm) {
     return `export const enabled = true;\nexport const parameters = ${parameters};\n${typeJsDocsStr}export const mock = (req, res) => (${writeBody})\n`;
   }
-  return `exports.enabled = true;\nexports.parameters = ${parameters};\n${typeJsDocsStr}exports.mock = (req, res) => (exports.${writeBody})\n`;
+  return `exports.enabled = true;\nconst parameters = ${parameters};\nexports.parameters = parameters;\n${typeJsDocsStr}exports.mock = (req, res) => (${writeBody})\n`;
 }
