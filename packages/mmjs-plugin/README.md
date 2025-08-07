@@ -18,6 +18,12 @@
   ```
 
 ## vite-mock
+  - 文件后缀受 GET 请求 Accept和 POST ContentType 影响，如：GET Request下载xlsx 
+    ```ts
+     headers: {
+        accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      } 
+    ```
   ### 默认用法
   - exmaple
   - 启用&参数
@@ -160,6 +166,11 @@ interface PluginOptions {
      * @default false
      */
     watchDynamicFile?: boolean;
+    /**
+     * 需要设置下载响应头的列表
+     * @default ['.xlsx', '.docx', '.pdf', '.zip', '.doc', '.csv']
+     */
+    downloadExtensions?: string[];
 }
 ```
 

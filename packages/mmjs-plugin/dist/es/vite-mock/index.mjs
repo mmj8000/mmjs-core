@@ -1,119 +1,130 @@
-import { useParseQueryParams as T, useParseBody as v } from "./parse.mjs";
-import S from "node:path";
-import { logger as s, getContentTypeByPath as F, colorize as y, getHeaderMimeTypeKey as C, useContentType as D, fileExists as L, findMatchingTemplatePath as $, dynamicImport as O, uniBeforeStrLog as R } from "./utils.mjs";
-import { readFileSync as _, createReadStream as J } from "node:fs";
-import { useProxyRes as b } from "./proxy.mjs";
-import { serverConfig as l, _initServerConfig as B, updateLogLevelState as U, allowExt as A, mockNoEnabledStr as M, notFileErrMsg as H } from "./options.mjs";
-import { enhancedFindFiles as W } from "./ndos.mjs";
-const E = (i) => (Object.assign(l, B, i ?? {}), U(), {
+import { useParseQueryParams as D, useParseBody as N } from "./parse.mjs";
+import g from "node:path";
+import { logger as i, getContentTypeByPath as _, colorize as y, getHeaderMimeTypeKey as T, useContentType as $, fileExists as L, findMatchingTemplatePath as H, dynamicImport as O, uniBeforeStrLog as R } from "./utils.mjs";
+import { readFileSync as C, createReadStream as b } from "node:fs";
+import { useProxyRes as J } from "./proxy.mjs";
+import { serverConfig as l, _initServerConfig as B, updateLogLevelState as U, allowExt as A, mockNoEnabledStr as v, notFileErrMsg as W } from "./options.mjs";
+import { enhancedFindFiles as z } from "./ndos.mjs";
+const F = (r) => (Object.assign(l, B, r ?? {}), U(), {
   name: "vite:mmjs:mock",
   apply: "serve",
   enforce: "post",
-  config(n, a) {
-    const { scan: d, mockDir: c } = l;
-    if (d && a.command === "serve")
+  config(t, s) {
+    const { scan: m, mockDir: a } = l;
+    if (m && s.command === "serve")
       return {
         server: {
           watch: {
             ignored: [
-              `**/${c}/**`
+              `**/${a}/**`
               // 可扩展其他规则
             ]
           }
         }
       };
   },
-  configureServer(n) {
-    const { scan: a, watchDynamicFile: d, apiPrefix: c, mockDir: u } = l, g = n.config.root;
-    l.root = g;
-    const e = S.join(n.config.root, "package.json"), k = JSON.parse(_(e, "utf-8"));
-    if (l._esm = k.type === "module", a)
-      return s.info("⏳ Scan Watching..."), b(n);
-    const p = S.join(g, u);
-    if (d) {
-      n.watcher.off(u, m);
-      const r = n.watcher.add(p);
-      r.on("add", m), r.on("unlink", m), r.on("unlinkDir", m);
+  configureServer(t) {
+    const { scan: s, watchDynamicFile: m, apiPrefix: a, mockDir: f } = l, k = t.config.root;
+    l.root = k;
+    const x = g.join(t.config.root, "package.json"), o = JSON.parse(C(x, "utf-8"));
+    if (l._esm = o.type === "module", s)
+      return i.info("⏳ Scan Watching..."), J(t);
+    const u = g.join(k, f);
+    if (m) {
+      t.watcher.off(f, c);
+      const e = t.watcher.add(u);
+      e.on("add", c), e.on("unlink", c), e.on("unlinkDir", c);
     }
-    m();
-    async function m() {
+    c();
+    async function c() {
       try {
-        const r = await W(p, {
+        const e = await z(u, {
           recursive: !0,
           exclude: /node_modules|\.git/
         });
-        E.__dyMatchPaths = r;
-      } catch (r) {
-        s.error(r);
+        F.__dyMatchPaths = e;
+      } catch (e) {
+        i.error(e);
       }
     }
-    let o = [];
-    if (Array.isArray(c))
-      o.push(...c);
-    else if (c)
-      o.push(c);
+    let d = [];
+    if (Array.isArray(a))
+      d.push(...a);
+    else if (a)
+      d.push(a);
     else {
-      s.error("API Prefix Non-standard");
+      i.error("API Prefix Non-standard");
       return;
     }
-    o.forEach((r) => {
-      n.middlewares.use(r, z);
+    d.forEach((e) => {
+      t.middlewares.use(e, I);
     });
   }
 });
-E.__dyMatchPaths = [];
-async function z(i, n, a) {
-  var p, m;
-  const { root: d, forceMock: c, mockDir: u, timeout: g } = l;
-  let e = "", k = "";
+F.__dyMatchPaths = [];
+async function I(r, t, s) {
+  var c, d;
+  const { root: m, forceMock: a, mockDir: f, timeout: k, downloadExtensions: x } = l;
+  let o = "", u = "";
   try {
-    let o = function(t, f = F(e)) {
-      f && n.setHeader("Content-Type", f), s.success(`✅ Mock Successify ${y(e, "underline")}`), setTimeout(() => {
-        n.end(JSON.stringify(t));
-      }, g);
+    let e = function(n, h = _(o)) {
+      h && t.setHeader("Content-Type", h), i.success(`✅ Mock Successify ${y(o, "underline")}`), setTimeout(() => {
+        t.end(JSON.stringify(n));
+      }, k);
     };
-    if (i.headers.referer && (k = new URL((p = i.headers) == null ? void 0 : p.referer).searchParams.get("remote") ?? ""), k !== "mock" && !c)
-      return s.info("🔒 Browser URL not found mcok Keyword"), a();
-    const r = i.headers[C(i)], { encoding: w, fileExt: x } = D(r), j = ((m = i._parsedUrl) == null ? void 0 : m.pathname) ?? "";
-    i.headers["x-custom-request-header"] = "vite-plugin-mmjs-mock", e = S.join(d, u, j + x);
-    let h;
-    if (!A.includes(x)) {
-      const t = J(e), f = F(e);
-      f && n.setHeader("Content-Type", f), t.pipe(n), t.on("error", (N) => {
-        s.error(N), t.destroy(), a();
-      }), t.on("end", () => {
-        s.success(`✅ ReadStream End ${y(e, "underline")}`);
-      }), t.on("close", () => {
-        t.destroyed || t.destroy();
+    if (r.headers.referer && (u = new URL((c = r.headers) == null ? void 0 : c.referer).searchParams.get("remote") ?? ""), u !== "mock" && !a)
+      return i.info("🔒 Browser URL not found mcok Keyword"), s();
+    const E = r.headers[T(r)], { encoding: w, fileExt: j } = $(E), M = ((d = r._parsedUrl) == null ? void 0 : d.pathname) ?? "";
+    r.headers["x-custom-request-header"] = "vite-plugin-mmjs-mock", t.setHeader("x-custom-response-header", "vite-plugin-mmjs-mock"), o = g.join(m, f, M + j);
+    let p;
+    if (!A.includes(j)) {
+      const n = b(o), h = _(o);
+      if (t.setHeader("Content-Type", h || "application/octet-stream"), x.includes(j)) {
+        const S = g.basename(o);
+        t.setHeader(
+          "Content-Disposition",
+          `attachment; filename="${S}"`
+        ), t.setHeader("download-filename", S);
+      }
+      n.pipe(t), n.on("error", (S) => {
+        i.error(S), n.destroy(), s();
+      }), n.on("end", () => {
+        i.success(`✅ ReadStream End ${y(o, "underline")}`);
+      }), n.on("close", () => {
+        n.destroyed || n.destroy();
       });
       return;
     }
-    if (!L(e)) {
-      const t = S.join(d, u, j);
-      e = $(
-        E.__dyMatchPaths,
-        t
-      ) || e;
+    if (!L(o)) {
+      const n = g.join(m, f, M);
+      o = H(
+        F.__dyMatchPaths,
+        n
+      ) || o;
     }
-    if (e.endsWith(".json"))
+    if (o.endsWith(".json"))
       try {
-        const t = _(e, { encoding: w });
-        return o(JSON.parse(t));
-      } catch (t) {
-        return s.wran(`${t}; ${e}`), a();
+        const n = C(o, { encoding: w });
+        return e(JSON.parse(n));
+      } catch (n) {
+        return i.wran(`${n}; ${o}`), s();
       }
-    if (h = await O(e), !(h != null && h.enabled))
-      throw new Error(M);
-    T(i), v(i);
-    let P = h.mock(i, n);
-    P instanceof Promise && (P = await P), o(P, "application/json");
-  } catch (o) {
-    (o == null ? void 0 : o.message.indexOf(M)) !== -1 ? s.info(`🔒 Mock Not Enabled! ${y(e, "underline")}`) : H.some((r) => {
+    if (p = await O(o), !(p != null && p.enabled))
+      throw new Error(v);
+    D(r), N(r);
+    let P = p.mock(r, t);
+    P instanceof Promise && (P = await P), e(P, "application/json");
+  } catch (e) {
+    (e == null ? void 0 : e.message.indexOf(v)) !== -1 ? i.info(`🔒 Mock Not Enabled! ${y(o, "underline")}`) : W.some((E) => {
       var w;
-      return ((w = o == null ? void 0 : o.message) == null ? void 0 : w.indexOf(r)) !== -1;
-    }) ? s.wran(`❌ File Not Found! ${y(e, "underline")}`) : console.error(R(), (o == null ? void 0 : o.message) || o, y(e, "underline")), a();
+      return ((w = e == null ? void 0 : e.message) == null ? void 0 : w.indexOf(E)) !== -1;
+    }) ? i.wran(`❌ File Not Found! ${y(o, "underline")}`) : console.error(
+      R(),
+      (e == null ? void 0 : e.message) || e,
+      y(o, "underline")
+    ), s();
   }
 }
 export {
-  E as createMockServer
+  F as createMockServer
 };

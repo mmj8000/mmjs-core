@@ -53,6 +53,11 @@ export interface PluginOptions {
      * @default 'none'
      */
     multiParameter?: "get" | "none";
+    /**
+     * 需要设置下载响应头的列表
+     * @default ['.xlsx', '.docx', '.pdf', '.zip', '.doc', '.csv']
+     */
+    downloadExtensions?: string[];
 }
 export type InitServerConfig = Required<PluginOptions> & {
     root: string;
