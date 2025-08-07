@@ -1,4 +1,4 @@
-const o = {
+const t = {
   apiPrefix: "/api",
   forceMock: !1,
   mockDir: "__mock__",
@@ -12,17 +12,18 @@ const o = {
   root: "",
   encoding: "utf-8",
   watchDynamicFile: !1,
-  multiParameter: "none"
+  multiParameter: "none",
+  downloadExtensions: [".xlsx", ".docx", ".pdf", ".zip", ".doc", ".csv"]
 }, e = Object.assign(
   {},
-  o
-), t = {
+  t
+), o = {
   isLogWarn: !0,
   isLogInfo: !0,
   isLogSuccess: !0
 };
 function s() {
-  t.isLogWarn = e.logLevel.includes("wran"), t.isLogInfo = e.logLevel.includes("info"), t.isLogSuccess = e.logLevel.includes("succes");
+  o.isLogWarn = e.logLevel.includes("wran"), o.isLogInfo = e.logLevel.includes("info"), o.isLogSuccess = e.logLevel.includes("succes");
 }
 const n = [
   "utf-8",
@@ -41,11 +42,11 @@ const n = [
   "text/event-stream": "text"
 }, l = ["no such file", "Cannot find module"], a = "Mock Not enabled";
 export {
-  o as _initServerConfig,
+  t as _initServerConfig,
   n as allowCharset,
   c as allowExt,
   i as customContentTypeToExt,
-  t as logLevelState,
+  o as logLevelState,
   a as mockNoEnabledStr,
   l as notFileErrMsg,
   e as serverConfig,

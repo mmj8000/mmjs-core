@@ -26,8 +26,6 @@ import {
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { enhancedFindFiles } from "./ndos";
 
-
-
 export declare function MockTemplate(
   req: IncomingMessage,
   res: ServerResponse<IncomingMessage>
@@ -115,7 +113,8 @@ async function useCustomServerMiddleware(
   res: ServerResponse,
   next: Connect.NextFunction
 ) {
-  const { root, forceMock, mockDir, timeout } = serverConfig;
+  const { root, forceMock, mockDir, timeout, downloadExtensions } =
+    serverConfig;
   let readPath = "";
   let remote = "";
   try {
@@ -130,6 +129,7 @@ async function useCustomServerMiddleware(
     const { encoding, fileExt } = useContentType(contentType);
     const pathname = req._parsedUrl?.pathname ?? "";
     req.headers["x-custom-request-header"] = "vite-plugin-mmjs-mock";
+    res.setHeader("x-custom-response-header", "vite-plugin-mmjs-mock");
     readPath = path.join(root, mockDir, pathname + fileExt);
     let mockState: {
       enabled: boolean;
@@ -145,7 +145,16 @@ async function useCustomServerMiddleware(
     if (!allowExt.includes(fileExt as any)) {
       const readStream = createReadStream(readPath);
       const contentType = getContentTypeByPath(readPath);
-      contentType && res.setHeader("Content-Type", contentType);
+      res.setHeader("Content-Type", contentType || "application/octet-stream");
+      // 如果文件类型在下载列表中，设置下载头
+      if (downloadExtensions.includes(fileExt)) {
+        const filename = path.basename(readPath);
+        res.setHeader(
+          "Content-Disposition",
+          `attachment; filename="${filename}"`
+        );
+        res.setHeader("download-filename", filename);
+      }
       readStream.pipe(res);
       readStream.on("error", (err) => {
         logger.error(err);
@@ -202,7 +211,11 @@ async function useCustomServerMiddleware(
     ) {
       logger.wran(`❌ File Not Found! ${colorize(readPath, "underline")}`);
     } else {
-      console.error(uniBeforeStrLog(), err?.message || err, colorize(readPath, "underline"));
+      console.error(
+        uniBeforeStrLog(),
+        err?.message || err,
+        colorize(readPath, "underline")
+      );
     }
     next();
   }
