@@ -32,8 +32,8 @@
   import { createMockServer } from "mmjs-plugin/vite-mock";
   export default defineConfig({
     plugins: [createMockServer({
-      // 接口 /api 开头才会走mock，一般和server.proxy 其中一个开头一样即可
-      apiPrefix: '/api' 
+      // 接口 /api 开头才会走mock，一般和server.proxy 至少一个前缀匹配server.proxy即可使用线上代理，扫描原理
+      apiPrefix: ['/api'],
     })], 
     server: {
       proxy: {
@@ -110,7 +110,7 @@ interface PluginOptions {
     /**
      * @default "/api"
      */
-    apiPrefix?: string;
+    apiPrefix?: string | string[];
     /**
      * @default false
      */

@@ -2,7 +2,7 @@ export interface PluginOptions {
   /**
    * @default "/api"
    */
-  apiPrefix?: string;
+  apiPrefix?: string | string[];
 
   /**
    * @default false

@@ -1,11 +1,26 @@
-import type { ViteDevServer, Plugin } from "vite";
+import type { ViteDevServer, Plugin, Connect } from "vite";
 import { useParseBody, useParseQueryParams } from "./parse";
 import path from "node:path";
-import { colorize, fileExists, findMatchingTemplatePath, getContentTypeByPath, getHeaderMimeTypeKey, logger, uniBeforeStrLog, useContentType } from "./utils";
+import {
+  colorize,
+  fileExists,
+  findMatchingTemplatePath,
+  getContentTypeByPath,
+  getHeaderMimeTypeKey,
+  logger,
+  uniBeforeStrLog,
+  useContentType,
+} from "./utils";
 import { pathToFileURL } from "node:url";
-import { createReadStream, readFileSync, } from "node:fs";
+import { createReadStream, readFileSync } from "node:fs";
 import { useProxyRes } from "./proxy";
-import { serverConfig, PluginOptions, updateLogLevelState, allowExt, _initServerConfig } from "./options";
+import {
+  serverConfig,
+  PluginOptions,
+  updateLogLevelState,
+  allowExt,
+  _initServerConfig,
+} from "./options";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { enhancedFindFiles } from "./ndos";
 
@@ -45,7 +60,8 @@ export const createMockServer: CreateMockServer = (config) => {
       }
     },
     configureServer(server: ViteDevServer) {
-      const { scan, watchDynamicFile, apiPrefix, forceMock, mockDir, timeout } = serverConfig;
+      const { scan, watchDynamicFile, apiPrefix, forceMock, mockDir, timeout } =
+        serverConfig;
       // 获取项目根目录
       const root = server.config.root;
       serverConfig.root = root;
@@ -60,23 +76,39 @@ export const createMockServer: CreateMockServer = (config) => {
       if (watchDynamicFile) {
         server.watcher.off(mockDir, initDynamicFileList);
         const mockWatcher = server.watcher.add(mockRootDir);
-        mockWatcher.on('add', initDynamicFileList);
-        mockWatcher.on('unlink', initDynamicFileList);
-        mockWatcher.on('unlinkDir', initDynamicFileList);
+        mockWatcher.on("add", initDynamicFileList);
+        mockWatcher.on("unlink", initDynamicFileList);
+        mockWatcher.on("unlinkDir", initDynamicFileList);
       }
       initDynamicFileList();
       async function initDynamicFileList() {
         try {
           const mockFileList = await enhancedFindFiles(mockRootDir, {
             recursive: true,
-            exclude: /node_modules|\.git/
+            exclude: /node_modules|\.git/,
           });
           createMockServer.__dyMatchPaths = mockFileList;
         } catch (err) {
           logger.error(err);
         }
       }
-      server.middlewares.use(apiPrefix, async (req, res, next) => {
+      let apiNormalization: string[] = [];
+      if (Array.isArray(apiPrefix)) {
+        apiNormalization.push(...apiPrefix);
+      } else if (apiPrefix) {
+        apiNormalization.push(apiPrefix);
+      } else {
+        logger.error("API Prefix Non-standard");
+        return;
+      }
+      apiNormalization.forEach((apiPath) => {
+        server.middlewares.use(apiPath, useCustomServerMiddleware);
+      });
+      async function useCustomServerMiddleware(
+        req: IncomingMessage,
+        res: ServerResponse,
+        next: Connect.NextFunction
+      ) {
         let readPath = "";
         let remote = "";
         try {
@@ -97,7 +129,10 @@ export const createMockServer: CreateMockServer = (config) => {
             enabled: boolean;
             mock: (req, res) => any;
           };
-          function response(data, contentType = getContentTypeByPath(readPath)) {
+          function response(
+            data,
+            contentType = getContentTypeByPath(readPath)
+          ) {
             contentType && res.setHeader("Content-Type", contentType);
             logger.success(
               `✅ Mock Successify ${colorize(readPath, "underline")}`
@@ -111,17 +146,17 @@ export const createMockServer: CreateMockServer = (config) => {
             const contentType = getContentTypeByPath(readPath);
             contentType && res.setHeader("Content-Type", contentType);
             readStream.pipe(res);
-            readStream.on('error', (err) => {
+            readStream.on("error", (err) => {
               logger.error(err);
               readStream.destroy();
               next();
             });
-            readStream.on('end', () => {
+            readStream.on("end", () => {
               logger.success(
                 `✅ ReadStream End ${colorize(readPath, "underline")}`
               );
             });
-            readStream.on('close', () => {
+            readStream.on("close", () => {
               if (!readStream.destroyed) {
                 readStream.destroy();
               }
@@ -132,13 +167,16 @@ export const createMockServer: CreateMockServer = (config) => {
           const isExistFile = fileExists(readPath);
           if (!isExistFile) {
             const newUrl = path.join(root, mockDir, pathname);
-            const matchPath = findMatchingTemplatePath(createMockServer.__dyMatchPaths, newUrl);
+            const matchPath = findMatchingTemplatePath(
+              createMockServer.__dyMatchPaths,
+              newUrl
+            );
             readPath = matchPath || readPath;
           }
-          let isJsonExt = readPath.endsWith('.json');
+          let isJsonExt = readPath.endsWith(".json");
           if (isJsonExt) {
             try {
-              const json = readFileSync(readPath, { encoding, });
+              const json = readFileSync(readPath, { encoding });
               return response(JSON.parse(json));
             } catch (err) {
               logger.wran(`${err}; ${readPath}`);
@@ -180,9 +218,9 @@ export const createMockServer: CreateMockServer = (config) => {
           }
           next();
         }
-      });
+      }
     },
   };
-}
+};
 
 createMockServer.__dyMatchPaths = [];
