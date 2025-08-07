@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import DomLegend from "./components/dom_legend.vue";
-import { parseUrlParams } from 'mmjs-share/parseUrlParams';
+// import { parseUrlParams } from 'mmjs-share/parseUrlParams';
 // import { parseUrlParams } from 'mmjs-core/utils/parseUrlParams';
 // import type {
 //   CssomLegendInstanceType,

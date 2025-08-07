@@ -5,13 +5,13 @@ import { createMockServer } from "mmjs-plugin/vite-mock";
 
 export default defineConfig({
   plugins: [vue(), createMockServer({
-    apiPrefix: '/api',
+    apiPrefix: ['/api', '/api2'],
     // forceMock: true,
     // scan: true,
     templateMimeType: ['html'],
     // fileExt: '.ts',
     // watchDynamicFile: true,
-  })],
+  }),],
   server: {
     proxy: {
       "^/api": {
