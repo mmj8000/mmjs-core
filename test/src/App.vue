@@ -5,29 +5,30 @@
 <script setup lang="ts">
 import DomLegend from "./components/dom_legend.vue";
 // import { parseUrlParams } from 'mmjs-share/parseUrlParams';
-// import { parseUrlParams } from 'mmjs-core/utils/parseUrlParams';
+import { parseUrlParams } from 'mmjs-core/utils/parseUrlParams';
+import { normalizeURL } from 'mmjs-share/url';
 // import type {
 //   CssomLegendInstanceType,
 //   BandwidthOption,
 //   FilterTemplateFnParameters,
 // } from "mmjs-core/types/components";
 // 测试用例
-// const testCases = [
-//   { url: "https://example.com/?test=has#/path?without=value", desc: "混合参数" },
-//   { url: "https://example.com/#/path?hash=param", desc: "仅hash参数" },
-//   { url: "https://example.com/?main=param", desc: "仅主参数" },
-//   { url: "https://example.com/path", desc: "无参数" },
-//   { url: "https://example.com/?a=1&a=2&c=abc#/path?b=3&b=4&d", desc: "重复参数混合" },
-//   { url: "https://example.com/?flag#/path?another", desc: "无值参数" }
-// ];
-
-// testCases.forEach(({ url, desc }) => {
-//   console.log(`测试用例: ${desc}`);
-//   console.log(`URL: ${url}`);
-//   console.log('包含hash参数:', parseUrlParams(url));
-//   console.log('不包含hash参数:', parseUrlParams(url, { includeHashParams: false }));
-//   console.log('---');
-// });
+const testCases = [
+  { url: "example.com/?test=has#/path?without=value", desc: "混合参数" },
+  { url: "https://example.com/#/path?hash=param", desc: "仅hash参数" },
+  { url: "https://example.com/?main=param", desc: "仅主参数" },
+  { url: "https://example.com/path", desc: "无参数" },
+  { url: "https://example.com/?a=1&a=2&c=abc#/path?b=3&b=4&d", desc: "重复参数混合" },
+  { url: "https://example.com/?flag#/path?another", desc: "无值参数" }
+];
+ console.log(normalizeURL('https://example.com')); // "https://example.com"
+testCases.forEach(({ url, desc }) => {
+  console.log(`测试用例: ${desc}`);
+  console.log(`URL: ${url}`);
+  console.log('包含hash参数:', parseUrlParams(url));
+  console.log('不包含hash参数:', parseUrlParams(url, { includeHashParams: false }));
+  console.log('---');
+});
 
 // import { throttle, memoize } from "mmjs-share/utils";
 // const throttledFn = throttle(() => {

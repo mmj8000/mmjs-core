@@ -1,3 +1,4 @@
+import { normalizeURL } from "./url";
 
 /**
  * @see https://www.npmjs.com/package/mmjs-share
@@ -86,7 +87,7 @@ export const parseUrlParams = (() => {
   ): Record<string, string | boolean | string[]> => {
     const queryStrings = extractAllQueryStrings(url);
     if (queryStrings.length === 0) return {};
-    let params = parseQueryString(queryStrings[0] ?? '');
+    let params = parseQueryString(queryStrings[0] ?? "");
     if (includeHashParams && queryStrings.length > 1) {
       params = parseQueryString(queryStrings[1], params);
     }
@@ -103,7 +104,7 @@ export const parseUrlParams = (() => {
       let params = {};
 
       // 解析主查询参数
-      const mainUrl = new URL(url);
+      const mainUrl = new URL(normalizeURL(url));
       const mainQueryString = mainUrl.search.slice(1); // 去掉开头的'?'
       if (mainQueryString) {
         params = parseQueryString(mainQueryString);
@@ -133,7 +134,10 @@ export const parseUrlParams = (() => {
     const { includeHashParams = true } = options;
 
     if (supportsNativeURL === null) {
-      supportsNativeURL = typeof URL !== 'undefined' && typeof URLSearchParams !== 'undefined';
+      supportsNativeURL =
+        typeof URL !== "undefined" &&
+        typeof URLSearchParams !== "undefined" &&
+        typeof window !== "undefined";
     }
 
     return supportsNativeURL
