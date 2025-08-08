@@ -1,6 +1,4 @@
 /**
- * @see https://www.npmjs.com/package/mmjs-share
- * @deprecated 已经迁移到 mmjs-share package
  * 判断URL是否是完整链接，如果不是则拼接当前origin
  * @param {string} url - 要检查的URL
  * @param {string} base - Base

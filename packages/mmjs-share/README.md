@@ -26,6 +26,7 @@
   4. isPlainObject
   5. structuredClonePolyfill
   6. parseUrlParams
+  7. normalizeURL
 
 ## Share
 
@@ -74,4 +75,14 @@
    const url = 'https://example.com/?test=has#/path?without=value';
    parseUrlParams(url)  // {test: 'has', without: 'value'}
    parseUrlParams(url, { includeHashParams: false }) // {test: 'has'}
+   ```
+  1. normalizeURL
+   - 规范 URL
+   - Example
+   ```ts
+   normalizeURL("https://example.com"); // "https://example.com"
+   normalizeURL("http://example.com"); // "http://example.com"
+   normalizeURL("//example.com"); // "http(s)://example.com" (取决于当前页面协议)
+   normalizeURL("/api/data"); // "http(s)://当前域名/api/data"
+   normalizeURL("data.json"); // "http(s)://当前域名/当前路径/data.json"
    ```
