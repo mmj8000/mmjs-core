@@ -94,3 +94,17 @@ export function useProxyRes(server: ViteDevServer) {
     }
   }
 }
+
+export function useResponseAppend(res: ServerResponse) {
+  Reflect.set(res, "send", function (...args: any[]) {
+    if (!res.writableEnded) {
+      const [value, ...agrslist] = args;
+      res.end(
+        typeof value !== "function" ? JSON.stringify(value) : value,
+        ...agrslist
+      );
+      return res;
+    }
+    return res;
+  });
+}

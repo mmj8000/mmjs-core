@@ -13,7 +13,7 @@ import {
   useContentType,
 } from "./utils";
 import { createReadStream, readFileSync } from "node:fs";
-import { useProxyRes } from "./proxy";
+import { useProxyRes, useResponseAppend } from "./proxy";
 import {
   serverConfig,
   PluginOptions,
@@ -26,9 +26,15 @@ import {
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { enhancedFindFiles } from "./ndos";
 
+type ResEndFnType = {
+    (cb?: () => void): CustomServerResponse;
+    (chunk: any, cb?: () => void): CustomServerResponse;
+    (chunk: any, encoding: BufferEncoding, cb?: () => void): CustomServerResponse;
+}
+type CustomServerResponse = ServerResponse & { send: ResEndFnType };
 export declare function MockTemplate(
   req: IncomingMessage,
-  res: ServerResponse<IncomingMessage>
+  res: CustomServerResponse
 ): Promise<any> | any;
 
 export type CreateMockServer = {
@@ -211,6 +217,7 @@ async function useCustomServerMiddleware(
     }
     useParseQueryParams(req);
     useParseBody(req);
+    useResponseAppend(res);
     let resp = mockState.mock(req, res);
     if (resp instanceof Promise) {
       resp = await resp;
