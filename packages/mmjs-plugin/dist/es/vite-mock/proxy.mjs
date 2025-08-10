@@ -1,61 +1,61 @@
-import { safeUrlToFilename as P, useContentType as U, existsSyncByMkdir as x, logger as i, colorize as E, writeMockFile as F } from "./utils.mjs";
-import { serverConfig as h } from "./options.mjs";
-import T from "node:path";
-import { transformInnerCodeTempate as I } from "./parse.mjs";
-import { createWriteStream as M } from "node:fs";
-function O(c) {
-  var a;
-  const s = ((a = c.config.server) == null ? void 0 : a.proxy) ?? {};
-  for (let w in s)
+import { safeUrlToFilename as E, useContentType as P, existsSyncByMkdir as U, logger as a, colorize as v, writeMockFile as x } from "./utils.mjs";
+import { serverConfig as w } from "./options.mjs";
+import S from "node:path";
+import { transformInnerCodeTempate as F } from "./parse.mjs";
+import { createWriteStream as I } from "node:fs";
+function A(t) {
+  var n;
+  const s = ((n = t.config.server) == null ? void 0 : n.proxy) ?? {};
+  for (let f in s)
     try {
-      const t = s[w];
-      if (typeof t != "object") continue;
-      const f = t.configure;
-      t.configure = (m, d) => {
-        m.on(
+      const r = s[f];
+      if (typeof r != "object") continue;
+      const u = r.configure;
+      r.configure = (d, m) => {
+        d.on(
           "proxyRes",
-          (n, u, _) => {
-            var p;
-            typeof f == "function" && f(m, d);
-            const y = T.join(
-              P(d.target ?? ""),
-              ((p = u._parsedUrl) == null ? void 0 : p.pathname) ?? ""
+          (i, p, M) => {
+            var l;
+            typeof u == "function" && u(d, m);
+            const y = S.join(
+              E(m.target ?? ""),
+              ((l = p._parsedUrl) == null ? void 0 : l.pathname) ?? ""
             );
             if (y) {
-              const S = n.headers["content-type"], { encoding: l, isInnerTempType: k, mimeType: b, fileExt: j } = U(S), r = T.join(
-                c.config.root,
-                h.mockDir,
-                h.scanOutput,
+              const T = i.headers["content-type"], { encoding: g, isInnerTempType: b, mimeType: k, fileExt: j } = P(T), c = S.join(
+                t.config.root,
+                w.mockDir,
+                w.scanOutput,
                 y + j
               );
-              if (k) {
+              if (b) {
                 const e = [];
-                n.on("data", (o) => {
+                i.on("data", (o) => {
                   e.push(o);
-                }), n.on("end", async () => {
-                  var g;
-                  const B = Buffer.concat(e).toString(l), C = await I(
+                }), i.on("end", async () => {
+                  var h;
+                  const B = Buffer.concat(e).toString(g), C = await F(
                     B,
-                    b,
+                    k,
                     {
-                      query: ((g = u._parsedUrl) == null ? void 0 : g.query) ?? null,
-                      filePath: r
+                      query: ((h = p._parsedUrl) == null ? void 0 : h.query) ?? null,
+                      filePath: c
                     }
                   );
-                  F(r, C, { encoding: l });
+                  x(c, C, { encoding: g });
                 });
               } else {
-                x(r);
-                const e = M(r);
+                U(c);
+                const e = I(c);
                 e.on("error", (o) => {
-                  i.error(o), e.destroy();
+                  a.error(o), e.destroy();
                 }), e.on("close", () => {
-                  i.success(
-                    `✅ writeStream End ${E(r, "underline")}`
+                  a.success(
+                    `✅ writeStream End ${v(c, "underline")}`
                   ), e.destroyed || e.destroy();
-                }), n.on("data", (o) => {
+                }), i.on("data", (o) => {
                   e.write(o);
-                }), n.on("end", () => {
+                }), i.on("end", () => {
                   e.end();
                 });
               }
@@ -63,10 +63,23 @@ function O(c) {
           }
         );
       };
-    } catch (t) {
-      i.error(t);
+    } catch (r) {
+      a.error(r);
     }
 }
+function D(t) {
+  Reflect.set(t, "send", function(...s) {
+    if (!t.writableEnded) {
+      const [n, ...f] = s;
+      return t.end(
+        typeof n != "function" ? JSON.stringify(n) : n,
+        ...f
+      ), t;
+    }
+    return t;
+  });
+}
 export {
-  O as useProxyRes
+  A as useProxyRes,
+  D as useResponseAppend
 };
