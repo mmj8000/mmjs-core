@@ -1,14 +1,16 @@
 import { IncomingMessage } from 'node:http';
+export interface CustomIncomingMessage {
+    query: Record<string, any>;
+    /**
+     * 注意：默认情况下只能被消费一次。读取了数据，后续中间件将无法再次获取 body，因为流已经被消耗。
+     */
+    body: Promise<any>;
+    _parsedUrl?: URL & {
+        query: string | null;
+    };
+}
 declare module "http" {
-    interface IncomingMessage {
-        query: Record<string, any>;
-        /**
-         * 注意：默认情况下只能被消费一次。读取了数据，后续中间件将无法再次获取 body，因为流已经被消耗。
-         */
-        body: Promise<any>;
-        _parsedUrl?: URL & {
-            query: string | null;
-        };
+    interface IncomingMessage extends CustomIncomingMessage {
     }
 }
 export declare function useParseQueryParams(req: IncomingMessage): void;

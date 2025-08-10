@@ -1,5 +1,5 @@
 import type { ViteDevServer, Plugin, Connect } from "vite";
-import { useParseBody, useParseQueryParams } from "./parse";
+import { type CustomIncomingMessage, useParseBody, useParseQueryParams } from "./parse";
 import path from "node:path";
 import {
   colorize,
@@ -33,7 +33,7 @@ type ResEndFnType = {
 }
 type CustomServerResponse = ServerResponse & { send: ResEndFnType };
 export declare function MockTemplate(
-  req: IncomingMessage,
+  req: IncomingMessage & CustomIncomingMessage,
   res: CustomServerResponse
 ): Promise<any> | any;
 
