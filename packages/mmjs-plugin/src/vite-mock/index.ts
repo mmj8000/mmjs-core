@@ -136,11 +136,24 @@ async function useCustomServerMiddleware(
       mock: (req: IncomingMessage, res: ServerResponse) => any;
     };
     function response(data, contentType = getContentTypeByPath(readPath)) {
-      contentType && res.setHeader("Content-Type", contentType);
-      logger.success(`✅ Mock Successify ${colorize(readPath, "underline")}`);
-      setTimeout(() => {
-        res.end(JSON.stringify(data));
-      }, timeout);
+      if (res.writableEnded) {
+        // 已经响应直接打印成功
+        return logger.success(
+          `✅ Mock Successify ${colorize(readPath, "underline")}`
+        );
+      }
+      // 继续响应
+      try {
+        contentType && res.setHeader("Content-Type", contentType);
+        setTimeout(() => {
+          res.end(JSON.stringify(data));
+          logger.success(
+            `✅ Mock Successify ${colorize(readPath, "underline")}`
+          );
+        }, timeout);
+      } catch (err) {
+        logger.error(err);
+      }
     }
     if (!allowExt.includes(fileExt as any)) {
       const readStream = createReadStream(readPath);
