@@ -1,6 +1,6 @@
 {
   "name": "mmjs-plugin",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "mmjs-plugin vite-plugin",
   "main": "dist/es/index.cjs",
   "module": "dist/es/index.mjs",
