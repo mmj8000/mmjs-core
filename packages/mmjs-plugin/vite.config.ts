@@ -42,6 +42,7 @@ export default defineConfig({
         'node:url',
         'node:fs',
         'node:http',
+        'node:zlib',
         'node:querystring',
         'node:fs/promises',
         'mime-types',

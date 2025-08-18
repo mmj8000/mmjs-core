@@ -12,6 +12,7 @@ import { serverConfig } from "./options";
 import path from "node:path";
 import { transformInnerCodeTempate } from "./parse";
 import { createWriteStream } from "node:fs";
+import { gunzipSync } from "node:zlib";
 
 export function useProxyRes(server: ViteDevServer) {
   const proxys = server.config.server?.proxy ?? {};
@@ -72,8 +73,22 @@ export function useProxyRes(server: ViteDevServer) {
                 });
 
                 proxyRes.on("end", async () => {
+                  let bodyStr = "";
+                  // 检查是否是 gzip 压缩
+                  const isGzipped =
+                    proxyRes.headers["content-encoding"] === "gzip";
                   const body = Buffer.concat(chunks);
-                  const bodyStr = body.toString(encoding);
+                  if (isGzipped) {
+                    // 解压 gzip 数据
+                    try {
+                      const decompressed = gunzipSync(body);
+                      bodyStr = decompressed.toString(encoding);
+                    } catch (err) {
+                      logger.error("解压失败" + err);
+                    }
+                  } else {
+                    bodyStr = body.toString(encoding);
+                  }
                   const newBody = await transformInnerCodeTempate(
                     bodyStr,
                     mimeType,
