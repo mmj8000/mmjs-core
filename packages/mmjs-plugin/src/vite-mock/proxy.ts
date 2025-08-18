@@ -82,7 +82,7 @@ export function useProxyRes(server: ViteDevServer) {
                     // 解压 gzip 数据
                     try {
                       const decompressed = gunzipSync(body);
-                      bodyStr = decompressed.toString("utf-8");
+                      bodyStr = decompressed.toString(encoding);
                     } catch (err) {
                       logger.error("解压失败" + err);
                     }

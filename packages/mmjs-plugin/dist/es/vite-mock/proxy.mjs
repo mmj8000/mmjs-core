@@ -11,23 +11,23 @@ function W(n) {
     try {
       const i = s[a];
       if (typeof i != "object") continue;
-      const d = i.configure;
-      i.configure = (p, u) => {
-        p.on(
+      const p = i.configure;
+      i.configure = (u, m) => {
+        u.on(
           "proxyRes",
-          (r, m, _) => {
-            var l;
-            typeof d == "function" && d(p, u);
-            const y = k.join(
-              P(u.target ?? ""),
-              ((l = m._parsedUrl) == null ? void 0 : l.pathname) ?? ""
+          (r, y, _) => {
+            var g;
+            typeof p == "function" && p(u, m);
+            const l = k.join(
+              P(m.target ?? ""),
+              ((g = y._parsedUrl) == null ? void 0 : g.pathname) ?? ""
             );
-            if (y) {
-              const b = r.headers["content-type"], { encoding: g, isInnerTempType: z, mimeType: j, fileExt: B } = U(b), c = k.join(
+            if (l) {
+              const b = r.headers["content-type"], { encoding: d, isInnerTempType: z, mimeType: j, fileExt: B } = U(b), c = k.join(
                 n.config.root,
                 T.mockDir,
                 T.scanOutput,
-                y + B
+                l + B
               );
               if (z) {
                 const e = [];
@@ -39,21 +39,21 @@ function W(n) {
                   const C = r.headers["content-encoding"] === "gzip", h = Buffer.concat(e);
                   if (C)
                     try {
-                      t = O(h).toString("utf-8");
+                      t = O(h).toString(d);
                     } catch (w) {
                       f.error("解压失败" + w);
                     }
                   else
-                    t = h.toString(g);
+                    t = h.toString(d);
                   const E = await M(
                     t,
                     j,
                     {
-                      query: ((S = m._parsedUrl) == null ? void 0 : S.query) ?? null,
+                      query: ((S = y._parsedUrl) == null ? void 0 : S.query) ?? null,
                       filePath: c
                     }
                   );
-                  I(c, E, { encoding: g });
+                  I(c, E, { encoding: d });
                 });
               } else {
                 v(c);
