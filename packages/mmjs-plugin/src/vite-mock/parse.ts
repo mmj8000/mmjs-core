@@ -101,19 +101,20 @@ export async function transformInnerCodeTempate(
   let parameters = {};
   let writeBody = "";
 
+  let readResult: { parameters: Record<string, any> } | undefined;
   switch (multiParameter) {
     case "get":
       try {
-        const readResult = await dynamicImport(meta.filePath);
-        Object.assign(parameters, readResult?.parameters ?? {}, {
-          [JSON.stringify(meta.query)]: _body,
-        });
+        readResult = await dynamicImport(meta.filePath);
       } catch (err) {
         // @ts-ignore
         if (!notFileErrMsg.some((text) => err?.message?.indexOf(text) !== -1)) {
           logger.error(`${err} ${meta.filePath}`);
         }
       }
+      Object.assign(parameters, readResult?.parameters ?? {}, {
+        [JSON.stringify(meta.query)]: _body,
+      });
       writeBody = switchRespStr;
       break;
     default:

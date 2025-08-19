@@ -28,7 +28,7 @@ export declare function useContentType(contentType: string | undefined): {
 export declare function getContentTypeByPath(readPath: string): any;
 export declare function findMatchingTemplatePath(paths: string[], userUrl: string): string | null;
 export declare function fileExists(filePath: string): boolean;
-export declare function getHeaderMimeTypeKey(req: IncomingMessage): "accept" | "content-type";
+export declare function getHeaderMimeTypeKey(req: IncomingMessage): "content-type" | "accept";
 export declare function esmImport(readPath: string): Promise<any>;
 export declare function cjsImport(readPath: string): Promise<any>;
 export declare let dynamicImport: (readPath: string) => Promise<{
