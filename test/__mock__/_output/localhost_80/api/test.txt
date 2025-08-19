@@ -1,1 +1,0 @@
-The server is configured with a public base URL of /dkjj-qy/ - did you mean to visit /dkjj-qy/test instead?

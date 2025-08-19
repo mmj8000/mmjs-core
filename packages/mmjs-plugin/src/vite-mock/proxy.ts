@@ -12,7 +12,20 @@ import { serverConfig } from "./options";
 import path from "node:path";
 import { transformInnerCodeTempate } from "./parse";
 import { createWriteStream } from "node:fs";
-import { gunzipSync } from "node:zlib";
+import {
+  type BrotliDecompress,
+  type Gunzip,
+  type Inflate,
+  type InputType,
+  type CompressCallback,
+  createBrotliDecompress,
+  createGunzip,
+  createInflate,
+  gunzip,
+  inflate,
+  brotliDecompress,
+} from "node:zlib";
+import { pipeline } from "node:stream";
 
 export function useProxyRes(server: ViteDevServer) {
   const proxys = server.config.server?.proxy ?? {};
@@ -34,6 +47,7 @@ export function useProxyRes(server: ViteDevServer) {
               safeUrlToFilename(options.target ?? ""),
               req._parsedUrl?.pathname ?? ""
             );
+            const resContentEncoding = proxyRes.headers["content-encoding"];
             if (outputPathName) {
               const contentType = proxyRes.headers["content-type"];
               const { encoding, isInnerTempType, mimeType, fileExt } =
@@ -47,47 +61,83 @@ export function useProxyRes(server: ViteDevServer) {
               if (!isInnerTempType) {
                 existsSyncByMkdir(filePath);
                 const writeStream = createWriteStream(filePath);
-                writeStream.on("error", (err) => {
-                  logger.error(err);
-                  writeStream.destroy();
-                });
-                writeStream.on("close", () => {
+                // 1. 创建解压流（如果需要）
+                let decompressStream:
+                  | Gunzip
+                  | Inflate
+                  | BrotliDecompress
+                  | null = null;
+                switch (resContentEncoding) {
+                  case "gzip":
+                    decompressStream = createGunzip();
+                    break;
+                  case "deflate":
+                    decompressStream = createInflate();
+                    break;
+                  case "br":
+                    decompressStream = createBrotliDecompress();
+                    break;
+                }
+
+                function printWriteStreamSuccess() {
                   logger.success(
                     `✅ writeStream End ${colorize(filePath, "underline")}`
                   );
-                  if (!writeStream.destroyed) {
-                    writeStream.destroy();
-                  }
-                });
-                proxyRes.on("data", (chunk) => {
-                  writeStream.write(chunk);
-                });
+                }
+                if (decompressStream) {
+                  pipeline(
+                    proxyRes, // 原始响应流
+                    decompressStream, // 解压流
+                    writeStream, // 写入文件
+                    (err) => {
+                      if (err) {
+                        return logger.error("写入文件失败:" + err.message);
+                      }
+                      printWriteStreamSuccess();
+                    }
+                  );
+                } else {
+                  pipeline(
+                    proxyRes, // 原始响应流
+                    writeStream, // 直接写入文件
+                    (err) => {
+                      if (err) {
+                        return logger.error("写入文件失败:" + err.message);
+                      }
 
-                proxyRes.on("end", () => {
-                  writeStream.end();
-                });
+                      printWriteStreamSuccess();
+                    }
+                  );
+                }
               } else {
                 const chunks: any[] = [];
                 proxyRes.on("data", (chunk) => {
                   chunks.push(chunk);
                 });
-
                 proxyRes.on("end", async () => {
                   let bodyStr = "";
-                  // 检查是否是 gzip 压缩
-                  const isGzipped =
-                    proxyRes.headers["content-encoding"] === "gzip";
                   const body = Buffer.concat(chunks);
-                  if (isGzipped) {
-                    // 解压 gzip 数据
-                    try {
-                      const decompressed = gunzipSync(body);
-                      bodyStr = decompressed.toString(encoding);
-                    } catch (err) {
-                      logger.error("解压失败" + err);
+                  let decompressBuf: Buffer<ArrayBufferLike> = body;
+                  // 检查是否是 gzip 压缩
+                  try {
+                    switch (resContentEncoding) {
+                      case "gzip":
+                        decompressBuf = await decompressBy(gunzip, body);
+                        break;
+                      case "deflate":
+                        decompressBuf = await decompressBy(inflate, body);
+                        break;
+                      case "br":
+                        decompressBuf = await decompressBy(
+                          brotliDecompress,
+                          body
+                        );
+                        break;
                     }
-                  } else {
+                    bodyStr = decompressBuf.toString(encoding);
+                  } catch (err) {
                     bodyStr = body.toString(encoding);
+                    logger.error("解压失败" + err);
                   }
                   const newBody = await transformInnerCodeTempate(
                     bodyStr,
@@ -121,5 +171,20 @@ export function useResponseAppend(res: ServerResponse) {
       return res;
     }
     return res;
+  });
+}
+
+function decompressBy(
+  api: (buf: InputType, callback: CompressCallback) => void,
+  buf: Buffer
+) {
+  return new Promise<Buffer<ArrayBufferLike>>((resolve, reject) => {
+    api(buf, (err, result) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    });
   });
 }
