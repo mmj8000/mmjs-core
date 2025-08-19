@@ -45,6 +45,7 @@ export default defineConfig({
         'node:zlib',
         'node:querystring',
         'node:fs/promises',
+        'node:stream',
         'mime-types',
         'raw-body',
         'vite'

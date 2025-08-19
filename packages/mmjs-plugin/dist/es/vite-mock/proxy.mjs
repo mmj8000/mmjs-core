@@ -1,96 +1,145 @@
-import { safeUrlToFilename as P, useContentType as U, existsSyncByMkdir as v, logger as f, colorize as F, writeMockFile as I } from "./utils.mjs";
+import { safeUrlToFilename as U, useContentType as v, logger as u, colorize as F, existsSyncByMkdir as M, writeMockFile as N } from "./utils.mjs";
 import { serverConfig as T } from "./options.mjs";
-import k from "node:path";
-import { transformInnerCodeTempate as M } from "./parse.mjs";
-import { createWriteStream as N } from "node:fs";
-import { gunzipSync as O } from "node:zlib";
-function W(n) {
-  var o;
-  const s = ((o = n.config.server) == null ? void 0 : o.proxy) ?? {};
-  for (let a in s)
+import B from "node:path";
+import { transformInnerCodeTempate as O } from "./parse.mjs";
+import { createWriteStream as W } from "node:fs";
+import { createBrotliDecompress as _, createInflate as q, createGunzip as x, brotliDecompress as A, inflate as G, gunzip as J } from "node:zlib";
+import { pipeline as z } from "node:stream";
+function Z(t) {
+  var n;
+  const c = ((n = t.config.server) == null ? void 0 : n.proxy) ?? {};
+  for (let a in c)
     try {
-      const i = s[a];
-      if (typeof i != "object") continue;
-      const p = i.configure;
-      i.configure = (u, m) => {
-        u.on(
+      const o = c[a];
+      if (typeof o != "object") continue;
+      const p = o.configure;
+      o.configure = (g, y) => {
+        g.on(
           "proxyRes",
-          (r, y, _) => {
-            var g;
-            typeof p == "function" && p(u, m);
-            const l = k.join(
-              P(m.target ?? ""),
-              ((g = y._parsedUrl) == null ? void 0 : g.pathname) ?? ""
-            );
-            if (l) {
-              const b = r.headers["content-type"], { encoding: d, isInnerTempType: z, mimeType: j, fileExt: B } = U(b), c = k.join(
-                n.config.root,
+          (s, b, $) => {
+            var k;
+            typeof p == "function" && p(g, y);
+            const h = B.join(
+              U(y.target ?? ""),
+              ((k = b._parsedUrl) == null ? void 0 : k.pathname) ?? ""
+            ), w = s.headers["content-encoding"];
+            if (h) {
+              const C = s.headers["content-type"], { encoding: l, isInnerTempType: E, mimeType: P, fileExt: j } = v(C), f = B.join(
+                t.config.root,
                 T.mockDir,
                 T.scanOutput,
-                l + B
+                h + j
               );
-              if (z) {
-                const e = [];
-                r.on("data", (t) => {
-                  e.push(t);
-                }), r.on("end", async () => {
+              if (E) {
+                const m = [];
+                s.on("data", (i) => {
+                  m.push(i);
+                }), s.on("end", async () => {
                   var S;
-                  let t = "";
-                  const C = r.headers["content-encoding"] === "gzip", h = Buffer.concat(e);
-                  if (C)
-                    try {
-                      t = O(h).toString(d);
-                    } catch (w) {
-                      f.error("解压失败" + w);
+                  let i = "";
+                  const e = Buffer.concat(m);
+                  let r = e;
+                  try {
+                    switch (w) {
+                      case "gzip":
+                        r = await d(J, e);
+                        break;
+                      case "deflate":
+                        r = await d(G, e);
+                        break;
+                      case "br":
+                        r = await d(
+                          A,
+                          e
+                        );
+                        break;
                     }
-                  else
-                    t = h.toString(d);
-                  const E = await M(
-                    t,
-                    j,
+                    i = r.toString(l);
+                  } catch (I) {
+                    i = e.toString(l), u.error("解压失败" + I);
+                  }
+                  const D = await O(
+                    i,
+                    P,
                     {
-                      query: ((S = y._parsedUrl) == null ? void 0 : S.query) ?? null,
-                      filePath: c
+                      query: ((S = b._parsedUrl) == null ? void 0 : S.query) ?? null,
+                      filePath: f
                     }
                   );
-                  I(c, E, { encoding: d });
+                  N(f, D, { encoding: l });
                 });
               } else {
-                v(c);
-                const e = N(c);
-                e.on("error", (t) => {
-                  f.error(t), e.destroy();
-                }), e.on("close", () => {
-                  f.success(
-                    `✅ writeStream End ${F(c, "underline")}`
-                  ), e.destroyed || e.destroy();
-                }), r.on("data", (t) => {
-                  e.write(t);
-                }), r.on("end", () => {
-                  e.end();
-                });
+                let m = function() {
+                  u.success(
+                    `✅ writeStream End ${F(f, "underline")}`
+                  );
+                };
+                M(f);
+                const i = W(f);
+                let e = null;
+                switch (w) {
+                  case "gzip":
+                    e = x();
+                    break;
+                  case "deflate":
+                    e = q();
+                    break;
+                  case "br":
+                    e = _();
+                    break;
+                }
+                e ? z(
+                  s,
+                  // 原始响应流
+                  e,
+                  // 解压流
+                  i,
+                  // 写入文件
+                  (r) => {
+                    if (r)
+                      return u.error("写入文件失败:" + r.message);
+                    m();
+                  }
+                ) : z(
+                  s,
+                  // 原始响应流
+                  i,
+                  // 直接写入文件
+                  (r) => {
+                    if (r)
+                      return u.error("写入文件失败:" + r.message);
+                    m();
+                  }
+                );
               }
             }
           }
         );
       };
-    } catch (i) {
-      f.error(i);
+    } catch (o) {
+      u.error(o);
     }
 }
-function $(n) {
-  Reflect.set(n, "send", function(...s) {
-    if (!n.writableEnded) {
-      const [o, ...a] = s;
-      return n.end(
-        typeof o != "function" ? JSON.stringify(o) : o,
+function R(t) {
+  Reflect.set(t, "send", function(...c) {
+    if (!t.writableEnded) {
+      const [n, ...a] = c;
+      return t.end(
+        typeof n != "function" ? JSON.stringify(n) : n,
         ...a
-      ), n;
+      ), t;
     }
-    return n;
+    return t;
+  });
+}
+function d(t, c) {
+  return new Promise((n, a) => {
+    t(c, (o, p) => {
+      o ? a(o) : n(p);
+    });
   });
 }
 export {
-  W as useProxyRes,
-  $ as useResponseAppend
+  Z as useProxyRes,
+  R as useResponseAppend
 };
