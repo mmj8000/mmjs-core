@@ -1,8 +1,8 @@
 {
-  "name": "mmjs-plugin",
+  "name": "vite-server-cors",
   "version": "1.0.0",
-  "description": "mmjs-plugin vite-plugin",
-  "main": "dist/es/index.cjs",
+  "description": "vite-server-cors vite-plugin",
+  "main": "dist/cjs/index.cjs",
   "module": "dist/es/index.mjs",
   "types": "dist/types/index.d.ts",
   "scripts": {
@@ -13,7 +13,7 @@
     "README.md"
   ],
   "keywords": [
-    "mmjs-plugin",
+    "vite-server-cors",
     "vite-plugin",
     "plugin"
   ],
@@ -24,16 +24,7 @@
     "type": "github",
     "url": "https://github.com/mmj8000/mmjs-core.git"
   },
-  "exports": {
-    "./*": {
-      "types": "./dist/types/*/index.d.ts",
-      "import": "./dist/es/*/index.mjs",
-      "require": "./dist/cjs/*/index.cjs"
-    }
-  },
   "dependencies": {
-    "mime-types": "^3.0.1",
-    "raw-body": "^3.0.0"
   },
   "devDependencies": {
     "vite": "^5.4.17",

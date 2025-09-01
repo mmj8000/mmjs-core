@@ -1,42 +1,9 @@
-# mmjs-plugin utils
+# vite-http-mock
 
-- Install
-  ```shell
-  pnpm add mmjs-plugin
-  ```
-  
-- tsconfig.json
-  - （如果用 Vite/Webpack 等打包工具）
-  - moduleResolution set "node"
-  - 考虑更新到 "node16"、"nodenext" 或 "bundler"
-  ```json
-  {
-   "compilerOptions": {
-       "moduleResolution": "Bundler"
-   }
-  }
-  ```
-
-## vite-mock
-  - 文件后缀受 GET 请求 Accept和 POST ContentType 影响，如：GET Request下载xlsx 
-    ```ts
-     headers: {
-        accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      } 
-    ```
-  ### 默认用法
-  - exmaple
-  - 启用&参数
-    1. 检测浏览器location.search 是否存在 remote=mock; ` http://localhost:5173/?remote=mock#/`
-    2. 传入参数强制mock `createMockServer({ forceMock: true })`
-    3. 同一个接口多个参数区分传入配置 `createMockServer({ multiParameter: 'get' })`， 默认 “none”; 目前只区分get请求参数
-  - mock 工作流
-    - 默认会读取 {项目root}/__mock__/{接口url}，读取失败则走vite server.proxy， 如果希望读取本地mock失败后继续转发请求线上api， 那server.proxy 至少要有一个和 apiPrefix 设置一样的前缀才会继续流转，否则读取失败即结束本次读取
-  - 配置
   ```ts
   // vite.config.ts
   import { defineConfig } from "vite";
-  import { createMockServer } from "mmjs-plugin/vite-mock";
+  import createMockServer from "vite-http-mock";
   export default defineConfig({
     plugins: [createMockServer({
       // 接口 /api 开头才会走mock，一般和server.proxy 至少一个前缀匹配server.proxy即可使用线上代理，扫描同理
@@ -82,7 +49,7 @@
   ```js
   exports.enabled = true;
   /**
-  * @type {import('mmjs-plugin/vite-mock').MockTemplate}
+  * @type {import('vite-http-mock').MockTemplate}
   */
   exports.mock = (req, res) => {
     return { 
@@ -96,7 +63,7 @@
   ```js
   export const enabled = true;
   /**
-  * @type {import('mmjs-plugin/vite-mock').MockTemplate}
+  * @type {import('vite-http-mock').MockTemplate}
   */
   export const mock = (req, res) => {
     return {
@@ -110,6 +77,20 @@
 
     - 动态参数用$id代表文件、文件夹名称 如：`__mock__/api/$id.js` 对应接口 `/api/123`
 
+
+  - 文件后缀受 GET 请求 Accept和 POST ContentType 影响，如：GET Request下载xlsx 
+    ```ts
+     headers: {
+        accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      } 
+    ```
+
+- 启用&参数
+  1. 检测浏览器location.search 是否存在 remote=mock; ` http://localhost:5173/?remote=mock#/`
+  2. 传入参数强制mock `createMockServer({ forceMock: true })`
+  3. 同一个接口多个参数区分传入配置 `createMockServer({ multiParameter: 'get' })`， 默认 “none”; 目前只区分get请求参数
+- mock 工作流
+  - 默认会读取 {项目root}/__mock__/{接口url}，读取失败则走vite server.proxy， 如果希望读取本地mock失败后继续转发请求线上api， 那server.proxy 至少要有一个和 apiPrefix 设置一样的前缀才会继续流转，否则读取失败即结束本次读取
 
 ### 默认Config
 
@@ -179,14 +160,4 @@ interface PluginOptions {
      */
     downloadExtensions?: string[];
 }
-```
-
-
-## vite-server-cors
-
-```ts
-import { useCors } from "mmjs-plugin/vite-server-cors";
-export default defineConfig({
-  plugins: [useCors()], 
-});
 ```

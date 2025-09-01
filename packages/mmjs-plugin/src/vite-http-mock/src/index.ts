@@ -46,7 +46,7 @@ export type CreateMockServer = {
   __dyMatchPaths: string[];
 };
 
-export const createMockServer: CreateMockServer = (config) => {
+const createMockServer: CreateMockServer = (config) => {
   Object.assign(serverConfig, _initServerConfig, config ?? {});
   updateLogLevelState();
   return {
@@ -247,3 +247,4 @@ async function useCustomServerMiddleware(
   }
 }
 
+export { createMockServer as default };

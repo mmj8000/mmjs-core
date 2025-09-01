@@ -136,5 +136,5 @@ async function Q(s, o, a) {
   }
 }
 export {
-  F as createMockServer
+  F as default
 };
