@@ -7,7 +7,7 @@
   
 - tsconfig.json
   - （如果用 Vite/Webpack 等打包工具）
-  - moduleResolution set "node" 先 // @ts-ignore 将就一下， 不想改了
+  - moduleResolution set "node"
   - 考虑更新到 "node16"、"nodenext" 或 "bundler"
   ```json
   {
@@ -119,6 +119,13 @@ interface PluginOptions {
      * @default "/api"
      */
     apiPrefix?: string | string[];
+
+    /**
+     * CORS
+     * policy: 'Access-Control-Allow-Origin' header is present on the requested resource.
+     */
+    allowOrigin?: string[];
+    
     /**
      * @default false
      */
@@ -174,3 +181,12 @@ interface PluginOptions {
 }
 ```
 
+
+## vite-server-cors
+
+```ts
+import { useCors } from "mmjs-plugin/vite-server-cors";
+export default defineConfig({
+  plugins: [useCors()], 
+});
+```

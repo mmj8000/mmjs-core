@@ -5,6 +5,12 @@ export interface PluginOptions {
   apiPrefix?: string | string[];
 
   /**
+   * CORS
+   * policy: 'Access-Control-Allow-Origin' header is present on the requested resource.
+   */
+  allowOrigin?: string[];
+
+  /**
    * @default false
    */
   forceMock?: boolean;
@@ -75,6 +81,7 @@ export type InitServerConfig = Required<PluginOptions> & {
 };
 export const _initServerConfig: InitServerConfig = {
   apiPrefix: "/api",
+  allowOrigin: ['*'],
   forceMock: false,
   mockDir: "__mock__",
   fileExt: ".js",
