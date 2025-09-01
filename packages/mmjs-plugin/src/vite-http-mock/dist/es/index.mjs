@@ -6,12 +6,12 @@ import { useProxyRes as J, useResponseAppend as B } from "./proxy.mjs";
 import { serverConfig as p, _initServerConfig as U, updateLogLevelState as W, allowExt as z, mockNoEnabledStr as H, notFileErrMsg as I } from "./options.mjs";
 import { enhancedFindFiles as K } from "./ndos.mjs";
 const F = (s) => (Object.assign(p, U, s ?? {}), W(), {
-  name: "vite:mmjs:mock",
+  name: "vite:http:mock",
   apply: "serve",
   enforce: "post",
   config(o, a) {
-    const { scan: m, mockDir: c } = p;
-    if (m && a.command === "serve")
+    const { scan: l, mockDir: c } = p;
+    if (l && a.command === "serve")
       return {
         server: {
           watch: {
@@ -24,13 +24,13 @@ const F = (s) => (Object.assign(p, U, s ?? {}), W(), {
       };
   },
   configureServer(o) {
-    const { scan: a, watchDynamicFile: m, apiPrefix: c, mockDir: h } = p, k = o.config.root;
+    const { scan: a, watchDynamicFile: l, apiPrefix: c, mockDir: h } = p, k = o.config.root;
     p.root = k;
     const x = w.join(o.config.root, "package.json"), P = JSON.parse($(x, "utf-8"));
     if (p._esm = P.type === "module", a)
       return i.info("⏳ Scan Watching..."), J(o);
     const e = w.join(k, h);
-    if (m) {
+    if (l) {
       o.watcher.off(h, d);
       const r = o.watcher.add(e);
       r.on("add", d), r.on("unlink", d), r.on("unlinkDir", d);
@@ -47,24 +47,24 @@ const F = (s) => (Object.assign(p, U, s ?? {}), W(), {
         i.error(r);
       }
     }
-    let l = [];
+    let m = [];
     if (Array.isArray(c))
-      l.push(...c);
+      m.push(...c);
     else if (c)
-      l.push(c);
+      m.push(c);
     else {
       i.error("API Prefix Non-standard");
       return;
     }
-    l.forEach((r) => {
+    m.forEach((r) => {
       o.middlewares.use(r, Q);
     });
   }
 });
 F.__dyMatchPaths = [];
 async function Q(s, o, a) {
-  var l, r;
-  const { root: m, forceMock: c, mockDir: h, timeout: k, downloadExtensions: x, allowOrigin: P } = p;
+  var m, r;
+  const { root: l, forceMock: c, mockDir: h, timeout: k, downloadExtensions: x, allowOrigin: P } = p;
   let e = "", d = "";
   try {
     let n = function(t, g = C(e)) {
@@ -82,14 +82,14 @@ async function Q(s, o, a) {
         i.error(f);
       }
     };
-    if (s.headers.referer && (d = new URL((l = s.headers) == null ? void 0 : l.referer).searchParams.get("remote") ?? ""), d !== "mock" && !c)
+    if (s.headers.referer && (d = new URL((m = s.headers) == null ? void 0 : m.referer).searchParams.get("remote") ?? ""), d !== "mock" && !c)
       return i.info("🔒 Browser URL not found mcok Keyword"), a();
-    const j = s.headers[D(s)], { encoding: S, fileExt: M } = N(j), _ = ((r = s._parsedUrl) == null ? void 0 : r.pathname) ?? "";
-    s.headers["x-custom-request-header"] = "vite-plugin-mmjs-mock", o.setHeader("x-custom-response-header", "vite-plugin-mmjs-mock"), o.setHeader("Access-Control-Allow-Origin", P), o.setHeader("Access-Control-Allow-Headers", P), e = w.join(m, h, _ + M);
+    const M = s.headers[D(s)], { encoding: S, fileExt: j } = N(M), _ = ((r = s._parsedUrl) == null ? void 0 : r.pathname) ?? "";
+    s.headers["x-custom-request-header"] = "vite-plugin-mmjs-mock", o.setHeader("x-custom-response-header", "vite-plugin-mmjs-mock"), o.setHeader("Access-Control-Allow-Origin", P), o.setHeader("Access-Control-Allow-Headers", P), e = w.join(l, h, _ + j);
     let y;
-    if (!z.includes(M)) {
+    if (!z.includes(j)) {
       const t = b(e), g = C(e);
-      if (o.setHeader("Content-Type", g || "application/octet-stream"), x.includes(M)) {
+      if (o.setHeader("Content-Type", g || "application/octet-stream"), x.includes(j)) {
         const f = w.basename(e);
         o.setHeader(
           "Content-Disposition",
@@ -106,7 +106,7 @@ async function Q(s, o, a) {
       return;
     }
     if (!O(e)) {
-      const t = w.join(m, h, _);
+      const t = w.join(l, h, _);
       e = T(
         F.__dyMatchPaths,
         t
@@ -125,9 +125,9 @@ async function Q(s, o, a) {
     let E = y.mock(s, o);
     E instanceof Promise && (E = await E), n(E, "application/json");
   } catch (n) {
-    (n == null ? void 0 : n.message.indexOf(H)) !== -1 ? i.info(`🔒 Mock Not Enabled! ${u(e, "underline")}`) : I.some((j) => {
+    (n == null ? void 0 : n.message.indexOf(H)) !== -1 ? i.info(`🔒 Mock Not Enabled! ${u(e, "underline")}`) : I.some((M) => {
       var S;
-      return ((S = n == null ? void 0 : n.message) == null ? void 0 : S.indexOf(j)) !== -1;
+      return ((S = n == null ? void 0 : n.message) == null ? void 0 : S.indexOf(M)) !== -1;
     }) ? i.wran(`❌ File Not Found! ${u(e, "underline")}`) : console.error(
       R(),
       (n == null ? void 0 : n.message) || n,
