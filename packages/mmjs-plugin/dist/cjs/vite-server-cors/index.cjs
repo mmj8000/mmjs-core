@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,Symbol.toStringTag,{value:"Module"});function t(e=["*"]){return{name:"vite:server:cors",configureServer(s){s.middlewares.use((c,r,o)=>{r.setHeader("Access-Control-Allow-Origin",e),r.setHeader("Access-Control-Allow-Headers",e),o()})}}}exports.useCors=t;

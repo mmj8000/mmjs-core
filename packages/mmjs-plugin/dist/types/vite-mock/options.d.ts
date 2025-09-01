@@ -4,6 +4,11 @@ export interface PluginOptions {
      */
     apiPrefix?: string | string[];
     /**
+     * CORS
+     * policy: 'Access-Control-Allow-Origin' header is present on the requested resource.
+     */
+    allowOrigin?: string[];
+    /**
      * @default false
      */
     forceMock?: boolean;

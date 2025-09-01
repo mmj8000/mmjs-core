@@ -1,5 +1,9 @@
 import type { ViteDevServer, Plugin, Connect } from "vite";
-import { type CustomIncomingMessage, useParseBody, useParseQueryParams } from "./parse";
+import {
+  type CustomIncomingMessage,
+  useParseBody,
+  useParseQueryParams,
+} from "./parse";
 import path from "node:path";
 import {
   colorize,
@@ -27,10 +31,10 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 import { enhancedFindFiles } from "./ndos";
 
 type ResEndFnType = {
-    (cb?: () => void): CustomServerResponse;
-    (chunk: any, cb?: () => void): CustomServerResponse;
-    (chunk: any, encoding: BufferEncoding, cb?: () => void): CustomServerResponse;
-}
+  (cb?: () => void): CustomServerResponse;
+  (chunk: any, cb?: () => void): CustomServerResponse;
+  (chunk: any, encoding: BufferEncoding, cb?: () => void): CustomServerResponse;
+};
 type CustomServerResponse = ServerResponse & { send: ResEndFnType };
 export declare function MockTemplate(
   req: IncomingMessage & CustomIncomingMessage,
@@ -119,7 +123,7 @@ async function useCustomServerMiddleware(
   res: ServerResponse,
   next: Connect.NextFunction
 ) {
-  const { root, forceMock, mockDir, timeout, downloadExtensions } =
+  const { root, forceMock, mockDir, timeout, downloadExtensions, allowOrigin } =
     serverConfig;
   let readPath = "";
   let remote = "";
@@ -136,6 +140,8 @@ async function useCustomServerMiddleware(
     const pathname = req._parsedUrl?.pathname ?? "";
     req.headers["x-custom-request-header"] = "vite-plugin-mmjs-mock";
     res.setHeader("x-custom-response-header", "vite-plugin-mmjs-mock");
+    res.setHeader("Access-Control-Allow-Origin", allowOrigin);
+    res.setHeader("Access-Control-Allow-Headers", allowOrigin);
     readPath = path.join(root, mockDir, pathname + fileExt);
     let mockState: {
       enabled: boolean;
@@ -240,3 +246,4 @@ async function useCustomServerMiddleware(
     next();
   }
 }
+

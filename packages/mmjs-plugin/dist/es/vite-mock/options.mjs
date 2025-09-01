@@ -1,5 +1,6 @@
 const t = {
   apiPrefix: "/api",
+  allowOrigin: ["*"],
   forceMock: !1,
   mockDir: "__mock__",
   fileExt: ".js",

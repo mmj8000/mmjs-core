@@ -29,6 +29,7 @@ import { pipeline } from "node:stream";
 
 export function useProxyRes(server: ViteDevServer) {
   const proxys = server.config.server?.proxy ?? {};
+  const { allowOrigin } = serverConfig;
   for (let key in proxys) {
     try {
       const item = proxys[key];
@@ -47,6 +48,10 @@ export function useProxyRes(server: ViteDevServer) {
               safeUrlToFilename(options.target ?? ""),
               req._parsedUrl?.pathname ?? ""
             );
+            proxyRes.headers["Access-Control-Allow-Origin"] =
+              allowOrigin.join(",");
+            proxyRes.headers["Access-Control-Allow-Headers"] =
+              allowOrigin.join(",");
             const resContentEncoding = proxyRes.headers["content-encoding"];
             if (outputPathName) {
               const contentType = proxyRes.headers["content-type"];
