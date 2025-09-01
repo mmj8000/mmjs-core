@@ -3,14 +3,14 @@ import vue from "@vitejs/plugin-vue";
 // import { createMockServer } from "../packages/mmjs-plugin/src/vite-mock";
 // import { useCors } from "../packages/mmjs-plugin/src/vite-server-cors";
 
-import { createMockServer } from "mmjs-plugin/vite-mock";
-import { useCors } from "mmjs-plugin/vite-server-cors";
+import createMockServer from "vite-http-mock";
+import { useCors } from "vite-server-cors";
 
 export default defineConfig({
   plugins: [
     vue(),
     createMockServer({
-      apiPrefix: ["/api-test", "/api2"],
+      apiPrefix: ["/api", "/api2"],
       forceMock: true,
       // scan: true,
       // templateMimeType: ['html'],
@@ -18,10 +18,9 @@ export default defineConfig({
       // fileExt: '.ts',
       // watchDynamicFile: true,
     }),
-    // useCors(),
+    useCors(),
   ],
   server: {
-    port: 10086,
     proxy: {
       "^/api": {
         target: "https://www.baidu.com",

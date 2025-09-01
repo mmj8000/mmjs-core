@@ -65,7 +65,7 @@ export async function useParseBody(req: IncomingMessage) {
   });
 }
 
-const typeJsDocsStr = `/**\n* @type {import('mmjs-plugin/vite-mock').MockTemplate}\n*\/\n`;
+const typeJsDocsStr = `/**\n* @type {import('vite-http-mock').MockTemplate}\n*\/\n`;
 const switchRespStr = `parameters[JSON.stringify(req._parsedUrl?.query ?? null)]`;
 
 function tryToJsonFromString(data: string) {

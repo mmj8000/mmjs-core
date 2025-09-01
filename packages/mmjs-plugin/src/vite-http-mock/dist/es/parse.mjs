@@ -38,7 +38,7 @@ async function N(t) {
   });
 }
 const u = `/**
-* @type {import('mmjs-plugin/vite-mock').MockTemplate}
+* @type {import('vite-http-mock').MockTemplate}
 */
 `, w = "parameters[JSON.stringify(req._parsedUrl?.query ?? null)]";
 function S(t) {

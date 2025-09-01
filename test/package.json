@@ -15,10 +15,13 @@
     "@vitest/ui": "3.2.4",
     "lodash-es": "^4.17.21",
     "mmjs-core": "workspace:^",
-    "mmjs-plugin": "workspace:^",
     "mmjs-share": "workspace:^",
     "vite": "^5.4.17",
+    "vite-http-mock": "workspace:^",
     "vitest": "^3.2.4",
     "vue": "^3.5.17"
+  },
+  "dependencies": {
+    "vite-server-cors": "workspace:^"
   }
 }

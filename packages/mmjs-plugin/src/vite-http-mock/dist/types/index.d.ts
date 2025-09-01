@@ -15,5 +15,5 @@ export type CreateMockServer = {
     (config?: PluginOptions): Plugin;
     __dyMatchPaths: string[];
 };
-export declare const createMockServer: CreateMockServer;
-export {};
+declare const createMockServer: CreateMockServer;
+export { createMockServer as default };
