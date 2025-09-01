@@ -1,8 +1,8 @@
-import { serverConfig as p, allowCharset as y, notFileErrMsg as g } from "./options.mjs";
+import { serverConfig as m, allowCharset as y, notFileErrMsg as g } from "./options.mjs";
 import h from "mime-types";
 import d from "raw-body";
 import { dynamicImport as O, logger as _ } from "./utils.mjs";
-function j(t) {
+function N(t) {
   Object.defineProperty(t, "query", {
     get() {
       try {
@@ -22,9 +22,9 @@ function j(t) {
 }
 function b(t) {
   const r = t.headers["content-type"];
-  return (h.charset(r) || p.encoding || y[0]).toLocaleLowerCase();
+  return (h.charset(r) || m.encoding || y[0]).toLocaleLowerCase();
 }
-async function N(t) {
+async function j(t) {
   Object.defineProperty(t, "body", {
     async get() {
       try {
@@ -53,12 +53,12 @@ function S(t) {
   };
 }
 async function k(t, r, e) {
-  const { fileExt: n, multiParameter: f } = p;
+  const { fileExt: n, multiParameter: f } = m;
   if (![".js", ".ts"].includes(n)) return t;
   let a = t;
   if (r.includes("json")) {
-    const { newData: s, tryResolve: m } = S(t);
-    a = m ? s : JSON.stringify(t);
+    const { newData: s, tryResolve: p } = S(t);
+    a = p ? s : JSON.stringify(t);
   } else
     a = JSON.stringify(t);
   let o = {}, c = "", i;
@@ -67,9 +67,9 @@ async function k(t, r, e) {
       try {
         i = await O(e.filePath);
       } catch (s) {
-        g.some((m) => {
+        g.some((p) => {
           var l;
-          return ((l = s == null ? void 0 : s.message) == null ? void 0 : l.indexOf(m)) !== -1;
+          return ((l = s == null ? void 0 : s.message) == null ? void 0 : l.indexOf(p)) !== -1;
         }) || _.error(`${s} ${e.filePath}`);
       }
       Object.assign(o, (i == null ? void 0 : i.parameters) ?? {}, {
@@ -80,7 +80,7 @@ async function k(t, r, e) {
       c = JSON.stringify(a);
       break;
   }
-  return o = JSON.stringify(o, null, 4), p._esm ? `export const enabled = true;
+  return o = JSON.stringify(o, null, 4), m._esm ? `export const enabled = true;
 export const parameters = ${o};
 ${u}export const mock = (req, res) => (${c})
 ` : `exports.enabled = true;
@@ -92,6 +92,6 @@ ${u}exports.mock = (req, res) => (${c})
 export {
   b as getCharset,
   k as transformInnerCodeTempate,
-  N as useParseBody,
-  j as useParseQueryParams
+  j as useParseBody,
+  N as useParseQueryParams
 };

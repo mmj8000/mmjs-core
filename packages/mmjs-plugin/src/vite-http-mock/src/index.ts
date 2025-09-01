@@ -50,7 +50,7 @@ const createMockServer: CreateMockServer = (config) => {
   Object.assign(serverConfig, _initServerConfig, config ?? {});
   updateLogLevelState();
   return {
-    name: "vite:mmjs:mock",
+    name: "vite:http:mock",
     apply: "serve",
     enforce: "post",
     config(_config, env) {
