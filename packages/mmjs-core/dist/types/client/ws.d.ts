@@ -6,11 +6,6 @@ export interface WebSocketClientStateImpl {
     maxReconnectAttempts: number;
     reconnectDelay: number;
     reconnectAttempts: number;
-}
-export interface WebSocketClientOptions {
-    heartbeatInterval?: number;
-    reconnectDelay?: number;
-    maxReconnectAttempts?: number;
     connect(): void;
     send(data: any): void;
     close(): void;
@@ -18,6 +13,11 @@ export interface WebSocketClientOptions {
     onMessage(this: WebSocket, ev: MessageEvent): any;
     onClose(this: WebSocket, ev: CloseEvent): any;
     onError(this: WebSocket, error: Event): any;
+}
+export interface WebSocketClientOptions {
+    heartbeatInterval?: number;
+    reconnectDelay?: number;
+    maxReconnectAttempts?: number;
 }
 /**
  * @example
