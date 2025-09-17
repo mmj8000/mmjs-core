@@ -1,6 +1,6 @@
 {
   "name": "mmjs-core",
-  "version": "0.14.10",
+  "version": "0.14.11",
   "description": "mmjs-core hooks component vue",
   "main": "dist/cjs/index.js",
   "module": "dist/es/index.js",
