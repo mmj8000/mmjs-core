@@ -1,7 +1,7 @@
 var c = Object.defineProperty;
-var o = (r, e, t) => e in r ? c(r, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : r[e] = t;
-var s = (r, e, t) => o(r, typeof e != "symbol" ? e + "" : e, t);
-class a {
+var n = (r, e, t) => e in r ? c(r, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : r[e] = t;
+var s = (r, e, t) => n(r, typeof e != "symbol" ? e + "" : e, t);
+class i {
   constructor(e, t) {
     s(this, "socket");
     s(this, "url");
@@ -9,8 +9,9 @@ class a {
     s(this, "heartbeatTimer");
     s(this, "maxReconnectAttempts");
     s(this, "reconnectDelay");
+    s(this, "reconnectTimer");
     s(this, "reconnectAttempts");
-    this.url = e, this.socket = null, this.heartbeatInterval = (t == null ? void 0 : t.heartbeatInterval) ?? 3e4, this.heartbeatTimer = null, this.reconnectAttempts = 0, this.maxReconnectAttempts = (t == null ? void 0 : t.maxReconnectAttempts) ?? 5, this.reconnectDelay = (t == null ? void 0 : t.reconnectDelay) ?? 5e3, this.connect();
+    this.url = e, this.socket = null, this.heartbeatInterval = (t == null ? void 0 : t.heartbeatInterval) ?? 3e4, this.heartbeatTimer = null, this.reconnectTimer = null, this.reconnectAttempts = 0, this.maxReconnectAttempts = (t == null ? void 0 : t.maxReconnectAttempts) ?? 5, this.reconnectDelay = (t == null ? void 0 : t.reconnectDelay) ?? 5e3, this.connect();
   }
   connect() {
     this.socket = new WebSocket(this.url), this.socket.onopen = (e) => {
@@ -32,9 +33,14 @@ class a {
       }
     }, this.socket.onclose = (e) => {
       var t;
-      console.log("WebSocket连接关闭"), this.stopHeartbeat(), (t = this.onClose) == null || t.call(this, e);
+      console.log("WebSocket连接关闭"), this.stopReconnect(), this.stopHeartbeat(), (t = this.onClose) == null || t.call(this, e);
     }, this.socket.onerror = (e) => {
-      console.error("WebSocket错误:", e), this.reconnectAttempts < this.maxReconnectAttempts && (this.reconnectAttempts++, console.log(`尝试重新连接 (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`), setTimeout(() => this.connect(), this.reconnectDelay)), this.onError && this.onError(e);
+      console.error("WebSocket错误:", e), this.reconnectAttempts < this.maxReconnectAttempts && (this.reconnectAttempts++, console.log(
+        `尝试重新连接 (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`
+      ), this.reconnectTimer = setTimeout(
+        () => this.connect(),
+        this.reconnectDelay
+      )), this.onError && this.onError(e);
     };
   }
   send(e) {
@@ -47,13 +53,16 @@ class a {
     }, this.heartbeatInterval);
   }
   resetHeartbeat() {
-    this.stopHeartbeat(), this.startHeartbeat();
+    this.stopReconnect(), this.stopHeartbeat(), this.startHeartbeat();
   }
   stopHeartbeat() {
     this.heartbeatTimer && (clearInterval(this.heartbeatTimer), this.heartbeatTimer = null);
   }
+  stopReconnect() {
+    this.reconnectTimer && (clearTimeout(this.reconnectTimer), this.reconnectTimer = null);
+  }
   close() {
-    this.stopHeartbeat(), this.socket && this.socket.close();
+    this.stopReconnect(), this.stopHeartbeat(), this.socket && this.socket.close();
   }
   // 回调函数
   onOpen(e) {
@@ -66,5 +75,5 @@ class a {
   }
 }
 export {
-  a as WebSocketClient
+  i as WebSocketClient
 };
