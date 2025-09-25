@@ -3,6 +3,7 @@ export interface WebSocketClientStateImpl {
     url: string;
     heartbeatInterval: number;
     heartbeatTimer: null | NodeJS.Timeout;
+    reconnectTimer: null | NodeJS.Timeout;
     maxReconnectAttempts: number;
     reconnectDelay: number;
     reconnectAttempts: number;
@@ -38,12 +39,14 @@ export declare class WebSocketClient implements WebSocketClientStateImpl {
     heartbeatTimer: NodeJS.Timeout | null;
     maxReconnectAttempts: number;
     reconnectDelay: number;
+    reconnectTimer: NodeJS.Timeout | null;
     reconnectAttempts: number;
     connect(): void;
     send(data: string | ArrayBufferLike | Blob | ArrayBufferView | object): void;
     startHeartbeat(): void;
     resetHeartbeat(): void;
     stopHeartbeat(): void;
+    stopReconnect(): void;
     close(): void;
     onOpen(event: any): void;
     onMessage(data: any): void;
