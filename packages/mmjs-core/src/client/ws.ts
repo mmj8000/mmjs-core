@@ -86,7 +86,6 @@ export class WebSocketClient implements WebSocketClientStateImpl {
 
     this.socket.onclose = (event) => {
       console.log("WebSocket连接关闭");
-      this.stopReconnect();
       this.stopHeartbeat();
       this.onClose?.(event);
     };

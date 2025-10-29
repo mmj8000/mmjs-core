@@ -33,7 +33,7 @@ class i {
       }
     }, this.socket.onclose = (e) => {
       var t;
-      console.log("WebSocket连接关闭"), this.stopReconnect(), this.stopHeartbeat(), (t = this.onClose) == null || t.call(this, e);
+      console.log("WebSocket连接关闭"), this.stopHeartbeat(), (t = this.onClose) == null || t.call(this, e);
     }, this.socket.onerror = (e) => {
       console.error("WebSocket错误:", e), this.reconnectAttempts < this.maxReconnectAttempts && (this.reconnectAttempts++, console.log(
         `尝试重新连接 (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`
