@@ -3,3 +3,4 @@ export * from './mergeRequest';
 export * from './vue.ref';
 export * from './interval';
 export * from './mouse';
+export * from './waterfall';
