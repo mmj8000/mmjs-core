@@ -1,3 +1,4 @@
+import { EventEmitter } from '../event/emitter';
 export interface WebSocketClientStateImpl {
     socket: WebSocket | null;
     url: string;
@@ -20,6 +21,7 @@ export interface WebSocketClientOptions {
     reconnectDelay?: number;
     maxReconnectAttempts?: number;
 }
+export type WsEmitterType = "open" | "message" | "close" | "error";
 /**
  * @example
  *  const wsClient = new WebSocketClient(wsBaseURL);
@@ -31,7 +33,7 @@ export interface WebSocketClientOptions {
     wsClient.onMessage = () => {
     };
  */
-export declare class WebSocketClient implements WebSocketClientStateImpl {
+export declare class WebSocketClient extends EventEmitter<WsEmitterType> implements WebSocketClientStateImpl {
     constructor(url: string, options?: WebSocketClientOptions);
     socket: WebSocket | null;
     url: string;

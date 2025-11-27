@@ -1,8 +1,10 @@
-var c = Object.defineProperty;
-var n = (r, e, t) => e in r ? c(r, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : r[e] = t;
-var s = (r, e, t) => n(r, typeof e != "symbol" ? e + "" : e, t);
-class i {
+var n = Object.defineProperty;
+var o = (c, r, e) => r in c ? n(c, r, { enumerable: !0, configurable: !0, writable: !0, value: e }) : c[r] = e;
+var s = (c, r, e) => o(c, typeof r != "symbol" ? r + "" : r, e);
+import { EventEmitter as i } from "../event/emitter.js";
+class l extends i {
   constructor(e, t) {
+    super();
     s(this, "socket");
     s(this, "url");
     s(this, "heartbeatInterval");
@@ -15,7 +17,7 @@ class i {
   }
   connect() {
     this.socket = new WebSocket(this.url), this.socket.onopen = (e) => {
-      console.log("WebSocket连接已建立"), this.reconnectAttempts = 0, this.startHeartbeat(), this.onOpen && this.onOpen(e);
+      console.log("WebSocket连接已建立"), this.reconnectAttempts = 0, this.startHeartbeat(), this.onOpen && this.onOpen(e), this.emit("open", e);
     }, this.socket.onmessage = (e) => {
       this.resetHeartbeat();
       try {
@@ -24,7 +26,7 @@ class i {
           console.log("收到心跳响应");
           return;
         }
-        this.onMessage && this.onMessage(t);
+        this.onMessage && this.onMessage(t), this.emit("message", t, e);
       } catch (t) {
         console.error("消息解析错误:", {
           error: t,
@@ -33,9 +35,9 @@ class i {
       }
     }, this.socket.onclose = (e) => {
       var t;
-      console.log("WebSocket连接关闭"), this.stopHeartbeat(), (t = this.onClose) == null || t.call(this, e);
+      console.log("WebSocket连接关闭"), this.stopHeartbeat(), (t = this.onClose) == null || t.call(this, e), this.emit("close", e);
     }, this.socket.onerror = (e) => {
-      console.error("WebSocket错误:", e), this.reconnectAttempts < this.maxReconnectAttempts && (this.reconnectAttempts++, console.log(
+      console.error("WebSocket错误:", e), this.emit("error", e), this.reconnectAttempts < this.maxReconnectAttempts && (this.reconnectAttempts++, console.log(
         `尝试重新连接 (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`
       ), this.reconnectTimer = setTimeout(
         () => this.connect(),
@@ -75,5 +77,5 @@ class i {
   }
 }
 export {
-  i as WebSocketClient
+  l as WebSocketClient
 };
