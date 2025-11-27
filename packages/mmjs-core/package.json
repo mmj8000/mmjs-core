@@ -71,9 +71,6 @@
     "mmjs-share": "^0.4.1",
     "raf-polyfill-es": "^0.1.1"
   },
-  "peerDependencies": {
-    "vue": ">=3"
-  },
   "devDependencies": {
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^22.14.0",
