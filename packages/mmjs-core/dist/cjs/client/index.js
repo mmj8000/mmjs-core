@@ -1,1 +1,1 @@
-"use strict";Object.defineProperty(exports,Symbol.toStringTag,{value:"Module"});const e=require("./ws.js");exports.WebSocketClient=e.WebSocketClient;
+"use strict";Object.defineProperty(exports,Symbol.toStringTag,{value:"Module"});const e=require("./ws.js"),t=require("./idb.js");exports.WebSocketClient=e.WebSocketClient;exports.WebIdbDatabase=t.WebIdbDatabase;
