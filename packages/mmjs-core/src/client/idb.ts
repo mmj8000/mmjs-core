@@ -63,7 +63,7 @@ export interface WebIdbAbortEvent {
     originalEvent: Event;
 }
 
-export abstract class WebIdbDatabase extends EventEmitter<WebIdbEventType> {
+export class WebIdbDatabase extends EventEmitter<WebIdbEventType> {
     private _options: WebIdbOptions;
     private _idb: Promise<IDBDatabase>;
     private _table: Promise<IDBObjectStore>;

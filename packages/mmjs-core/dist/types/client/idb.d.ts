@@ -48,7 +48,7 @@ export interface WebIdbCloseEvent {
 export interface WebIdbAbortEvent {
     originalEvent: Event;
 }
-export declare abstract class WebIdbDatabase extends EventEmitter<WebIdbEventType> {
+export declare class WebIdbDatabase extends EventEmitter<WebIdbEventType> {
     private _options;
     private _idb;
     private _table;

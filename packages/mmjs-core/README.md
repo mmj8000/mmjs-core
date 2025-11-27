@@ -6,6 +6,12 @@
   ```
 
 ## 近期更新
+### 20251127
+   1. EventEmitter
+   2. WebSocket extends EventEmitter
+   3. web indexedDB
+
+### 以往
 - Components
   1. CssomLegend (`ECharts Option 转 Html 结构的Legend 很有用`)
       - Add Function `transformFn` 用来转换Option To Css Var 的结果
@@ -24,7 +30,6 @@
   
 - tsconfig.json
   - （如果用 Vite/Webpack 等打包工具）
-  - moduleResolution set "node" 先 // @ts-ignore 将就一下， 不想改了
   - 考虑更新到 "node16"、"nodenext" 或 "bundler"
   ```json
   {
@@ -36,7 +41,7 @@
 
 ## Client
 
-1. WebSocketClient
+- WebSocketClient
 
    - ws client
    - Example
@@ -50,6 +55,36 @@
    };
    wsClient.onMessage = () => {};
    ```
+- WebIdbDatabase
+  - Example
+  ```ts
+   import { WebIdbDatabase } from 'mmjs-core/client/idb';
+   const schema = {
+               database: {
+                  name: 'MapTileDatabase',
+                  version: 1
+               },
+               table: {
+                  name: 'WebCacheLayer',
+                  options: {
+                     keyPath: 'tileKey',
+                     autoIncrement: false
+                  }
+               },
+               index: {
+                  list: []
+               }
+         }
+   // 方式1
+   new WebIdbDatabase(schema); 
+   // 方式2; 使用方式2 table.name 可以不传， 默认使用constructor name
+   class WebCacheLayer extends WebIdbDatabase {
+      constructor() {
+         super(schema);
+      }
+   }
+
+  ```
 
 ## Hooks
 
